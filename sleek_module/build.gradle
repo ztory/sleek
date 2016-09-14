@@ -1,0 +1,38 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+version = '1.0.0'
+group = 'com.ztory.lib.sleek'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.2"
+
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        //repository(url: "file:///Users/jonruna/dev_space/sleek/maven-repository/")
+        def repoDir = new File("${project(':sleek_module').rootDir}/maven-repository/")
+        String repoDirUrlString = "file://" + repoDir.toString();
+        repository(url: repoDirUrlString)
+        println "[ZTORY] - repoDirUrlString: " + repoDirUrlString
+    }
+}
