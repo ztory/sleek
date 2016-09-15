@@ -40,7 +40,8 @@ public void onCreate(Bundle savedInstanceState) {
             .y(SL.Y.PERCENT_CANVAS, 0, null, 0.29f)
             .w(SL.W.PERCENT_CANVAS, 0, null, 0.27f)
             .h(SL.H.PERCENT_CANVAS, 0, null, 0.34f);
-    sleekColorArea.setRounded(true, 10);
+    int pixelsFromDip = UtilPx.getPixels(this, 8);// 8 DIP converted to pixels
+    sleekColorArea.setRounded(true, pixelsFromDip);
     sleekColorArea.getTouchHandler().setClickAction(
             new Runnable() {
                 @Override
