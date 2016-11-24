@@ -142,23 +142,33 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                     scrollerFlinging = !mScroller.isFinished();
 
                     if (scrollerFlinging) {
-                        mPosLeft = -mScroller.getCurrX();
-                        mPosTop = -mScroller.getCurrY();
+
+                        if (mShouldScrollX) {
+                            mPosLeft = (float) (-mScroller.getCurrX());
+                        }
+
+                        if (mShouldScrollY) {
+                            mPosTop = (float) (-mScroller.getCurrY());
+                        }
+
                         constrainPosXY();
                     }
                 }
 
-                boolean edgeEffectsDrawing = drawEdgeEffectsUnclipped(canvas);
-
-                shouldInvalidate = edgeEffectsDrawing || scrollerFlinging;
-
-                if (shouldInvalidate) {
-                    info.invalidate();
-                }
+                shouldInvalidate = scrollerFlinging;
             }
 
             @Override
             public boolean animTickEnd(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+
+                if (drawEdgeEffectsUnclipped(canvas)) {
+                    shouldInvalidate = true;
+                }
+
+                if (shouldInvalidate) {
+                    info.invalidate();
+                }
+
                 return !shouldInvalidate;
             }
         });
