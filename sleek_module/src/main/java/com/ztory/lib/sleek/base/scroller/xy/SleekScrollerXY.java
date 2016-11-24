@@ -216,7 +216,26 @@ public class SleekScrollerXY implements SleekCanvasScroller {
     protected void constrainPosXY() {
 
         if (mShouldScrollX) {
-            if (mPosLeft > 0) {
+            if (mRightScrollEdge <= mCanvasWidth) {
+                mPosLeft = 0;
+                if (Math.abs(mTouchMoveTravelX) > mMoveDistanceThreshold) {
+                    if (mTouchMoveTravelX > 0) {
+                        mEdgeEffectLeft.onPull(
+                                Math.abs(mTouchMoveTravelX) / mCanvasWidth,
+                                1 - (mTouchCurrY / mCanvasHeight)
+                        );
+                        mEdgeEffectLeftActive = true;
+                    }
+                    else {
+                        mEdgeEffectRight.onPull(
+                                Math.abs(mTouchMoveTravelX) / mCanvasWidth,
+                                mTouchCurrY / mCanvasHeight
+                        );
+                        mEdgeEffectRightActive = true;
+                    }
+                }
+            }
+            else if (mPosLeft > 0) {
                 mEdgeEffectLeft.onPull(
                         mPosLeft / mCanvasWidth,
                         1 - (mTouchCurrY / mCanvasHeight)
@@ -237,7 +256,26 @@ public class SleekScrollerXY implements SleekCanvasScroller {
         }
 
         if (mShouldScrollY) {
-            if (mPosTop > 0) {
+            if (mBottomScrollEdge <= mCanvasHeight) {
+                mPosTop = 0;
+                if (Math.abs(mTouchMoveTravelY) > mMoveDistanceThreshold) {
+                    if (mTouchMoveTravelY > 0) {
+                        mEdgeEffectTop.onPull(
+                                Math.abs(mTouchMoveTravelY) / mCanvasHeight,
+                                mTouchCurrX / mCanvasWidth
+                        );
+                        mEdgeEffectTopActive = true;
+                    }
+                    else {
+                        mEdgeEffectBottom.onPull(
+                                Math.abs(mTouchMoveTravelY) / mCanvasHeight,
+                                1 - (mTouchCurrX / mCanvasWidth)
+                        );
+                        mEdgeEffectBottomActive = true;
+                    }
+                }
+            }
+            else if (mPosTop > 0) {
                 mEdgeEffectTop.onPull(
                         mPosTop / mCanvasHeight,
                         mTouchCurrX / mCanvasWidth
