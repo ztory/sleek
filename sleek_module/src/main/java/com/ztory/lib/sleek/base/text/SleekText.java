@@ -330,11 +330,12 @@ public class SleekText implements Sleek {
         int iterator = 1;
         int lastPartIndex = 0;
 
-        while (iterator < wordString.length()) {
+        while (iterator <= wordString.length()) {
+
             partString = wordString.substring(lastPartIndex, iterator);
             partWidth = linePaint.measureText(partString);
 
-            if (partWidth >= maxWidth) {
+            if (partWidth >= maxWidth && (iterator - 1) - lastPartIndex > 0) {
 
                 partString = wordString.substring(lastPartIndex, iterator - 1);
                 returnArray.add(partString);
@@ -348,7 +349,7 @@ public class SleekText implements Sleek {
         }
 
         if (partWidth > 0.0f) {
-            partString = wordString.substring(lastPartIndex, iterator);
+            partString = wordString.substring(lastPartIndex, wordString.length());
             returnArray.add(partString);
             partWidth = 0.0f;
         }
