@@ -22,29 +22,29 @@ public class SleekViewText extends SleekBase {
             ALIGN_TOP = 3,
             ALIGN_BOTTOM = 4;
 
-    private static final int
+    protected static final int
             TEXT_SIZE_DEFAULT = 24,
             BG_COLOR_HIDDEN = 0x00000000;
 
-    private SleekColorArea mSleekColorArea;
-    private SleekText mSleekText;
+    protected SleekColorArea mSleekColorArea;
+    protected SleekText mSleekText;
 
-    private boolean
+    protected boolean
             bgInitialized = false,
             textInitialized = false,
             textInitializedSize = false,
             mWrapWidth = false,
             mWrapHeight = false;
 
-    private int mMaxWrapWidth = -1, mMaxWrapHeight = -1;
+    protected int mMaxWrapWidth = -1, mMaxWrapHeight = -1;
 
-    private String textString = "UNSET";
-    private int textColor = 0xff000000;
-    private float textSize = TEXT_SIZE_DEFAULT;
-    private float textLineHeight = SleekText.LINE_HEIGHT_DYNAMIC;
-    private Typeface textTypeface = Typeface.DEFAULT;
-    private int textAlignInt = ALIGN_LEFT;
-    private int textAlignVertInt = ALIGN_CENTER;
+    protected String textString = "UNSET";
+    protected int textColor = 0xff000000;
+    protected float textSize = TEXT_SIZE_DEFAULT;
+    protected float textLineHeight = SleekText.LINE_HEIGHT_DYNAMIC;
+    protected Typeface textTypeface = Typeface.DEFAULT;
+    protected int textAlignInt = ALIGN_LEFT;
+    protected int textAlignVertInt = ALIGN_CENTER;
 
     public SleekViewText() {
         this(
@@ -115,7 +115,7 @@ public class SleekViewText extends SleekBase {
         innerSetSleekPosAndSize(x, y, w, h, true);
     }
 
-    private void innerSetSleekPosAndSize(float x, float y, int w, int h, boolean checkWrappedBounds) {
+    protected void innerSetSleekPosAndSize(float x, float y, int w, int h, boolean checkWrappedBounds) {
         super.setSleekBounds(x, y, w, h);
 
         mSleekColorArea.setSleekBounds(x, y, w, h);
@@ -123,7 +123,7 @@ public class SleekViewText extends SleekBase {
         refreshTextBounds(checkWrappedBounds);
     }
 
-    private void refreshTextBounds(boolean checkWrappedBounds) {
+    protected void refreshTextBounds(boolean checkWrappedBounds) {
 
         if (!textInitialized) {
             return;
