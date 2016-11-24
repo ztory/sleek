@@ -677,18 +677,18 @@ public class SleekCanvas extends RelativeLayout {
                     drawInfo.scrollerScaleY,
                     0,
                     0
-                    );
+            );
 
             canvas.translate(
                     UtilSleekMath.roundFloat(drawInfo.scrollerPosLeft / drawInfo.scrollerScaleX),
                     UtilSleekMath.roundFloat(drawInfo.scrollerPosTop / drawInfo.scrollerScaleY)
-                    );
+            );
         }
         else {
             canvas.translate(
                     drawInfo.scrollerPosLeft,
                     drawInfo.scrollerPosTop
-                    );
+            );
         }
 
         synchronized (canvasLockObj) {
@@ -699,11 +699,11 @@ public class SleekCanvas extends RelativeLayout {
             }
         }
 
+        canvas.restore();
+
         if (scrollerDrawAnimView.animTickEnd(null, canvas, drawInfo)) {
             setScrollerAnimView(null);
         }
-
-        canvas.restore();
 
         drawInfo.runAllDrawTasks(canvas);
 
