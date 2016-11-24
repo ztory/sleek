@@ -38,30 +38,30 @@ public class SleekText implements Sleek {
             BITMAP_CACHE_ON = true,
             BITMAP_CACHE_OFF = false;
 
-    private ISleekResize canvasResize;
+    protected ISleekResize canvasResize;
 
-    private boolean useBitmapCache;
-    private boolean updatedBitmapCache;
-    private Bitmap bitmapCache;
+    protected boolean useBitmapCache;
+    protected boolean updatedBitmapCache;
+    protected Bitmap bitmapCache;
 
-    private float[] drawLinesY = new float[0];
-    private String[] stringLines;
-    private final Object stringLinesLock = new Object();
-    private String textString;
-    private int textAlignInt;
-    private int maxWidth, maxHeight;
-    private float relativeMaxHeight;
-    private float fixedLineHeight;
+    protected float[] drawLinesY = new float[0];
+    protected String[] stringLines;
+    protected final Object stringLinesLock = new Object();
+    protected String textString;
+    protected int textAlignInt;
+    protected int maxWidth, maxHeight;
+    protected float relativeMaxHeight;
+    protected float fixedLineHeight;
 
-    private float posX, posY;
+    protected float posX, posY;
 
-    private Paint textPaint;
+    protected Paint textPaint;
 
-    private RectF bounds = new RectF();
+    protected RectF bounds = new RectF();
 
-    private float lineHeight;
+    protected float lineHeight;
 
-    private boolean sleekLoadable, sleekLoaded;
+    protected boolean sleekLoadable, sleekLoaded;
 
     public SleekText() {
         this(false);
@@ -71,7 +71,7 @@ public class SleekText implements Sleek {
         sleekLoadable = theSleekLoadable;
     }
 
-    private static Align getAlign(int alignInt) {
+    protected static Align getAlign(int alignInt) {
         switch (alignInt) {
         case ALIGN_LEFT:
             return Align.LEFT;
@@ -147,11 +147,11 @@ public class SleekText implements Sleek {
         textPaint.setColor(textColor);
     }
 
-    private boolean isLegalDimension(int dimension) {
+    protected boolean isLegalDimension(int dimension) {
         return dimension != 0;//need to allow -1 value
     }
 
-    private String lastLegalString;
+    protected String lastLegalString;
 
     public boolean setMaxSize(int theMaxWidth, int theMaxHeight) {
 
@@ -178,7 +178,7 @@ public class SleekText implements Sleek {
         return true;
     }
 
-    private void setMaxHeight(int theMaxHeight) {
+    protected void setMaxHeight(int theMaxHeight) {
 
         if (!isLegalDimension(theMaxHeight)) {
             return;//block setting values to 0 or below
@@ -211,13 +211,13 @@ public class SleekText implements Sleek {
         return textString;
     }
 
-    private boolean textDrawCareAboutBounds = true;
+    protected boolean textDrawCareAboutBounds = true;
 
     public void setTextDrawCareAboutBounds(boolean theTextDrawCareAboutBounds) {
         textDrawCareAboutBounds = theTextDrawCareAboutBounds;
     }
 
-    private void loadRelativeMaxHeight() {
+    protected void loadRelativeMaxHeight() {
         if (useBitmapCache) {
             relativeMaxHeight = maxHeight;
         }
@@ -239,7 +239,7 @@ public class SleekText implements Sleek {
         }
     }
 
-    private ArrayList<String> getMeasuredText(String lineString, Paint linePaint, int maxWidth) {
+    protected ArrayList<String> getMeasuredText(String lineString, Paint linePaint, int maxWidth) {
 
         ArrayList<SleekMeasuredText> measureTextList = new ArrayList<>();
         SleekMeasuredText measureText = null;
@@ -321,7 +321,7 @@ public class SleekText implements Sleek {
         return lineList;
     }
 
-    private ArrayList<String> getSplitLinesFromWord(String wordString, Paint linePaint, int maxWidth) {
+    protected ArrayList<String> getSplitLinesFromWord(String wordString, Paint linePaint, int maxWidth) {
 
         ArrayList<String> returnArray = new ArrayList<>();
 
@@ -357,7 +357,7 @@ public class SleekText implements Sleek {
         return returnArray;
     }
 
-    private void splitText(int maxWidth) {
+    protected void splitText(int maxWidth) {
 
         synchronized (stringLinesLock) {
             stringLines = textString.split("\n");
@@ -381,7 +381,7 @@ public class SleekText implements Sleek {
         }
     }
 
-    private void calcBounds() {
+    protected void calcBounds() {
 
         bounds = new RectF();
 
@@ -439,7 +439,7 @@ public class SleekText implements Sleek {
         }
     }
 
-    private boolean drawBitmapCache(Canvas canvas) {
+    protected boolean drawBitmapCache(Canvas canvas) {
         if (useBitmapCache) {
 
             if (!updatedBitmapCache) {
@@ -463,10 +463,10 @@ public class SleekText implements Sleek {
         return useBitmapCache;
     }
 
-    private float textDrawX, textDrawY, lineTextDrawY;
-    private boolean textDrawCheckHeight;
+    protected float textDrawX, textDrawY, lineTextDrawY;
+    protected boolean textDrawCheckHeight;
 
-    private void drawTextOnCanvas(Canvas canvas, boolean drawToBitmap) {
+    protected void drawTextOnCanvas(Canvas canvas, boolean drawToBitmap) {
 
         int iter = 0;
 
@@ -517,7 +517,7 @@ public class SleekText implements Sleek {
         }
     }
 
-    private float currDrawLine;
+    protected float currDrawLine;
 
     /**
      * Used in SleekViewText class.
@@ -575,7 +575,7 @@ public class SleekText implements Sleek {
         }
     }
 
-    private boolean explicitMaxSizeMode = true;
+    protected boolean explicitMaxSizeMode = true;
 
     /**
      * When this is TRUE, w and h are ignored in calls to setSleekPosAndSize().
@@ -600,8 +600,8 @@ public class SleekText implements Sleek {
         }
     }
 
-    private boolean mHasSlkLay = false;
-    private SleekLayout mSleekLayout;
+    protected boolean mHasSlkLay = false;
+    protected SleekLayout mSleekLayout;
 
     public void applyLayout(SleekCanvasInfo info) {
         getLayout().apply(this, info);
