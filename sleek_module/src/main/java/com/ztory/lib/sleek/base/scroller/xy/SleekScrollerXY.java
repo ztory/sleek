@@ -26,6 +26,7 @@ public class SleekScrollerXY implements SleekCanvasScroller {
 
     protected long mFlingTouchDurationThreshold = 400;
     protected float mMoveDistanceThreshold;
+    protected int mMoveDistanceThresholdDefaultDIPvalue = 20;
     protected float mFlingVelocityThreshold;
 
     protected int mOverscrollX, mOverscrollY;
@@ -102,7 +103,10 @@ public class SleekScrollerXY implements SleekCanvasScroller {
         mOverscrollX = UtilPx.getPixels(sleekCanvas.getContext(), 28);
         mOverscrollY = UtilPx.getPixels(sleekCanvas.getContext(), 28);
 
-        mMoveDistanceThreshold = UtilPx.getPixels(sleekCanvas.getContext(), 8);
+        mMoveDistanceThreshold = UtilPx.getPixels(
+                sleekCanvas.getContext(),
+                mMoveDistanceThresholdDefaultDIPvalue
+        );
     }
 
     protected void executeFling(float velocityX, float velocityY, SleekCanvasInfo info) {
