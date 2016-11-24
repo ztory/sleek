@@ -199,6 +199,8 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                 mCanvasWidth - getPaddingRight(),
                 mCanvasHeight - getPaddingBottom()
         );
+
+        constrainPosXY();
     }
 
     @Override
