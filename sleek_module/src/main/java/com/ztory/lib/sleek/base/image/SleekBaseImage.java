@@ -21,7 +21,7 @@ import com.ztory.lib.sleek.contract.ISleekDrawView;
 import java.util.concurrent.Executor;
 
 /**
- * Base class for displaying a Bitmap in the Sleek-framework.
+ * Base class for displaying a Bitmap that loads asynchronously in the Sleek-framework.
  * Created by jonruna on 12/09/16.
  */
 public class SleekBaseImage extends SleekBase {
