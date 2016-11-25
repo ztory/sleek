@@ -159,6 +159,10 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                     }
                 }
 
+                if (!scrollerFlinging && isAnyEdgeEffectActive()) {
+                    releaseEdgeEffects();
+                }
+
                 shouldInvalidate = scrollerFlinging;
             }
 
@@ -347,6 +351,8 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                                       || mPosTop <= -mBottomScrollEdge + mCanvasHeight;
                     }
 
+                    boolean didFling = false;
+
                     if (!blockFlingX || !blockFlingY) {
                         long touchDuration = System.currentTimeMillis() - mTouchStartTS;
                         if (touchDuration < mFlingTouchDurationThreshold) {
@@ -364,8 +370,13 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                                     ) {
                                 executeFling(velocityX, velocityY, info);
                                 setAnimEdgeEffectsAndFling();
+                                didFling = true;
                             }
                         }
+                    }
+
+                    if (!didFling) {
+                        releaseEdgeEffects();
                     }
 
                     mTouchEventHandled = true;
@@ -474,6 +485,13 @@ public class SleekScrollerXY implements SleekCanvasScroller {
         }
 
         return needsInvalidate;
+    }
+
+    protected boolean isAnyEdgeEffectActive() {
+        return mEdgeEffectLeftActive
+               || mEdgeEffectTopActive
+               || mEdgeEffectRightActive
+               || mEdgeEffectBottomActive;
     }
 
     protected void releaseEdgeEffects() {
