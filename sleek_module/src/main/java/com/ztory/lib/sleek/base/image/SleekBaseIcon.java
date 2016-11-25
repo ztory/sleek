@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvasInfo;
 import com.ztory.lib.sleek.base.SleekBase;
+import com.ztory.lib.sleek.base.SleekParam;
 
 
 /**
@@ -37,6 +38,16 @@ public class SleekBaseIcon extends SleekBase {
         super(isFixedPosition, isTouchable, isLoadable, theTouchPrio);
 
         bitmapMode = true;
+    }
+
+    public SleekBaseIcon(Bitmap theBitmap, SleekParam sleekParam) {
+        this(
+                theBitmap,
+                sleekParam.fixed,
+                sleekParam.touchable,
+                sleekParam.loadable,
+                sleekParam.priority
+        );
     }
 
     public SleekBaseIcon(

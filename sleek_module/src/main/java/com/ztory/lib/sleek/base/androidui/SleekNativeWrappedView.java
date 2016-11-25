@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvasInfo;
+import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.util.UtilSleekTouch;
 
 /**
@@ -21,6 +22,23 @@ public class SleekNativeWrappedView<W extends View> extends SleekNativeView<Fram
     protected W mWrappedView;
 
     protected boolean mLayoutWrapContent;
+
+    public SleekNativeWrappedView(
+            Context theContext,
+            boolean layoutWrapContent,
+            W theWrappedView,
+            SleekParam sleekParam
+    ) {
+        this(
+                theContext,
+                layoutWrapContent,
+                theWrappedView,
+                sleekParam.fixed,
+                sleekParam.touchable,
+                sleekParam.loadable,
+                sleekParam.priority
+        );
+    }
 
     public SleekNativeWrappedView(
             Context theContext,

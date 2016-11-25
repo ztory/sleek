@@ -32,6 +32,10 @@ public class SleekBaseComposite extends SleekBase implements SleekParent {
 
     private boolean dimensionIgnoreBounds = false, calcBoundsOnResize = false;
 
+    public SleekBaseComposite(SleekParam sleekParam) {
+        this(sleekParam.fixed, sleekParam.priority);
+    }
+
     public SleekBaseComposite(boolean isFixedPosition, int theTouchPrio) {
         super(isFixedPosition, true, true, theTouchPrio);
         fixedPosition = isFixedPosition;

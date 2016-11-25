@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvasInfo;
+import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.util.UtilSleekTouch;
 
 /**
@@ -19,6 +20,16 @@ import com.ztory.lib.sleek.util.UtilSleekTouch;
 public class SleekNativeEditText extends SleekNativeView<FrameLayout> {
 
     private EditText mEditText;
+
+    public SleekNativeEditText(Context theContext, SleekParam sleekParam) {
+        this(
+                theContext,
+                sleekParam.fixed,
+                sleekParam.touchable,
+                sleekParam.loadable,
+                sleekParam.priority
+        );
+    }
 
     public SleekNativeEditText(
             Context theContext,

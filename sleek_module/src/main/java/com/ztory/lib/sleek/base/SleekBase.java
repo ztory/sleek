@@ -124,6 +124,10 @@ public class SleekBase implements Sleek, ISleekDrawView {
 
     private boolean loadOnAdd = false, unloadOnRemove = false, execOnSizeChanged = false;
 
+    public SleekBase(SleekParam sleekParam) {
+        this(sleekParam.fixed, sleekParam.touchable, sleekParam.loadable, sleekParam.priority);
+    }
+
     public SleekBase(
             boolean isFixedPosition,
             boolean isTouchable,

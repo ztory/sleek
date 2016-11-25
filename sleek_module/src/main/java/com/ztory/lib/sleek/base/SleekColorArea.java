@@ -26,8 +26,19 @@ public class SleekColorArea extends SleekBase {
     protected boolean rounded;
     protected int roundRadius;
 
-    public SleekColorArea(int color, boolean isAntiAliased, boolean isLoadable, int theTouchPrio) {
-        this(color, isAntiAliased, false, false, isLoadable, theTouchPrio);
+//    public SleekColorArea(int color, boolean isAntiAliased, boolean isLoadable, int theTouchPrio) {
+//        this(color, isAntiAliased, false, false, isLoadable, theTouchPrio);
+//    }
+
+    public SleekColorArea(int color, boolean isAntiAliased, SleekParam sleekParam) {
+        this(
+                color,
+                isAntiAliased,
+                sleekParam.fixed,
+                sleekParam.touchable,
+                sleekParam.loadable,
+                sleekParam.priority
+        );
     }
 
     /**

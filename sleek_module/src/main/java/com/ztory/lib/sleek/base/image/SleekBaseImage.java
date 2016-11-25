@@ -14,6 +14,7 @@ import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvasInfo;
 import com.ztory.lib.sleek.animation.SAVfade;
 import com.ztory.lib.sleek.base.SleekBase;
+import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.contract.ISleekCallback;
 import com.ztory.lib.sleek.contract.ISleekData;
 import com.ztory.lib.sleek.contract.ISleekDrawView;
@@ -45,6 +46,16 @@ public class SleekBaseImage extends SleekBase {
 
     protected Executor mBitmapExecutor = null;
     protected Runnable mBitmapFetchRunnable;
+
+    public SleekBaseImage(int theRoundedRadius, SleekParam sleekParam) {
+        this(
+                theRoundedRadius,
+                sleekParam.fixed,
+                sleekParam.touchable,
+                sleekParam.loadable,
+                sleekParam.priority
+        );
+    }
 
     public SleekBaseImage(
             int theRoundedRadius,

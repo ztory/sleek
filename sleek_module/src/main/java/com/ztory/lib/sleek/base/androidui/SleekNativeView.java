@@ -10,6 +10,7 @@ import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvas;
 import com.ztory.lib.sleek.SleekCanvasInfo;
 import com.ztory.lib.sleek.SleekParent;
+import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.contract.ISleekParentDid;
 import com.ztory.lib.sleek.contract.ISleekAnimRun;
 import com.ztory.lib.sleek.base.SleekBase;
@@ -29,6 +30,17 @@ public class SleekNativeView<V extends View> extends SleekBase {
     protected float lastScrollerTop, lastScrollerLeft;
 
     protected boolean careAboutNativeMargins;
+
+    public SleekNativeView(V theAndroidView, boolean shouldCareAboutNativeMargins, SleekParam sleekParam) {
+        this(
+                theAndroidView,
+                sleekParam.fixed,
+                sleekParam.touchable,
+                sleekParam.loadable,
+                sleekParam.priority,
+                shouldCareAboutNativeMargins
+        );
+    }
 
     public SleekNativeView(
             V theAndroidView,

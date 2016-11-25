@@ -8,6 +8,7 @@ import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvasInfo;
 import com.ztory.lib.sleek.base.SleekBase;
 import com.ztory.lib.sleek.base.SleekColorArea;
+import com.ztory.lib.sleek.base.SleekParam;
 
 /**
  * Simple SleekBase subclass for displaying text, also has an optional background color.
@@ -46,13 +47,17 @@ public class SleekViewText extends SleekBase {
     protected int textAlignInt = ALIGN_LEFT;
     protected int textAlignVertInt = ALIGN_CENTER;
 
-    public SleekViewText() {
-        this(
-                SleekViewText.FIXED_POSITION_FALSE,
-                SleekViewText.TOUCHABLE_FALSE,
-                SleekViewText.LOADABLE_FALSE,
-                SleekViewText.TOUCH_PRIO_DEFAULT
-        );
+//    public SleekViewText() {
+//        this(
+//                SleekViewText.FIXED_POSITION_FALSE,
+//                SleekViewText.TOUCHABLE_FALSE,
+//                SleekViewText.LOADABLE_FALSE,
+//                SleekViewText.TOUCH_PRIO_DEFAULT
+//        );
+//    }
+
+    public SleekViewText(SleekParam sleekParam) {
+        this(sleekParam.fixed, sleekParam.touchable, sleekParam.loadable, sleekParam.priority);
     }
 
     public SleekViewText(
