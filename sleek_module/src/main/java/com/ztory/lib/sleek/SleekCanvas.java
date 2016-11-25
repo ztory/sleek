@@ -56,6 +56,8 @@ public class SleekCanvas extends RelativeLayout {
 
     protected AtomicInteger atomInt = new AtomicInteger(0);
 
+    protected AtomicInteger drawPrioAtomInt = new AtomicInteger(0);
+
     protected ISleekAnimRun animRun;
     protected boolean hasAnimRun = false;
 
@@ -115,6 +117,14 @@ public class SleekCanvas extends RelativeLayout {
         setFocusableInTouchMode(true);
 
         setAutoInvalidate(false);
+    }
+
+    public int getDrawPrioCurrent() {
+        return drawPrioAtomInt.get();
+    }
+
+    public int getDrawPrioNext() {
+        return drawPrioAtomInt.incrementAndGet();
     }
 
     public void setWindowDetachListener(Runnable theWindowDetachListener) {
