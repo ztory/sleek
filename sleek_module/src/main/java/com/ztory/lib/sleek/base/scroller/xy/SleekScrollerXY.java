@@ -22,6 +22,8 @@ import com.ztory.lib.sleek.util.UtilPx;
  */
 public class SleekScrollerXY implements SleekCanvasScroller {
 
+    protected boolean mAutoLoading = true;
+
     protected boolean mShouldScrollX, mShouldScrollY;
 
     protected long mFlingTouchDurationThreshold = 400;
@@ -176,6 +178,9 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                 if (shouldInvalidate) {
                     info.invalidate();
                 }
+                else if (!mTouchEventActive) {
+                    loadNonFixedSleekInstances();
+                }
 
                 return !shouldInvalidate;
             }
@@ -209,7 +214,13 @@ public class SleekScrollerXY implements SleekCanvasScroller {
 
     @Override
     public boolean isAutoLoading() {
-        return true;
+        return mAutoLoading;
+    }
+
+    protected void loadNonFixedSleekInstances() {
+        if (mAutoLoading) {
+            mSleekCanvas.loadAndUnloadSleekLists(false);
+        }
     }
 
     protected void movePosXY(float eventX, float eventY) {
@@ -315,6 +326,10 @@ public class SleekScrollerXY implements SleekCanvasScroller {
 
             case MotionEvent.ACTION_DOWN:
 
+                if (!mScroller.isFinished()) {
+                    loadNonFixedSleekInstances();
+                }
+
                 //mSleekCanvas.setScrollerAnimView(ISleekAnimView.NO_ANIMATION);
                 releaseEdgeEffects();
                 mScroller.forceFinished(true);
@@ -376,7 +391,12 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                     }
 
                     if (!didFling) {
-                        releaseEdgeEffects();
+                        if (isAnyEdgeEffectActive()) {
+                            releaseEdgeEffects();
+                        }
+                        else {
+                            loadNonFixedSleekInstances();
+                        }
                     }
 
                     mTouchEventHandled = true;
