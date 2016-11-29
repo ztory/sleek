@@ -159,7 +159,7 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                     }
                 }
 
-                if (!scrollerFlinging && isAnyEdgeEffectActive()) {
+                if (!scrollerFlinging && !mTouchEventActive && isAnyEdgeEffectActive()) {
                     releaseEdgeEffects();
                 }
 
