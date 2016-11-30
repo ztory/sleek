@@ -22,7 +22,7 @@ import com.ztory.lib.sleek.util.UtilPx;
  */
 public class SleekScrollerXY implements SleekCanvasScroller {
 
-    protected boolean mAutoLoading = true;
+    protected boolean mAutoLoading = true, mShouldLoadWhileScrolling = true;
 
     protected boolean mShouldScrollX, mShouldScrollY;
 
@@ -135,6 +135,7 @@ public class SleekScrollerXY implements SleekCanvasScroller {
         mSleekCanvas.setScrollerAnimView(new ISleekAnimView() {
 
             private boolean shouldInvalidate = false;
+            private int posTopAutoLoadCount = 0, posLeftAutoLoadCount = 0;
 
             @Override
             public void animTickStart(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
@@ -158,6 +159,58 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                         }
 
                         constrainPosXY();
+
+                        if (mAutoLoading && mShouldLoadWhileScrolling) {
+
+                            if (mShouldScrollX && mShouldScrollY) {
+
+                                float deltaPosTop = Math.abs(mTouchStartPosTop - mPosTop);
+                                float deltaPosLeft = Math.abs(mTouchStartPosLeft - mPosLeft);
+
+                                boolean shouldLoadViews = false;
+
+                                if (deltaPosLeft > mSleekCanvas.getWidthLoadPadding()) {
+                                    int loadPaddingTravelCount = (int) (deltaPosLeft / (float) mSleekCanvas.getWidthLoadPadding());
+                                    if (loadPaddingTravelCount > posLeftAutoLoadCount) {
+                                        posLeftAutoLoadCount = loadPaddingTravelCount;
+                                        shouldLoadViews = true;
+                                    }
+                                }
+
+                                if (deltaPosTop > mSleekCanvas.getHeightLoadPadding()) {
+                                    int loadPaddingTravelCount = (int) (deltaPosTop / (float) mSleekCanvas.getHeightLoadPadding());
+                                    if (loadPaddingTravelCount > posTopAutoLoadCount) {
+                                        posTopAutoLoadCount = loadPaddingTravelCount;
+                                        shouldLoadViews = true;
+                                    }
+                                }
+
+                                if (shouldLoadViews) {
+                                    loadNonFixedSleekInstances();
+                                }
+
+                            }
+                            else if (mShouldScrollX) {
+                                float deltaPosLeft = Math.abs(mTouchStartPosLeft - mPosLeft);
+                                if (deltaPosLeft > mSleekCanvas.getWidthLoadPadding()) {
+                                    int loadPaddingTravelCount = (int) (deltaPosLeft / (float) mSleekCanvas.getWidthLoadPadding());
+                                    if (loadPaddingTravelCount > posLeftAutoLoadCount) {
+                                        posLeftAutoLoadCount = loadPaddingTravelCount;
+                                        loadNonFixedSleekInstances();
+                                    }
+                                }
+                            }
+                            else if (mShouldScrollY) {
+                                float deltaPosTop = Math.abs(mTouchStartPosTop - mPosTop);
+                                if (deltaPosTop > mSleekCanvas.getHeightLoadPadding()) {
+                                    int loadPaddingTravelCount = (int) (deltaPosTop / (float) mSleekCanvas.getHeightLoadPadding());
+                                    if (loadPaddingTravelCount > posTopAutoLoadCount) {
+                                        posTopAutoLoadCount = loadPaddingTravelCount;
+                                        loadNonFixedSleekInstances();
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
