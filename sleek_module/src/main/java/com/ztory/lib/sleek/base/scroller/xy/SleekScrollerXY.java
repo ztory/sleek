@@ -111,6 +111,14 @@ public class SleekScrollerXY implements SleekCanvasScroller {
         );
     }
 
+    protected void setPosLeft(float posLeft) {
+        mPosLeft = (float) Math.floor(posLeft + 0.5f);
+    }
+
+    protected void setPosTop(float posTop) {
+        mPosTop = (float) Math.floor(posTop + 0.5f);
+    }
+
     protected void executeFling(float velocityX, float velocityY, SleekCanvasInfo info) {
 
         releaseEdgeEffects();
@@ -151,11 +159,11 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                     if (scrollerFlinging) {
 
                         if (mShouldScrollX) {
-                            mPosLeft = (float) (-mScroller.getCurrX());
+                            setPosLeft(-mScroller.getCurrX());
                         }
 
                         if (mShouldScrollY) {
-                            mPosTop = (float) (-mScroller.getCurrY());
+                            setPosTop(-mScroller.getCurrY());
                         }
 
                         constrainPosXY();
@@ -283,15 +291,15 @@ public class SleekScrollerXY implements SleekCanvasScroller {
         mTouchMoveTravelX = mShouldScrollX ? mTouchCurrX - mTouchMoveStartX : 0;
         mTouchMoveTravelY = mShouldScrollY ? mTouchCurrY - mTouchMoveStartY : 0;
 
-        mPosLeft = mTouchStartPosLeft + mTouchMoveTravelX;
-        mPosTop = mTouchStartPosTop + mTouchMoveTravelY;
+        setPosLeft(mTouchStartPosLeft + mTouchMoveTravelX);
+        setPosTop(mTouchStartPosTop + mTouchMoveTravelY);
     }
 
     protected void constrainPosXY() {
 
         if (mShouldScrollX) {
             if (mRightScrollEdge <= mCanvasWidth) {
-                mPosLeft = 0;
+                setPosLeft(0);
                 if (Math.abs(mTouchMoveTravelX) > mMoveDistanceThreshold) {
                     if (mTouchMoveTravelX > 0) {
                         mEdgeEffectLeft.onPull(
@@ -316,7 +324,7 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                 );
                 mEdgeEffectLeftActive = true;
 
-                mPosLeft = 0;
+                setPosLeft(0);
             }
             else if (mPosLeft < -mRightScrollEdge + mCanvasWidth) {
                 mEdgeEffectRight.onPull(
@@ -325,13 +333,13 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                 );
                 mEdgeEffectRightActive = true;
 
-                mPosLeft = -mRightScrollEdge + mCanvasWidth;
+                setPosLeft(-mRightScrollEdge + mCanvasWidth);
             }
         }
 
         if (mShouldScrollY) {
             if (mBottomScrollEdge <= mCanvasHeight) {
-                mPosTop = 0;
+                setPosTop(0);
                 if (Math.abs(mTouchMoveTravelY) > mMoveDistanceThreshold) {
                     if (mTouchMoveTravelY > 0) {
                         mEdgeEffectTop.onPull(
@@ -356,7 +364,7 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                 );
                 mEdgeEffectTopActive = true;
 
-                mPosTop = 0;
+                setPosTop(0);
             }
             else if (mPosTop < -mBottomScrollEdge + mCanvasHeight) {
                 mEdgeEffectBottom.onPull(
@@ -365,7 +373,7 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                 );
                 mEdgeEffectBottomActive = true;
 
-                mPosTop = -mBottomScrollEdge + mCanvasHeight;
+                setPosTop(-mBottomScrollEdge + mCanvasHeight);
             }
         }
     }
