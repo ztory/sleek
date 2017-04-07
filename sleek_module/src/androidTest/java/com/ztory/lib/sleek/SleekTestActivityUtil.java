@@ -1,7 +1,6 @@
 package com.ztory.lib.sleek;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.view.MotionEvent;
 
 import com.ztory.lib.sleek.animation.SAVpercent;
@@ -22,6 +21,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SleekTestActivityUtil {
 
+    //http://paletton.com/#uid=33q0u0koYPSdUVTjTSNuiMgHvBj
+    private static final int
+            COLOR_SLEEK_BLUE = 0xff38B0DE,
+            COLOR_SLEEK_ORANGE = 0xffFFA038,
+            COLOR_SLEEK_ORANGE_DARK = 0xffFF5B38,
+            COLOR_SLEEK_YELLOW = 0xffFFC638,
+            COLOR_SLEEK_PURPLE = 0xff4860E3,
+            COLOR_SLEEK_GREEN = 0xff33E776;
+
     public static void addUIframeRate(SleekCanvas sleekCanvas) {
         SleekFrameRate frameRate = new SleekFrameRate(0xff38B0DE);
         frameRate.getLayout()
@@ -33,8 +41,7 @@ public class SleekTestActivityUtil {
     }
 
     public static void addUIcolorAreaDraggable(SleekCanvas sleekCanvas) {
-        //http://paletton.com/#uid=33q0u0koYPSdUVTjTSNuiMgHvBj
-        final int offColor = 0xffFF5B38, onColor = 0xff38B0DE;
+        final int offColor = COLOR_SLEEK_ORANGE, onColor = COLOR_SLEEK_ORANGE_DARK;
         final SleekColorArea sleekColorArea = new SleekColorArea(
                 offColor,
                 SleekColorArea.ANTI_ALIASED_TRUE,
@@ -118,7 +125,7 @@ public class SleekTestActivityUtil {
 
     public static void addUIcolorAreaOnClickRandomTranslate(SleekCanvas sleekCanvas) {
         final SleekColorArea sleekColorArea = new SleekColorArea(
-                Color.CYAN,
+                COLOR_SLEEK_GREEN,
                 SleekColorArea.ANTI_ALIASED_TRUE,
                 SleekParam.DEFAULT_TOUCHABLE.newLoadable(false)
         );
@@ -133,13 +140,13 @@ public class SleekTestActivityUtil {
                 new Runnable() {
                     @Override
                     public void run() {
-                        sleekColorArea.setColor(Color.MAGENTA);
+                        sleekColorArea.setColor(COLOR_SLEEK_YELLOW);
                     }
                 },
                 new Runnable() {
                     @Override
                     public void run() {
-                        sleekColorArea.setColor(Color.CYAN);
+                        sleekColorArea.setColor(COLOR_SLEEK_GREEN);
                     }
                 },
                 new Runnable() {
