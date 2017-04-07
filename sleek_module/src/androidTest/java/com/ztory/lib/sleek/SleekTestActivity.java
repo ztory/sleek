@@ -29,6 +29,12 @@ public class SleekTestActivity {
 
     }
 
+    private static final void loadUIsetup1(SleekCanvas sleekCanvas) {
+        SleekTestActivityUtil.addUIframeRate(sleekCanvas);
+        SleekTestActivityUtil.addUIcolorAreaOnClickRandomTranslate(sleekCanvas);
+        SleekTestActivityUtil.addUIcolorAreaDraggable(sleekCanvas);
+    }
+
     @Test
     public void testGeneralUI() throws Exception {
 
@@ -36,9 +42,7 @@ public class SleekTestActivity {
             throw new IllegalStateException("mActivityRule.getActivity() == null");
         }
 
-        SleekCanvas sleekCanvas = mActivityRule.getActivity().getSleekCanvas();
-        SleekTestActivityUtil.addUIframeRate(sleekCanvas);
-        SleekTestActivityUtil.addUIcolorAreaOnClickRandomTranslate(sleekCanvas);
+        loadUIsetup1(mActivityRule.getActivity().getSleekCanvas());
 
         final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 
