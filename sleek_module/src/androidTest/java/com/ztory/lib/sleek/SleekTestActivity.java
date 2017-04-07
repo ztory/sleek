@@ -36,7 +36,9 @@ public class SleekTestActivity {
             throw new IllegalStateException("mActivityRule.getActivity() == null");
         }
 
-        SleekTestActivityUtil.addUIframeRate(mActivityRule.getActivity().getSleekCanvas());
+        SleekCanvas sleekCanvas = mActivityRule.getActivity().getSleekCanvas();
+        SleekTestActivityUtil.addUIframeRate(sleekCanvas);
+        SleekTestActivityUtil.addUIcolorAreaOnClickRandomTranslate(sleekCanvas);
 
         final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 
