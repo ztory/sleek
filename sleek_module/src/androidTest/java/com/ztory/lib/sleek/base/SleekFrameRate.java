@@ -17,7 +17,7 @@ public class SleekFrameRate extends SleekColorArea {
 
     private float fps, mediumFps = 0, totalFrames = 0, totalDraws = 0;
 
-    private Paint paint, labelPaint, bgPaint;
+    private Paint paint, labelPaint;
 
     public SleekFrameRate(int color) {
         super(color, true, true, false, false, SleekCanvas.STICKY_TOUCH_PRIO);
@@ -48,16 +48,6 @@ public class SleekFrameRate extends SleekColorArea {
         );
         labelPaint.setTextSize(20.0f);
         labelPaint.setTextAlign(Paint.Align.LEFT);
-
-        bgPaint = new Paint();
-        bgPaint.setColor(
-                Color.argb(
-                        255,
-                        0,
-                        0,
-                        0
-                )
-        );
     }
 
     private void updateMediumFps() {
@@ -78,25 +68,17 @@ public class SleekFrameRate extends SleekColorArea {
 
         updateMediumFps();
 
-//        canvas.drawRect(
-//                sleekX,
-//                sleekY,
-//                200,
-//                info.height - 25,
-//                bgPaint
-//        );
-
         canvas.drawText(
                 "fps:",
                 sleekX + 20,
-                sleekY + (sleekH / 2.0f),
+                sleekY + (sleekH / 2.0f) - 5,
                 labelPaint
         );
 
         canvas.drawText(
-                "" + fps,
+                "" + (int) fps,
                 sleekX + sleekW - 20,
-                sleekY + (sleekH / 2.0f),
+                sleekY + (sleekH / 2.0f) - 5,
                 paint
         );
 
@@ -108,7 +90,7 @@ public class SleekFrameRate extends SleekColorArea {
         );
 
         canvas.drawText(
-                "" + mediumFps,
+                "" + (int) mediumFps,
                 sleekX + sleekW - 20,
                 sleekY + (sleekH / 2.0f) + 20,
                 paint
