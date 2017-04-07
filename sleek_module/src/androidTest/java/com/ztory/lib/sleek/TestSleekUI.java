@@ -39,7 +39,7 @@ public class TestSleekUI {
         UtilTestSleekUI.addUIcolorAreaAtScreenPercentPos(sleekCanvas, 2.0f, 2.0f);
         UtilTestSleekUI.addUIcolorAreaAtScreenPercentPos(sleekCanvas, 0.98f, 0.98f);
         UtilTestSleekUI.addUIcolorAreaAtScreenPercentPos(sleekCanvas, 1.3f, 1.3f);
-        sleekCanvas.reloadScrollEdges();
+        UtilTestSleekUI.reloadUI(sleekCanvas);
     }
 
     @Test

@@ -30,6 +30,11 @@ public class UtilTestSleekUI {
             COLOR_SLEEK_PURPLE = 0xff4860E3,
             COLOR_SLEEK_GREEN = 0xff33E776;
 
+    public static void reloadUI(SleekCanvas sleekCanvas) {
+        sleekCanvas.loadAndUnloadSleekLists(true);
+        sleekCanvas.reloadScrollEdges();
+    }
+
     public static void addUIframeRate(SleekCanvas sleekCanvas) {
         SleekFrameRate frameRate = new SleekFrameRate(0xff38B0DE);
         frameRate.getLayout()
