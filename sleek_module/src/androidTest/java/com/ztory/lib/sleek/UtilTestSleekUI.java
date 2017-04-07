@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by jonruna on 2017-04-06.
  */
-public class SleekTestActivityUtil {
+public class UtilTestSleekUI {
 
     //http://paletton.com/#uid=33q0u0koYPSdUVTjTSNuiMgHvBj
     private static final int

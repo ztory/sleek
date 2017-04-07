@@ -14,7 +14,7 @@ import java.util.concurrent.CountDownLatch;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class SleekTestActivity {
+public class TestSleekUI {
 
     @Rule
     public ActivityTestRule<SleekActivity> mActivityRule = new ActivityTestRule<>(SleekActivity.class, true, true);
@@ -30,9 +30,9 @@ public class SleekTestActivity {
     }
 
     private static final void loadUIsetup1(SleekCanvas sleekCanvas) {
-        SleekTestActivityUtil.addUIframeRate(sleekCanvas);
-        SleekTestActivityUtil.addUIcolorAreaOnClickRandomTranslate(sleekCanvas);
-        SleekTestActivityUtil.addUIcolorAreaDraggable(sleekCanvas);
+        UtilTestSleekUI.addUIframeRate(sleekCanvas);
+        UtilTestSleekUI.addUIcolorAreaOnClickRandomTranslate(sleekCanvas);
+        UtilTestSleekUI.addUIcolorAreaDraggable(sleekCanvas);
     }
 
     @Test
