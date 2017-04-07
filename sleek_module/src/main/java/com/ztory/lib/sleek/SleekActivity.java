@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Window;
 
-import com.ztory.lib.sleek.base.scroller.SleekScrollerBase;
+import com.ztory.lib.sleek.base.scroller.xy.SleekScrollerXY;
 
 /**
  * Created by jonruna on 2017-04-06.
@@ -23,7 +23,8 @@ public class SleekActivity extends Activity {
 
         sleekCanvas = new SleekCanvas(this);
         sleekCanvas.setBackgroundColor(0xffffffff);
-        sleekCanvas.setSleekScroller(new SleekScrollerBase(true));
+        //sleekCanvas.setSleekScroller(new SleekScrollerBase(true));
+        sleekCanvas.setSleekScroller(new SleekScrollerXY(true, true));
         setContentView(sleekCanvas);
     }
 

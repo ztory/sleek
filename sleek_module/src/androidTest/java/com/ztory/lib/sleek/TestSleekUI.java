@@ -29,10 +29,17 @@ public class TestSleekUI {
 
     }
 
-    private static final void loadUIsetup1(SleekCanvas sleekCanvas) {
+    private static final void loadUIscrollXYareas(SleekCanvas sleekCanvas) {
         UtilTestSleekUI.addUIframeRate(sleekCanvas);
         UtilTestSleekUI.addUIcolorAreaOnClickRandomTranslate(sleekCanvas);
         UtilTestSleekUI.addUIcolorAreaDraggable(sleekCanvas);
+        UtilTestSleekUI.addUIcolorAreaAtScreenPercentPos(sleekCanvas, 0.95f, 0);
+        UtilTestSleekUI.addUIcolorAreaAtScreenPercentPos(sleekCanvas, 0.0f, 2.0f);
+        UtilTestSleekUI.addUIcolorAreaAtScreenPercentPos(sleekCanvas, 2.0f, 0.0f);
+        UtilTestSleekUI.addUIcolorAreaAtScreenPercentPos(sleekCanvas, 2.0f, 2.0f);
+        UtilTestSleekUI.addUIcolorAreaAtScreenPercentPos(sleekCanvas, 0.98f, 0.98f);
+        UtilTestSleekUI.addUIcolorAreaAtScreenPercentPos(sleekCanvas, 1.3f, 1.3f);
+        sleekCanvas.reloadScrollEdges();
     }
 
     @Test
@@ -42,7 +49,7 @@ public class TestSleekUI {
             throw new IllegalStateException("mActivityRule.getActivity() == null");
         }
 
-        loadUIsetup1(mActivityRule.getActivity().getSleekCanvas());
+        loadUIscrollXYareas(mActivityRule.getActivity().getSleekCanvas());
 
         final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 

@@ -40,12 +40,34 @@ public class UtilTestSleekUI {
         sleekCanvas.addSleek(frameRate);
     }
 
+    public static void addUIcolorAreaAtScreenPercentPos(
+            SleekCanvas sleekCanvas,
+            float screenPercentX,
+            float screenPercentY
+    ) {
+        final SleekColorArea sleekColorArea = new SleekColorArea(
+                COLOR_SLEEK_BLUE,
+                SleekColorArea.ANTI_ALIASED_TRUE,
+                SleekParam.DEFAULT.newLoadable(false)
+        );
+        int pixelsFromDip = UtilPx.getPixels(sleekCanvas.getContext(), 8);// 8 DIP
+        sleekColorArea.setRounded(true, pixelsFromDip);
+        sleekColorArea.getLayout()
+                .x(SL.X.PERCENT_CANVAS, 0, null, screenPercentX)
+                .y(SL.Y.PERCENT_CANVAS, 0, null, screenPercentY)
+                .w(SL.W.ABSOLUTE, 200, null)
+                .h(SL.H.ABSOLUTE, 200, null);
+        sleekCanvas.addSleek(sleekColorArea);
+    }
+
     public static void addUIcolorAreaDraggable(SleekCanvas sleekCanvas) {
         final int offColor = COLOR_SLEEK_ORANGE, onColor = COLOR_SLEEK_ORANGE_DARK;
         final SleekColorArea sleekColorArea = new SleekColorArea(
                 offColor,
                 SleekColorArea.ANTI_ALIASED_TRUE,
-                SleekParam.DEFAULT_TOUCHABLE.newLoadable(false)
+                SleekParam.DEFAULT_TOUCHABLE
+                        .newLoadable(false)
+                        .newPriority(SleekCanvas.STICKY_TOUCH_PRIO)
         );
         sleekColorArea.getLayout()
                 .x(SL.X.PERCENT_CANVAS, 0, null, 0.6f)
@@ -53,6 +75,7 @@ public class UtilTestSleekUI {
                 .w(SL.W.ABSOLUTE, 300, null)
                 .h(SL.H.ABSOLUTE, 300, null);
         int pixelsFromDip = UtilPx.getPixels(sleekCanvas.getContext(), 8);// 8 DIP converted to pixels
+        sleekColorArea.setRounded(true, pixelsFromDip);
         final Runnable animateToOffColor = new Runnable() {
             @Override
             public void run() {
@@ -71,7 +94,6 @@ public class UtilTestSleekUI {
         };
         final AtomicInteger startDragPosX = new AtomicInteger();
         final AtomicInteger startDragPosY = new AtomicInteger();
-        sleekColorArea.setRounded(true, pixelsFromDip);
         sleekColorArea.getTouchHandler().setCheckWantsTouch(true);
         sleekColorArea.getTouchHandler().setTouchPointerDownRun(SleekTouchHandler.TOUCH_RUN_RETURN_TRUE);
         sleekColorArea.getTouchHandler().setTouchPointerUpRun(SleekTouchHandler.TOUCH_RUN_RETURN_TRUE);
