@@ -21,7 +21,7 @@ public class SleekFrameRate extends SleekColorArea {
 
     public SleekFrameRate(int color) {
         super(color, true, true, false, false, SleekCanvas.STICKY_TOUCH_PRIO);
-        setRounded(true, 8);
+        setRounded(8);
 
         lastTs = System.currentTimeMillis();
 

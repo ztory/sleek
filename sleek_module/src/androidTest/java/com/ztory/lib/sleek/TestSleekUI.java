@@ -4,6 +4,8 @@ import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.ztory.lib.sleek.base.element.css.CSSblock;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -15,6 +17,31 @@ import java.util.concurrent.CountDownLatch;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class TestSleekUI {
+
+    /*
+    {
+        background: #d8d8d8;
+        color: #666;
+        border-radius: 22px;
+        margin: 0 0 8px 0;
+        font-size: 10px;
+        width: 46px;
+        height: 46px;
+        line-height: 46px;
+        text-align: center;
+    }
+    */
+    private static final String CSS_STRING_1 = "{\n" +
+                                               "        background: #ff0000;\n" +
+                                               "        color: #666;\n" +
+                                               "        border-radius: 22px;\n" +
+                                               "        margin: 0 0 8px 0;\n" +
+                                               "        font-size: 10px;\n" +
+                                               "        width: 46px;\n" +
+                                               "        height: 46px;\n" +
+                                               "        line-height: 46px;\n" +
+                                               "        text-align: center;\n" +
+                                               "    }";
 
     @Rule
     public ActivityTestRule<SleekActivity> mActivityRule = new ActivityTestRule<>(SleekActivity.class, true, true);
@@ -42,6 +69,12 @@ public class TestSleekUI {
         UtilTestSleekUI.reloadUI(sleekCanvas);
     }
 
+    private static final void loadUIscrollXYbasicSleekElements(SleekCanvas sleekCanvas) {
+        UtilTestSleekUI.addUIframeRate(sleekCanvas);
+        UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas, new CSSblock(CSS_STRING_1));
+        UtilTestSleekUI.reloadUI(sleekCanvas);
+    }
+
     @Test
     public void testGeneralUI() throws Exception {
 
@@ -49,7 +82,8 @@ public class TestSleekUI {
             throw new IllegalStateException("mActivityRule.getActivity() == null");
         }
 
-        loadUIscrollXYareas(mActivityRule.getActivity().getSleekCanvas());
+        //loadUIscrollXYareas(mActivityRule.getActivity().getSleekCanvas());
+        loadUIscrollXYbasicSleekElements(mActivityRule.getActivity().getSleekCanvas());
 
         final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 

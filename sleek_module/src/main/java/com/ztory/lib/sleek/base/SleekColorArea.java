@@ -71,8 +71,14 @@ public class SleekColorArea extends SleekBase {
         }
     }
 
+    @Deprecated
     public void setRounded(boolean theRounded, int theRoundRadius) {
         rounded = theRounded;
+        roundRadius = theRoundRadius;
+    }
+
+    public void setRounded(int theRoundRadius) {
+        rounded = theRoundRadius > 0;
         roundRadius = theRoundRadius;
     }
 
@@ -82,8 +88,14 @@ public class SleekColorArea extends SleekBase {
 
     @Override
     public void drawView(Sleek view, Canvas canvas, SleekCanvasInfo info) {
-        if (rounded) canvas.drawRoundRect(bounds, roundRadius, roundRadius, paint);
-        else canvas.drawRect(bounds, paint);
+        if (paint.getColor() != COLOR_TRANSPARENT) {
+            if (rounded) {
+                canvas.drawRoundRect(bounds, roundRadius, roundRadius, paint);
+            }
+            else {
+                canvas.drawRect(bounds, paint);
+            }
+        }
     }
 
     @Override

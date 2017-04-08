@@ -8,6 +8,8 @@ import com.ztory.lib.sleek.animation.SAVtransXY;
 import com.ztory.lib.sleek.base.SleekColorArea;
 import com.ztory.lib.sleek.base.SleekFrameRate;
 import com.ztory.lib.sleek.base.SleekParam;
+import com.ztory.lib.sleek.base.element.SleekElement;
+import com.ztory.lib.sleek.base.element.css.CSSblock;
 import com.ztory.lib.sleek.contract.ISleekDrawView;
 import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.touch.ISleekTouchRun;
@@ -45,6 +47,16 @@ public class UtilTestSleekUI {
         sleekCanvas.addSleek(frameRate);
     }
 
+    public static void addUIbasicSleekElement(
+            SleekCanvas sleekCanvas,
+            CSSblock cssBlock
+    ) {
+        SleekElement sleekElement = new SleekElement(SleekParam.DEFAULT_TOUCHABLE);
+        sleekElement.addCSSblock(cssBlock);
+        sleekElement.setSleekBounds(100, 200, 300, 400);
+        sleekCanvas.addSleek(sleekElement);
+    }
+
     public static void addUIcolorAreaAtScreenPercentPos(
             SleekCanvas sleekCanvas,
             float screenPercentX,
@@ -56,7 +68,7 @@ public class UtilTestSleekUI {
                 SleekParam.DEFAULT.newLoadable(false)
         );
         int pixelsFromDip = UtilPx.getPixels(sleekCanvas.getContext(), 8);// 8 DIP
-        sleekColorArea.setRounded(true, pixelsFromDip);
+        sleekColorArea.setRounded(pixelsFromDip);
         sleekColorArea.getLayout()
                 .x(SL.X.PERCENT_CANVAS, 0, null, screenPercentX)
                 .y(SL.Y.PERCENT_CANVAS, 0, null, screenPercentY)
@@ -80,7 +92,7 @@ public class UtilTestSleekUI {
                 .w(SL.W.ABSOLUTE, 300, null)
                 .h(SL.H.ABSOLUTE, 300, null);
         int pixelsFromDip = UtilPx.getPixels(sleekCanvas.getContext(), 8);// 8 DIP converted to pixels
-        sleekColorArea.setRounded(true, pixelsFromDip);
+        sleekColorArea.setRounded(pixelsFromDip);
         final Runnable animateToOffColor = new Runnable() {
             @Override
             public void run() {
@@ -162,7 +174,7 @@ public class UtilTestSleekUI {
                 .w(SL.W.ABSOLUTE, 400, null)
                 .h(SL.H.ABSOLUTE, 400, null);
         int pixelsFromDip = UtilPx.getPixels(sleekCanvas.getContext(), 8);// 8 DIP converted to pixels
-        sleekColorArea.setRounded(true, pixelsFromDip);
+        sleekColorArea.setRounded(pixelsFromDip);
         sleekColorArea.getTouchHandler().setClickAction(
                 new Runnable() {
                     @Override
