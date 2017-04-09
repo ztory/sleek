@@ -25,7 +25,7 @@ public class SleekElement extends SleekBaseComposite {
     protected boolean elementCSSneedsUpdate = false;
 
     protected final CSSblock elementCSS = new CSSblock(12);
-    protected long lastTsElementCSS;
+    protected long elementCSSmodifiedTs;
 
     protected String elementString = null;
 
@@ -53,20 +53,19 @@ public class SleekElement extends SleekBaseComposite {
             }
         }
 
-        // No need to apply CSS properties if there are none
-        if (elementCSS.size() == 0) {
-            return;
-        }
-
         // Apply new CSS if state in elementCSS has changed
-        if (lastTsElementCSS != elementCSS.getModifiedTimestamp()) {
-            lastTsElementCSS = elementCSS.getModifiedTimestamp();
-
+        if (elementCSSmodifiedTs != elementCSS.getModifiedTimestamp()) {
+            elementCSSmodifiedTs = elementCSS.getModifiedTimestamp();
             applyCSS();
         }
     }
 
     public void applyCSS() {
+
+        // No need to apply CSS properties if there are none
+        if (elementCSS.size() == 0) {
+            return;
+        }
 
         Integer backgroundColor = elementCSS.getBackgroundColor();
         if (backgroundColor != null) {
