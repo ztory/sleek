@@ -116,6 +116,20 @@ public class SleekElement extends SleekBaseComposite {
             }
         }
 
+        String verticalAlign = elementCSS.getVerticalAlign();
+        if (verticalAlign != null) {
+            createText();
+            if (verticalAlign.equals("middle")) {
+                elementText.setTextAlignVertInt(SleekViewText.ALIGN_CENTER);
+            }
+            else if (verticalAlign.equals("bottom")) {
+                elementText.setTextAlignVertInt(SleekViewText.ALIGN_BOTTOM);
+            }
+            else if (verticalAlign.equals("top")) {
+                elementText.setTextAlignVertInt(SleekViewText.ALIGN_TOP);
+            }
+        }
+
         if (elementString != null) {
             createText();
             elementText.setTextString(elementString);

@@ -13,7 +13,8 @@ public class CSS {
                 COLOR = "color",
                 FONT_SIZE = "font-size",
                 LINE_HEIGHT = "line-height",
-                TEXT_ALIGN = "text-align";
+                TEXT_ALIGN = "text-align",
+                VERTICAL_ALIGN = "vertical-align";
     }
 
     public static final class Unit {

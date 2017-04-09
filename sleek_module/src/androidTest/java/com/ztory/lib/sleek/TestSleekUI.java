@@ -44,6 +44,7 @@ public class TestSleekUI {
                            "    font-size: 16px;\n" +
                            "    line-height: 30px;\n" +
                            "    text-align: center;\n" +
+                           "    vertical-align: center;\n" +
                            "}";
 
     @Rule

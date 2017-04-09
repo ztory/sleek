@@ -152,6 +152,10 @@ public class CSSblock extends HashMap<String, String> {
         return Mapd.get(this, CSS.Property.TEXT_ALIGN, String.class);
     }
 
+    public String getVerticalAlign() {
+        return Mapd.get(this, CSS.Property.VERTICAL_ALIGN, String.class);
+    }
+
     @Override
     public void clear() {
         super.clear();
