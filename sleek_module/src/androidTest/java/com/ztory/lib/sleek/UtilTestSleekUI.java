@@ -9,7 +9,7 @@ import com.ztory.lib.sleek.base.SleekColorArea;
 import com.ztory.lib.sleek.base.SleekFrameRate;
 import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.base.element.SleekElement;
-import com.ztory.lib.sleek.base.element.css.CSSblock;
+import com.ztory.lib.sleek.base.element.css.CSSblockBase;
 import com.ztory.lib.sleek.contract.ISleekDrawView;
 import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.touch.ISleekTouchRun;
@@ -50,7 +50,7 @@ public class UtilTestSleekUI {
     public static void addUIbasicSleekElement(
             SleekCanvas sleekCanvas,
             String elementString,
-            CSSblock cssBlock,
+            CSSblockBase cssBlock,
             float screenPercentX,
             float screenPercentY,
             int absoluteWidth,

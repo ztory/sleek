@@ -1,6 +1,6 @@
 package com.ztory.lib.sleek;
 
-import com.ztory.lib.sleek.base.element.css.CSSblock;
+import com.ztory.lib.sleek.base.element.css.CSSblockBase;
 import com.ztory.lib.sleek.mapd.Mapd;
 
 import junit.framework.TestCase;
@@ -30,7 +30,7 @@ public class SleekTest extends TestCase {
     }
 
     public void testCSSblockParseCSSstring() {
-        CSSblock cssBlock = new CSSblock(CSS_STRING_1);
+        CSSblockBase cssBlock = new CSSblockBase(CSS_STRING_1);
         //assertEquals(0xffd8d8d8, cssBlock.getBackgroundColor().intValue());
         assertEquals("#d8d8d8", Mapd.get(cssBlock, "background", String.class));
         assertEquals(22, cssBlock.getBorderRadius().intValue());

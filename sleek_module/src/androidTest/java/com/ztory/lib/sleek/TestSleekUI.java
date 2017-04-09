@@ -4,7 +4,7 @@ import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.ztory.lib.sleek.base.element.css.CSSblock;
+import com.ztory.lib.sleek.base.element.css.CSSblockBase;
 import com.ztory.lib.sleek.util.UtilPx;
 
 import org.junit.AfterClass;
@@ -78,7 +78,7 @@ public class TestSleekUI {
         UtilTestSleekUI.addUIbasicSleekElement(
                 sleekCanvas,
                 null,
-                new CSSblock(CSS_STRING_1),
+                new CSSblockBase(CSS_STRING_1),
                 0.1f,
                 0.1f,
                 160,
@@ -87,7 +87,7 @@ public class TestSleekUI {
         UtilTestSleekUI.addUIbasicSleekElement(
                 sleekCanvas,
                 "Hej!\nDetta är en ny rad.\nOch en till rad?!\n+1\n+2",
-                new CSSblock(CSS_STRING_2),
+                new CSSblockBase(CSS_STRING_2),
                 0.4f,
                 0.1f,
                 600,

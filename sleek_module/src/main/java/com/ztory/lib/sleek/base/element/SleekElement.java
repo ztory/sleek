@@ -8,6 +8,7 @@ import com.ztory.lib.sleek.base.SleekBaseComposite;
 import com.ztory.lib.sleek.base.SleekColorArea;
 import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.base.element.css.CSSblock;
+import com.ztory.lib.sleek.base.element.css.CSSblockBase;
 import com.ztory.lib.sleek.base.text.SleekViewText;
 import com.ztory.lib.sleek.util.UtilPx;
 
@@ -24,7 +25,7 @@ public class SleekElement extends SleekBaseComposite {
     /** If CSS is updated at runtime, be sure to set this to true. */
     protected boolean elementCSSneedsUpdate = false;
 
-    protected final CSSblock elementCSS = new CSSblock(12);
+    protected final CSSblock elementCSS = new CSSblockBase(12);
     protected long elementCSSmodifiedTs;
 
     protected String elementString = null;
