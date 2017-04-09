@@ -148,6 +148,10 @@ public class CSSblock extends HashMap<String, String> {
         return null;
     }
 
+    public String getTextAlign() {
+        return Mapd.get(this, CSS.Property.TEXT_ALIGN, String.class);
+    }
+
     @Override
     public void clear() {
         super.clear();

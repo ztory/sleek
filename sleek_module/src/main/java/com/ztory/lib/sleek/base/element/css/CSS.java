@@ -12,7 +12,8 @@ public class CSS {
                 BORDER_RADIUS = "border-radius",
                 COLOR = "color",
                 FONT_SIZE = "font-size",
-                LINE_HEIGHT = "line-height";
+                LINE_HEIGHT = "line-height",
+                TEXT_ALIGN = "text-align";
     }
 
     public static final class Unit {

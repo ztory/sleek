@@ -102,6 +102,20 @@ public class SleekElement extends SleekBaseComposite {
             elementText.setTextLineHeight(UtilPx.getPixels(mSlkCanvas.getContext(), lineHeight));
         }
 
+        String textAlign = elementCSS.getTextAlign();
+        if (lineHeight != null) {
+            createText();
+            if (textAlign.equals("center")) {
+                elementText.setTextAlignInt(SleekViewText.ALIGN_CENTER);
+            }
+            else if (textAlign.equals("right")) {
+                elementText.setTextAlignInt(SleekViewText.ALIGN_RIGHT);
+            }
+            else if (textAlign.equals("left")) {
+                elementText.setTextAlignInt(SleekViewText.ALIGN_LEFT);
+            }
+        }
+
         if (elementString != null) {
             createText();
             elementText.setTextString(elementString);
