@@ -8,6 +8,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Supported CSS properties:
+{
+    background: #d8d8d8;
+    border-radius: 22px;
+    color: #666;
+    font-size: 10px;
+    line-height: 46px;
+    text-align: center;
+    vertical-align: center;
+}
  * Created by jonruna on 2017-04-07.
  */
 public class CSSblock extends HashMap<String, String> {
@@ -24,20 +34,6 @@ public class CSSblock extends HashMap<String, String> {
 
     public CSSblock(String CSSblockString) {
         super(12);
-
-        /*
-        {
-            background: #d8d8d8;
-            color: #666;
-            border-radius: 22px;
-            margin: 0 0 8px 0;
-            font-size: 10px;
-            width: 46px;
-            height: 46px;
-            line-height: 46px;
-            text-align: center;
-        }
-        */
 
         // Remove first and last char brackets {}
         String parseString = CSSblockString.substring(1, CSSblockString.length() - 1);
