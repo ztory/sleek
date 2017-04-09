@@ -3,6 +3,7 @@ package com.ztory.lib.sleek.base.element.css;
 import android.graphics.Color;
 
 import com.ztory.lib.sleek.mapd.Mapd;
+import com.ztory.lib.sleek.util.UtilPx;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -106,7 +107,7 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
                 int indexOfPX = borderRadiusString.indexOf(CSS.Unit.PX);
                 if (indexOfPX > -1) {
                     String valueString = borderRadiusString.substring(0, indexOfPX);
-                    return Integer.parseInt(valueString);
+                    return UtilPx.getPixels(Integer.parseInt(valueString));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -123,7 +124,7 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
                 int indexOfPX = fontSizeString.indexOf(CSS.Unit.PX);
                 if (indexOfPX > -1) {
                     String valueString = fontSizeString.substring(0, indexOfPX);
-                    return Integer.parseInt(valueString);
+                    return UtilPx.getPixels(Integer.parseInt(valueString));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -140,7 +141,7 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
                 int indexOfPX = lineHeightString.indexOf(CSS.Unit.PX);
                 if (indexOfPX > -1) {
                     String valueString = lineHeightString.substring(0, indexOfPX);
-                    return Integer.parseInt(valueString);
+                    return UtilPx.getPixels(Integer.parseInt(valueString));
                 }
             } catch (Exception e) {
                 e.printStackTrace();

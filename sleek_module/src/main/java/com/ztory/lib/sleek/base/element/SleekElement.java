@@ -10,7 +10,6 @@ import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.base.element.css.CSSblock;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
 import com.ztory.lib.sleek.base.text.SleekViewText;
-import com.ztory.lib.sleek.util.UtilPx;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +81,7 @@ public class SleekElement extends SleekBaseComposite {
         if (borderRadius != null) {
             createBackground();
             elementBackground.getPaint().setAntiAlias(true);
-            elementBackground.setRounded(UtilPx.getPixels(mSlkCanvas.getContext(), borderRadius));
+            elementBackground.setRounded(borderRadius);
         }
 
         Integer color = elementCSS.getColor();
@@ -94,13 +93,13 @@ public class SleekElement extends SleekBaseComposite {
         Integer fontSize = elementCSS.getFontSize();
         if (fontSize != null) {
             createText();
-            elementText.setTextSize(UtilPx.getPixels(mSlkCanvas.getContext(), fontSize));
+            elementText.setTextSize(fontSize);
         }
 
         Integer lineHeight = elementCSS.getLineHeight();
         if (lineHeight != null) {
             createText();
-            elementText.setTextLineHeight(UtilPx.getPixels(mSlkCanvas.getContext(), lineHeight));
+            elementText.setTextLineHeight(lineHeight);
         }
 
         String textAlign = elementCSS.getTextAlign();

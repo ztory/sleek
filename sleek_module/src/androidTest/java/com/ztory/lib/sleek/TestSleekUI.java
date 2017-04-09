@@ -5,6 +5,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
+import com.ztory.lib.sleek.mapd.Mapd;
 import com.ztory.lib.sleek.util.UtilPx;
 
 import org.junit.AfterClass;
@@ -14,6 +15,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.concurrent.CountDownLatch;
+
+import static junit.framework.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -39,7 +42,7 @@ public class TestSleekUI {
                            "}",
             CSS_STRING_2 = "{\n" +
                            "    background: #33E776;\n" +
-                           "    border-radius: 22px;\n" +
+                           "    border-radius: 8px;\n" +
                            "    color: #4860E3;\n" +
                            "    font-size: 16px;\n" +
                            "    line-height: 30px;\n" +
@@ -97,11 +100,29 @@ public class TestSleekUI {
     }
 
     @Test
+    public void testCSSblock() {
+
+        UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+
+        CSSblockBase cssBlock = new CSSblockBase(CSS_STRING_2);
+        assertEquals(0xff33E776, cssBlock.getBackgroundColor().intValue());
+        assertEquals("#33E776", Mapd.get(cssBlock, "background", String.class));
+        assertEquals(UtilPx.getPixels(8), cssBlock.getBorderRadius().intValue());
+        assertEquals(0xff4860E3, cssBlock.getColor().intValue());
+        assertEquals(UtilPx.getPixels(16), cssBlock.getFontSize().intValue());
+        assertEquals(UtilPx.getPixels(30), cssBlock.getLineHeight().intValue());
+        assertEquals("center", cssBlock.getTextAlign());
+        assertEquals("center", cssBlock.getVerticalAlign());
+    }
+
+    @Test
     public void testGeneralUI() throws Exception {
 
         if (mActivityRule.getActivity() == null) {
             throw new IllegalStateException("mActivityRule.getActivity() == null");
         }
+
+        UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 
         //loadUIscrollXYareas(mActivityRule.getActivity().getSleekCanvas());
         loadUIscrollXYbasicSleekElements(mActivityRule.getActivity().getSleekCanvas());
