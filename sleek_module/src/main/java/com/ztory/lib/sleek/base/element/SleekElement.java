@@ -75,6 +75,8 @@ public class SleekElement extends SleekBaseComposite {
             elementBackground.getPaint().setColor(backgroundColor);
         }
 
+        //TODO maybe CSSblock should convert from DIP into pixels instead of SleekElement class?
+
         Integer borderRadius = elementCSS.getBorderRadius();
         if (borderRadius != null) {
             createBackground();
@@ -86,6 +88,24 @@ public class SleekElement extends SleekBaseComposite {
         if (color != null) {
             createText();
             elementText.setTextColor(color);
+        }
+
+        Integer fontSize = elementCSS.getFontSize();
+        if (fontSize != null) {
+            createText();
+            elementText.setTextSize(UtilPx.getPixels(mSlkCanvas.getContext(), fontSize));
+        }
+
+        Integer lineHeight = elementCSS.getLineHeight();
+        if (lineHeight != null) {
+            createText();
+            elementText.setTextLineHeight(UtilPx.getPixels(mSlkCanvas.getContext(), lineHeight));
+        }
+
+        if (elementString != null) {
+            createText();
+            elementText.setTextString(elementString);
+            elementText.initText();
         }
     }
 
@@ -123,7 +143,7 @@ public class SleekElement extends SleekBaseComposite {
                 SleekColorArea.ANTI_ALIASED_FALSE,
                 SleekParam.DEFAULT
         );
-        elementBackground.setSleekBounds(sleekX, sleekY, sleekW, sleekH);
+        elementBackground.setSleekBounds(0, 0, sleekW, sleekH);
     }
 
     public SleekColorArea getBackground() {
@@ -135,7 +155,9 @@ public class SleekElement extends SleekBaseComposite {
             return;
         }
         elementText = new SleekViewText(SleekParam.DEFAULT);
-        elementText.setSleekBounds(sleekX, sleekY, sleekW, sleekH);
+        elementText.setSleekBounds(0, 0, sleekW, sleekH);
+        //elementText.setBackgroundColor(0x66000000);
+        //elementText.setTextAlignVertInt(SleekViewText.ALIGN_TOP);
     }
 
     public SleekViewText getText() {

@@ -5,6 +5,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.ztory.lib.sleek.base.element.css.CSSblock;
+import com.ztory.lib.sleek.util.UtilPx;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -34,24 +35,14 @@ public class TestSleekUI {
     private static final String
             CSS_STRING_1 = "{\n" +
                            "    background: #38B0DE;\n" +
-                           "    color: #666;\n" +
                            "    border-radius: 22px;\n" +
-                           "    margin: 0 0 8px 0;\n" +
-                           "    font-size: 10px;\n" +
-                           "    width: 46px;\n" +
-                           "    height: 46px;\n" +
-                           "    line-height: 46px;\n" +
-                           "    text-align: center;\n" +
                            "}",
             CSS_STRING_2 = "{\n" +
                            "    background: #33E776;\n" +
-                           "    color: #666;\n" +
                            "    border-radius: 22px;\n" +
-                           "    margin: 0 0 8px 0;\n" +
-                           "    font-size: 10px;\n" +
-                           "    width: 46px;\n" +
-                           "    height: 46px;\n" +
-                           "    line-height: 46px;\n" +
+                           "    color: #4860E3;\n" +
+                           "    font-size: 16px;\n" +
+                           "    line-height: 30px;\n" +
                            "    text-align: center;\n" +
                            "}";
 
@@ -83,8 +74,24 @@ public class TestSleekUI {
 
     private static final void loadUIscrollXYbasicSleekElements(SleekCanvas sleekCanvas) {
         UtilTestSleekUI.addUIframeRate(sleekCanvas);
-        UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas, new CSSblock(CSS_STRING_1), 0.1f, 0.1f);
-        UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas, new CSSblock(CSS_STRING_2), 0.5f, 0.1f);
+        UtilTestSleekUI.addUIbasicSleekElement(
+                sleekCanvas,
+                null,
+                new CSSblock(CSS_STRING_1),
+                0.1f,
+                0.1f,
+                160,
+                160
+        );
+        UtilTestSleekUI.addUIbasicSleekElement(
+                sleekCanvas,
+                "Hej!\nDetta är en ny rad.\nOch en till rad?!\n+1\n+2",
+                new CSSblock(CSS_STRING_2),
+                0.4f,
+                0.1f,
+                600,
+                UtilPx.getPixels(sleekCanvas.getContext(), 150)
+        );
         UtilTestSleekUI.reloadUI(sleekCanvas);
     }
 
