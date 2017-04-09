@@ -19,29 +19,41 @@ import java.util.concurrent.CountDownLatch;
 public class TestSleekUI {
 
     /*
-    {
-        background: #d8d8d8;
-        color: #666;
-        border-radius: 22px;
-        margin: 0 0 8px 0;
-        font-size: 10px;
-        width: 46px;
-        height: 46px;
-        line-height: 46px;
-        text-align: center;
-    }
+{
+    background: #d8d8d8;
+    color: #666;
+    border-radius: 22px;
+    margin: 0 0 8px 0;
+    font-size: 10px;
+    width: 46px;
+    height: 46px;
+    line-height: 46px;
+    text-align: center;
+}
     */
-    private static final String CSS_STRING_1 = "{\n" +
-                                               "        background: #ff0000;\n" +
-                                               "        color: #666;\n" +
-                                               "        border-radius: 22px;\n" +
-                                               "        margin: 0 0 8px 0;\n" +
-                                               "        font-size: 10px;\n" +
-                                               "        width: 46px;\n" +
-                                               "        height: 46px;\n" +
-                                               "        line-height: 46px;\n" +
-                                               "        text-align: center;\n" +
-                                               "    }";
+    private static final String
+            CSS_STRING_1 = "{\n" +
+                           "    background: #38B0DE;\n" +
+                           "    color: #666;\n" +
+                           "    border-radius: 22px;\n" +
+                           "    margin: 0 0 8px 0;\n" +
+                           "    font-size: 10px;\n" +
+                           "    width: 46px;\n" +
+                           "    height: 46px;\n" +
+                           "    line-height: 46px;\n" +
+                           "    text-align: center;\n" +
+                           "}",
+            CSS_STRING_2 = "{\n" +
+                           "    background: #33E776;\n" +
+                           "    color: #666;\n" +
+                           "    border-radius: 22px;\n" +
+                           "    margin: 0 0 8px 0;\n" +
+                           "    font-size: 10px;\n" +
+                           "    width: 46px;\n" +
+                           "    height: 46px;\n" +
+                           "    line-height: 46px;\n" +
+                           "    text-align: center;\n" +
+                           "}";
 
     @Rule
     public ActivityTestRule<SleekActivity> mActivityRule = new ActivityTestRule<>(SleekActivity.class, true, true);
@@ -71,7 +83,8 @@ public class TestSleekUI {
 
     private static final void loadUIscrollXYbasicSleekElements(SleekCanvas sleekCanvas) {
         UtilTestSleekUI.addUIframeRate(sleekCanvas);
-        UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas, new CSSblock(CSS_STRING_1));
+        UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas, new CSSblock(CSS_STRING_1), 0.1f, 0.1f);
+        UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas, new CSSblock(CSS_STRING_2), 0.5f, 0.1f);
         UtilTestSleekUI.reloadUI(sleekCanvas);
     }
 

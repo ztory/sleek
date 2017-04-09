@@ -34,6 +34,8 @@ public class SleekElement extends SleekBaseComposite {
 
     public SleekElement(SleekParam sleekParam) {
         super(sleekParam);
+
+        setDimensionIgnoreBounds(true);
     }
 
     public void checkCSS() {
@@ -78,6 +80,12 @@ public class SleekElement extends SleekBaseComposite {
             createBackground();
             elementBackground.getPaint().setAntiAlias(true);
             elementBackground.setRounded(UtilPx.getPixels(mSlkCanvas.getContext(), borderRadius));
+        }
+
+        Integer color = elementCSS.getColor();
+        if (color != null) {
+            createText();
+            elementText.setTextColor(color);
         }
     }
 
@@ -139,11 +147,11 @@ public class SleekElement extends SleekBaseComposite {
         super.setSleekBounds(x, y, w, h);
 
         if (elementBackground != null) {
-            elementBackground.setSleekBounds(x, y, w, h);
+            elementBackground.setSleekBounds(0, 0, w, h);
         }
 
         if (elementText != null) {
-            elementText.setSleekBounds(x, y, w, h);
+            elementText.setSleekBounds(0, 0, w, h);
         }
     }
 

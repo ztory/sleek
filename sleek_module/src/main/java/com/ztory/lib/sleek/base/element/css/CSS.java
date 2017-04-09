@@ -10,6 +10,7 @@ public class CSS {
                 BACKGROUND = "background",
                 BACKGROUND_COLOR = "background-color",
                 BORDER_RADIUS = "border-radius",
+                COLOR = "color",
                 FONT_SIZE = "font-size",
                 LINE_HEIGHT = "line-height";
     }

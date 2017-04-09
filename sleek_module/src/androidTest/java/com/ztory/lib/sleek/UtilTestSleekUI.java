@@ -49,11 +49,17 @@ public class UtilTestSleekUI {
 
     public static void addUIbasicSleekElement(
             SleekCanvas sleekCanvas,
-            CSSblock cssBlock
+            CSSblock cssBlock,
+            float screenPercentX,
+            float screenPercentY
     ) {
         SleekElement sleekElement = new SleekElement(SleekParam.DEFAULT_TOUCHABLE);
         sleekElement.addCSSblock(cssBlock);
-        sleekElement.setSleekBounds(100, 200, 300, 400);
+        sleekElement.getLayout()
+                .x(SL.X.PERCENT_CANVAS, 0, null, screenPercentX)
+                .y(SL.Y.PERCENT_CANVAS, 0, null, screenPercentY)
+                .w(SL.W.ABSOLUTE, 160, null)
+                .h(SL.H.ABSOLUTE, 160, null);
         sleekCanvas.addSleek(sleekElement);
     }
 

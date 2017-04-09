@@ -80,6 +80,23 @@ public class CSSblock extends HashMap<String, String> {
 
     /**
      * Supported syntax:
+     * #RRGGBB, #AARRGGBB, or color words such as "red"
+     * @return an Integer if background-color is set or null if it is not set
+     */
+    public Integer getColor() {
+        String colorString = Mapd.get(this, CSS.Property.COLOR, String.class);
+        if (colorString != null) {
+            try {
+                return Color.parseColor(colorString);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Supported syntax:
      * 10px
      * @return an Integer if border-radius is set or null if it is not set
      */
