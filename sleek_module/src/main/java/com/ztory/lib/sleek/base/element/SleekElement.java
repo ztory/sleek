@@ -19,12 +19,12 @@ import java.util.List;
  */
 public class SleekElement extends SleekBaseComposite {
 
-    protected List<CSSblock> elementCSSlist = new ArrayList<>(4);
+    protected final List<CSSblock> elementCSSlist = new ArrayList<>(4);
 
     /** If CSS is updated at runtime, be sure to set this to true. */
     protected boolean elementCSSneedsUpdate = false;
 
-    protected CSSblock elementCSS = new CSSblock(12);
+    protected final CSSblock elementCSS = new CSSblock(12);
     protected long lastTsElementCSS;
 
     protected String elementString = null;
@@ -36,82 +36,7 @@ public class SleekElement extends SleekBaseComposite {
         super(sleekParam);
     }
 
-    //TODO REVIEW HOW loaded AND shouldDraw SHOULD BE SET AND HANDLED !!!!
-
-    @Override
-    public void setSleekBounds(float x, float y, int w, int h) {
-        super.setSleekBounds(x, y, w, h);
-
-        if (elementBackground != null) {
-            elementBackground.setSleekBounds(x, y, w, h);
-        }
-
-        if (elementText != null) {
-            elementText.setSleekBounds(x, y, w, h);
-        }
-    }
-
-    @Override
-    public void drawView(Sleek view, Canvas canvas, SleekCanvasInfo info) {
-
-        System.out.println(
-                "RTTN: drawView(): "
-                + elementBackground.getPaint().getColor() + " | "
-                + SleekColorArea.COLOR_TRANSPARENT
-        );
-
-        canvas.save();
-        canvas.translate(sleekX, sleekY);
-
-        if (elementBackground != null) {
-            elementBackground.onSleekDraw(canvas, info);
-        }
-
-        if (elementText != null) {
-            elementText.onSleekDraw(canvas, info);
-        }
-
-        for (Sleek iterView : views) {
-            //if (iterView.shouldBeDrawn()) iterView.draw(canvas, info);// dont need to check this, if this view is loaded it should draw its children
-            iterView.onSleekDraw(canvas, info);
-        }
-        canvas.restore();
-    }
-
-    @Override
-    public void onSleekCanvasResize(SleekCanvasInfo info) {
-
-        applyCSS();
-
-        super.onSleekCanvasResize(info);
-    }
-
-    @Override
-    public boolean isSleekLoaded() {
-
-        System.out.println("RTTN: " + shouldDraw + " | " + loaded + " | " + elementBackground + " | " + elementText);
-
-        return loaded || elementBackground != null || elementText != null;// to draw child views that are not loadable
-    }
-
-    public void setCSSneedsUpdate() {
-        elementCSSneedsUpdate = true;
-        requestLayout();
-    }
-
-    public SleekElement addCSSblock(CSSblock cssBlock) {
-        elementCSSlist.add(cssBlock);
-        setCSSneedsUpdate();
-        return this;
-    }
-
-    public SleekElement removeCSSblock(CSSblock cssBlock) {
-        elementCSSlist.remove(cssBlock);
-        setCSSneedsUpdate();
-        return this;
-    }
-
-    public void applyCSS() {
+    public void checkCSS() {
 
         if (!isAddedToParent()) {
             return;//do not apply css if element does not have a parent
@@ -133,25 +58,45 @@ public class SleekElement extends SleekBaseComposite {
             return;
         }
 
-        shouldDraw = true;
-
         // Apply new CSS if state in elementCSS has changed
         if (lastTsElementCSS != elementCSS.getModifiedTimestamp()) {
             lastTsElementCSS = elementCSS.getModifiedTimestamp();
 
-            Integer backgroundColor = elementCSS.getBackgroundColor();
-            if (backgroundColor != null) {
-                createBackground();
-                elementBackground.getPaint().setColor(backgroundColor);
-            }
-
-            Integer borderRadius = elementCSS.getBorderRadius();
-            if (borderRadius != null) {
-                createBackground();
-                elementBackground.getPaint().setAntiAlias(true);
-                elementBackground.setRounded(UtilPx.getPixels(mSlkCanvas.getContext(), borderRadius));
-            }
+            applyCSS();
         }
+    }
+
+    public void applyCSS() {
+
+        Integer backgroundColor = elementCSS.getBackgroundColor();
+        if (backgroundColor != null) {
+            createBackground();
+            elementBackground.getPaint().setColor(backgroundColor);
+        }
+
+        Integer borderRadius = elementCSS.getBorderRadius();
+        if (borderRadius != null) {
+            createBackground();
+            elementBackground.getPaint().setAntiAlias(true);
+            elementBackground.setRounded(UtilPx.getPixels(mSlkCanvas.getContext(), borderRadius));
+        }
+    }
+
+    public void setCSSneedsUpdate() {
+        elementCSSneedsUpdate = true;
+        requestLayout();
+    }
+
+    public SleekElement addCSSblock(CSSblock cssBlock) {
+        elementCSSlist.add(cssBlock);
+        setCSSneedsUpdate();
+        return this;
+    }
+
+    public SleekElement removeCSSblock(CSSblock cssBlock) {
+        elementCSSlist.remove(cssBlock);
+        setCSSneedsUpdate();
+        return this;
     }
 
     public void setElementString(String theElementString) {
@@ -174,9 +119,9 @@ public class SleekElement extends SleekBaseComposite {
         elementBackground.setSleekBounds(sleekX, sleekY, sleekW, sleekH);
     }
 
-//    public SleekColorArea getBackground() {
-//        return elementBackground;
-//    }
+    public SleekColorArea getBackground() {
+        return elementBackground;
+    }
 
     protected void createText() {
         if (elementText != null) {
@@ -186,8 +131,48 @@ public class SleekElement extends SleekBaseComposite {
         elementText.setSleekBounds(sleekX, sleekY, sleekW, sleekH);
     }
 
-//    public SleekViewText getText() {
-//        return elementText;
-//    }
+    public SleekViewText getText() {
+        return elementText;
+    }
+
+    @Override
+    public void setSleekBounds(float x, float y, int w, int h) {
+        super.setSleekBounds(x, y, w, h);
+
+        if (elementBackground != null) {
+            elementBackground.setSleekBounds(x, y, w, h);
+        }
+
+        if (elementText != null) {
+            elementText.setSleekBounds(x, y, w, h);
+        }
+    }
+
+    @Override
+    public void drawView(Sleek view, Canvas canvas, SleekCanvasInfo info) {
+
+        canvas.save();
+        canvas.translate(sleekX, sleekY);
+
+        if (elementBackground != null) {
+            elementBackground.onSleekDraw(canvas, info);
+        }
+
+        if (elementText != null) {
+            elementText.onSleekDraw(canvas, info);
+        }
+
+        for (Sleek iterView : views) {
+            //if (iterView.shouldBeDrawn()) iterView.draw(canvas, info);// dont need to check this, if this view is loaded it should draw its children
+            iterView.onSleekDraw(canvas, info);
+        }
+        canvas.restore();
+    }
+
+    @Override
+    public void onSleekCanvasResize(SleekCanvasInfo info) {
+        checkCSS();//checks if changes have been made to CSS properties
+        super.onSleekCanvasResize(info);
+    }
 
 }
