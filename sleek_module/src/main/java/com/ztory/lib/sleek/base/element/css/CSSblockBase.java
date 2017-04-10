@@ -18,6 +18,7 @@ import java.util.Map;
     line-height: 46px;
     text-align: center;
     vertical-align: center;
+    box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);
 }
  * Created by jonruna on 2017-04-07.
  */
