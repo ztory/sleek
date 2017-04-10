@@ -49,7 +49,7 @@ public class TestSleekUI {
                            "    font-size: 16px;\n" +
                            "    line-height: 30px;\n" +
                            "    text-align: center;\n" +
-                           "    vertical-align: center;\n" +
+                           "    vertical-align: bottom;\n" +
                            "}",
             CSS_STRING_3 = "{\n" +
                            "    background: purple;\n" +
@@ -58,7 +58,7 @@ public class TestSleekUI {
                            "    font-size: 20px;\n" +
                            "    line-height: 30px;\n" +
                            "    text-align: center;\n" +
-                           "    vertical-align: center;\n" +
+                           "    vertical-align: middle;\n" +
                            "    box-shadow: 1px 2px 4px #38B0DE;\n" +//offset-x | offset-y | blur-radius | color
                            "}",
             CSS_STRING_4 = "{\n" +
@@ -68,7 +68,7 @@ public class TestSleekUI {
                            "    font-size: 20px;\n" +
                            "    line-height: 30px;\n" +
                            "    text-align: center;\n" +
-                           "    vertical-align: center;\n" +
+                           "    vertical-align: top;\n" +
                            "    box-shadow: 0px 0px 12px rgba(0, 255, 0, 0.5);\n" +//offset-x | offset-y | blur-radius | color
                            "}";
 
@@ -138,7 +138,7 @@ public class TestSleekUI {
         );
         UtilTestSleekUI.addUIbasicSleekElement(
                 sleekCanvas,
-                "Hola\nmuchacho\nhallå\nvill du\n LATTJO?!",
+                "Hola\nmuchacho\nhallå\nvill du LATTJO?!",
                 new CSSblockBase(CSS_STRING_2),
                 0.2f,
                 0.95f,
@@ -162,7 +162,7 @@ public class TestSleekUI {
         assertEquals(UtilPx.getPixels(16), cssBlock.getFontSize().intValue());
         assertEquals(UtilPx.getPixels(30), cssBlock.getLineHeight().intValue());
         assertEquals("center", cssBlock.getTextAlign());
-        assertEquals("center", cssBlock.getVerticalAlign());
+        assertEquals("bottom", cssBlock.getVerticalAlign());
     }
 
     @Test

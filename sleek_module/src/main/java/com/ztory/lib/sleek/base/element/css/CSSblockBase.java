@@ -17,7 +17,7 @@ import java.util.Map;
     font-size: 10px;
     line-height: 46px;
     text-align: center;
-    vertical-align: center;
+    vertical-align: middle;
     box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);
 }
  * Created by jonruna on 2017-04-07.
