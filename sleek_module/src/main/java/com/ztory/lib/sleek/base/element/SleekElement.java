@@ -273,6 +273,10 @@ public class SleekElement extends SleekBaseComposite {
         return elementText;
     }
 
+    public CSSblock getCSS() {
+        return elementCSS;
+    }
+
     @Override
     public void setSleekBounds(float x, float y, int w, int h) {
         super.setSleekBounds(x, y, w, h);
