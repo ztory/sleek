@@ -38,12 +38,12 @@ public class TestSleekUI {
     */
     private static final String
             CSS_STRING_1 = "{\n" +
-                           "    background: #38B0DE;\n" +
+                           "    background: #999;\n" +
                            "    border-radius: 22px;\n" +
                            "    box-shadow: 1px 2px 4px rgba(255, 0, 0, 1.0);\n" +
                            "}",
             CSS_STRING_2 = "{\n" +
-                           "    background: #33E776;\n" +
+                           "    background: #33E77699;\n" +
                            "    border-radius: 8px;\n" +
                            "    color: #4860E3;\n" +
                            "    font-size: 16px;\n" +
@@ -52,7 +52,7 @@ public class TestSleekUI {
                            "    vertical-align: center;\n" +
                            "}",
             CSS_STRING_3 = "{\n" +
-                           "    background: #FFC638;\n" +
+                           "    background: purple;\n" +
                            "    border-radius: 8px;\n" +
                            "    color: #38B0DE;\n" +
                            "    font-size: 20px;\n" +
@@ -113,7 +113,7 @@ public class TestSleekUI {
                 sleekCanvas,
                 "Hej!\nDetta är en ny rad.\nOch en till rad?!\n+1\n+2",
                 new CSSblockBase(CSS_STRING_2),
-                0.4f,
+                0.8f,
                 0.1f,
                 600,
                 UtilPx.getPixels(sleekCanvas.getContext(), 150)
@@ -136,6 +136,16 @@ public class TestSleekUI {
                 UtilPx.getPixels(sleekCanvas.getContext(), 80),
                 UtilPx.getPixels(sleekCanvas.getContext(), 80)
         );
+        UtilTestSleekUI.addUIbasicSleekElement(
+                sleekCanvas,
+                "Hola\nmuchacho\nhallå\nvill du\n LATTJO?!",
+                new CSSblockBase(CSS_STRING_2),
+                0.2f,
+                0.95f,
+                600,
+                UtilPx.getPixels(sleekCanvas.getContext(), 150)
+        );
+        UtilTestSleekUI.addUIcolorAreaDraggable(sleekCanvas);
         UtilTestSleekUI.reloadUI(sleekCanvas);
     }
 
@@ -145,8 +155,8 @@ public class TestSleekUI {
         UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 
         CSSblockBase cssBlock = new CSSblockBase(CSS_STRING_2);
-        assertEquals(0xff33E776, cssBlock.getBackgroundColor().intValue());
-        assertEquals("#33E776", Mapd.get(cssBlock, "background", String.class));
+        assertEquals(0x9933E776, cssBlock.getBackgroundColor().intValue());
+        assertEquals("#33E77699", Mapd.get(cssBlock, "background", String.class));
         assertEquals(UtilPx.getPixels(8), cssBlock.getBorderRadius().intValue());
         assertEquals(0xff4860E3, cssBlock.getColor().intValue());
         assertEquals(UtilPx.getPixels(16), cssBlock.getFontSize().intValue());

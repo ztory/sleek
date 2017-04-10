@@ -128,13 +128,27 @@ public class SleekElement extends SleekBaseComposite {
         }
 
         Integer boxShadowBlurRadius = elementCSS.getBoxShadowBlurRadius();
-        if (boxShadowBlurRadius != null) {
-            elementShadowRadius = boxShadowBlurRadius;
-            elementShadowOffsetX = elementCSS.getBoxShadowOffsetX();
-            elementShadowOffsetY = elementCSS.getBoxShadowOffsetY();
-            elementShadowColor = elementCSS.getBoxShadowColor();
+        if (boxShadowBlurRadius != null && boxShadowBlurRadius > 0) {
+            Integer boxShadowOffsetX = elementCSS.getBoxShadowOffsetX();
+            Integer boxShadowOffsetY = elementCSS.getBoxShadowOffsetY();
+            Integer boxShadowColor = elementCSS.getBoxShadowColor();
+
+            if (boxShadowOffsetX != null && boxShadowOffsetY != null && boxShadowColor != null) {
+                elementShadowRadius = boxShadowBlurRadius;
+                elementShadowOffsetX = boxShadowOffsetX;
+                elementShadowOffsetY = boxShadowOffsetY;
+                elementShadowColor = boxShadowColor;
+            }
+            else {
+                elementShadowRadius = 0;
+            }
         }
-        else {// Only init elementBackground if boxShadowBlurRadius == null
+        else {
+            elementShadowRadius = 0;
+        }
+
+        // Only init elementBackground if elementShadowRadius == 0
+        if (elementShadowRadius == 0) {
 
             if (backgroundColor != null) {
                 createBackground();

@@ -56,7 +56,9 @@ public class UtilTestSleekUI {
             int absoluteWidth,
             int absoluteHeight
     ) {
-        SleekElement sleekElement = new SleekElement(SleekParam.DEFAULT_TOUCHABLE);
+        SleekElement sleekElement = new SleekElement(
+                SleekParam.DEFAULT_TOUCHABLE.newPriority(SleekCanvas.STICKY_TOUCH_PRIO + 10)
+        );
         sleekElement.setElementString(elementString);
         sleekElement.addCSSblock(cssBlock);
         sleekElement.getLayout()

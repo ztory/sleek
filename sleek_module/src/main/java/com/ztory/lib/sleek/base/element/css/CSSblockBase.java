@@ -55,7 +55,7 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
 
     /**
      * Supported syntax:
-     * #RRGGBB, #AARRGGBB, or color words such as "red", also supports rgba() syntax.
+     * #RGB #RRGGBB, #AARRGGBB, or color words such as "red", also supports rgba(80,0,0,0.7) syntax.
      * @return an Integer if background-color is set or null if it is not set
      */
     @Override
@@ -78,7 +78,7 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
 
     /**
      * Supported syntax:
-     * #RRGGBB, #AARRGGBB, or color words such as "red", also supports rgba() syntax.
+     * #RGB #RRGGBB, #AARRGGBB, or color words such as "red", also supports rgba(80,0,0,0.7) syntax.
      * @return an Integer if background-color is set or null if it is not set
      */
     @Override
@@ -206,8 +206,6 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
                     colorString = boxShadowParams[3];
                 }
 
-                //TODO getColorFromString() IN ALL PLACES WHERE WE RETURN COLOR IN THIS CLASS...
-                //TODO ...TO SUPPORT BOTH #RRGGBBAA and rgba() syntax from CSS !!!!
                 return getColorFromString(colorString);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -219,9 +217,32 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
     public static final Integer getColorFromString(String colorString) {
         try {
             if (colorString.startsWith("#")) {
-                return Color.parseColor(colorString);
+                if (colorString.length() == 7) {//#RRGGBB
+                    return Color.parseColor(colorString);
+                }
+                else if (colorString.length() == 4) {//#RGB -> #RRGGBB
+                    String calculatedColorString =
+                            "#" +
+                            colorString.charAt(1) + colorString.charAt(1) +
+                            colorString.charAt(2) + colorString.charAt(2) +
+                            colorString.charAt(3) + colorString.charAt(3);
+                    return Color.parseColor(calculatedColorString);
+                }
+                else if (colorString.length() == 9) {//#RRGGBBAA -> #AARRGGBB
+                    String calculatedColorString =
+                            "#" +
+                            colorString.substring(7, 9) +
+                            colorString.substring(1, 7);
+                    return Color.parseColor(calculatedColorString);
+                }
+                else {
+                    return null;
+                }
             }
-            else {
+
+            int indexOfComma = colorString.indexOf(',');
+
+            if (indexOfComma > -1) {
 
                 String[] colorValues;
                 int indexOfStartParenthesis = colorString.indexOf('(');
@@ -241,6 +262,9 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
                 int blue = Integer.parseInt(colorValues[2].trim());
                 float alpha = Float.parseFloat(colorValues[3].trim());
                 return Color.argb((int) (255 * alpha), red, green, blue);
+            }
+            else {// parse values such as "red" or "blue"
+                return Color.parseColor(colorString);
             }
         } catch (Exception e) {
             e.printStackTrace();
