@@ -1,5 +1,6 @@
 package com.ztory.lib.sleek;
 
+import android.graphics.Color;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -39,6 +40,7 @@ public class TestSleekUI {
             CSS_STRING_1 = "{\n" +
                            "    background: #38B0DE;\n" +
                            "    border-radius: 22px;\n" +
+                           "    box-shadow: 1px 2px 4px rgba(255, 0, 0, 1.0);\n" +
                            "}",
             CSS_STRING_2 = "{\n" +
                            "    background: #33E776;\n" +
@@ -48,6 +50,26 @@ public class TestSleekUI {
                            "    line-height: 30px;\n" +
                            "    text-align: center;\n" +
                            "    vertical-align: center;\n" +
+                           "}",
+            CSS_STRING_3 = "{\n" +
+                           "    background: #FFC638;\n" +
+                           "    border-radius: 8px;\n" +
+                           "    color: #38B0DE;\n" +
+                           "    font-size: 20px;\n" +
+                           "    line-height: 30px;\n" +
+                           "    text-align: center;\n" +
+                           "    vertical-align: center;\n" +
+                           "    box-shadow: 1px 2px 4px #38B0DE;\n" +//offset-x | offset-y | blur-radius | color
+                           "}",
+            CSS_STRING_4 = "{\n" +
+                           "    background: rgba(255, 0, 0, 1.0);\n" +
+                           "    border-radius: 2px;\n" +
+                           "    color: rgba(0, 0, 255, 0.7);\n" +
+                           "    font-size: 20px;\n" +
+                           "    line-height: 30px;\n" +
+                           "    text-align: center;\n" +
+                           "    vertical-align: center;\n" +
+                           "    box-shadow: 0px 0px 12px rgba(0, 255, 0, 0.5);\n" +//offset-x | offset-y | blur-radius | color
                            "}";
 
     @Rule
@@ -96,11 +118,29 @@ public class TestSleekUI {
                 600,
                 UtilPx.getPixels(sleekCanvas.getContext(), 150)
         );
+        UtilTestSleekUI.addUIbasicSleekElement(
+                sleekCanvas,
+                "Uno\nDos\nTres\nQuattro\nCinco",
+                new CSSblockBase(CSS_STRING_3),
+                0.15f,
+                0.4f,
+                600,
+                UtilPx.getPixels(sleekCanvas.getContext(), 150)
+        );
+        UtilTestSleekUI.addUIbasicSleekElement(
+                sleekCanvas,
+                "Boom Box",
+                new CSSblockBase(CSS_STRING_4),
+                0.15f,
+                0.25f,
+                UtilPx.getPixels(sleekCanvas.getContext(), 80),
+                UtilPx.getPixels(sleekCanvas.getContext(), 80)
+        );
         UtilTestSleekUI.reloadUI(sleekCanvas);
     }
 
     @Test
-    public void testCSSblock() {
+    public void testCSSblock2() {
 
         UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 
@@ -113,6 +153,17 @@ public class TestSleekUI {
         assertEquals(UtilPx.getPixels(30), cssBlock.getLineHeight().intValue());
         assertEquals("center", cssBlock.getTextAlign());
         assertEquals("center", cssBlock.getVerticalAlign());
+    }
+
+    @Test
+    public void testCSSblock4() {
+
+        UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+
+        CSSblockBase cssBlock = new CSSblockBase(CSS_STRING_4);
+        assertEquals(Color.argb(255, 255, 0, 0), cssBlock.getBackgroundColor().intValue());
+        assertEquals(Color.argb(127, 0, 255, 0), cssBlock.getBoxShadowColor().intValue());
+        assertEquals(Color.argb((int) (255 * 0.7), 0, 0, 255), cssBlock.getColor().intValue());
     }
 
     @Test

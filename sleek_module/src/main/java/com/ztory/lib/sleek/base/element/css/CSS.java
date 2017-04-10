@@ -14,7 +14,8 @@ public class CSS {
                 FONT_SIZE = "font-size",
                 LINE_HEIGHT = "line-height",
                 TEXT_ALIGN = "text-align",
-                VERTICAL_ALIGN = "vertical-align";
+                VERTICAL_ALIGN = "vertical-align",
+                BOX_SHADOW = "box-shadow";
     }
 
     public static final class Unit {

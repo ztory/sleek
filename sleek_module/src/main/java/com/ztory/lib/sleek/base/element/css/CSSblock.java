@@ -14,4 +14,11 @@ public interface CSSblock extends Map<String, String> {
     Integer getLineHeight();
     String getTextAlign();
     String getVerticalAlign();
+
+    /* offset-x | offset-y | blur-radius | color */
+    //box-shadow: 10px 5px 5px black;
+    Integer getBoxShadowBlurRadius();
+    Integer getBoxShadowColor();
+    Integer getBoxShadowOffsetX();
+    Integer getBoxShadowOffsetY();
 }

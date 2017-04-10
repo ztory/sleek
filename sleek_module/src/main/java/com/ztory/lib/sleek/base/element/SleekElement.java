@@ -1,6 +1,10 @@
 package com.ztory.lib.sleek.base.element;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvasInfo;
@@ -32,10 +36,59 @@ public class SleekElement extends SleekBaseComposite {
     protected SleekColorArea elementBackground = null;
     protected SleekViewText elementText = null;
 
+    protected Paint elementShadowBitmapPaint;
+    protected Bitmap elementShadowBitmap;
+
+    protected int elementBackgroundColor = SleekColorArea.COLOR_TRANSPARENT;
+    protected float elementShadowRadius = 0;
+    protected float elementShadowOffsetX = 0;
+    protected float elementShadowOffsetY = 0;
+    protected int elementShadowColor = 0;
+
     public SleekElement(SleekParam sleekParam) {
         super(sleekParam);
 
         setDimensionIgnoreBounds(true);
+
+        //TODO DO WE NEED TO KEEP elementBackground ELEMENT NON-NULL FOR POSITIONING OF CHILDREN ??
+    }
+
+    private Bitmap generateShadowBitmap() {
+
+        elementShadowBitmapPaint = new Paint();
+        elementShadowBitmapPaint.setAntiAlias(true);
+
+        //long timestamp = System.currentTimeMillis();
+
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(elementBackgroundColor);
+        paint.setShadowLayer(elementShadowRadius, elementShadowOffsetX, elementShadowOffsetY, elementShadowColor);
+
+        Bitmap bitmap = Bitmap.createBitmap(
+                (int) (sleekW + elementShadowRadius + elementShadowRadius + elementShadowRadius + elementShadowRadius + elementShadowOffsetX),
+                (int) (sleekH + elementShadowRadius + elementShadowRadius + elementShadowRadius + elementShadowRadius + elementShadowOffsetY),
+                Bitmap.Config.ARGB_8888
+        );
+        bitmap.eraseColor(Color.TRANSPARENT);
+        Canvas canvas = new Canvas(bitmap);
+        int borderRadius = elementCSS.getBorderRadius();
+        canvas.drawRoundRect(
+                new RectF(
+                        elementShadowRadius + elementShadowRadius,
+                        elementShadowRadius + elementShadowRadius,
+                        elementShadowRadius + elementShadowRadius + sleekW,
+                        elementShadowRadius + elementShadowRadius + sleekH
+                ),
+                borderRadius,
+                borderRadius,
+                paint
+        );
+
+        //Log.d("SleekElement", "SleekElement | took: " + (System.currentTimeMillis() - timestamp) + "ms");
+
+        return bitmap;
     }
 
     public void checkCSS() {
@@ -71,17 +124,29 @@ public class SleekElement extends SleekBaseComposite {
 
         Integer backgroundColor = elementCSS.getBackgroundColor();
         if (backgroundColor != null) {
-            createBackground();
-            elementBackground.getPaint().setColor(backgroundColor);
+            elementBackgroundColor = backgroundColor;
         }
 
-        //TODO maybe CSSblock should convert from DIP into pixels instead of SleekElement class?
+        Integer boxShadowBlurRadius = elementCSS.getBoxShadowBlurRadius();
+        if (boxShadowBlurRadius != null) {
+            elementShadowRadius = boxShadowBlurRadius;
+            elementShadowOffsetX = elementCSS.getBoxShadowOffsetX();
+            elementShadowOffsetY = elementCSS.getBoxShadowOffsetY();
+            elementShadowColor = elementCSS.getBoxShadowColor();
+        }
+        else {// Only init elementBackground if boxShadowBlurRadius == null
 
-        Integer borderRadius = elementCSS.getBorderRadius();
-        if (borderRadius != null) {
-            createBackground();
-            elementBackground.getPaint().setAntiAlias(true);
-            elementBackground.setRounded(borderRadius);
+            if (backgroundColor != null) {
+                createBackground();
+                elementBackground.getPaint().setColor(backgroundColor);
+            }
+
+            Integer borderRadius = elementCSS.getBorderRadius();
+            if (borderRadius != null) {
+                createBackground();
+                elementBackground.getPaint().setAntiAlias(true);
+                elementBackground.setRounded(borderRadius);
+            }
         }
 
         Integer color = elementCSS.getColor();
@@ -135,6 +200,8 @@ public class SleekElement extends SleekBaseComposite {
             elementText.setTextString(elementString);
             elementText.initText();
         }
+
+
     }
 
     public void setCSSneedsUpdate() {
@@ -211,7 +278,15 @@ public class SleekElement extends SleekBaseComposite {
         canvas.save();
         canvas.translate(sleekX, sleekY);
 
-        if (elementBackground != null) {
+        if (elementShadowBitmap != null) {
+            canvas.drawBitmap(
+                    elementShadowBitmap,
+                    -elementShadowRadius - elementShadowRadius,
+                    -elementShadowRadius - elementShadowRadius,
+                    elementShadowBitmapPaint
+            );
+        }
+        else if (elementBackground != null) {
             elementBackground.onSleekDraw(canvas, info);
         }
 
@@ -223,13 +298,41 @@ public class SleekElement extends SleekBaseComposite {
             //if (iterView.shouldBeDrawn()) iterView.draw(canvas, info);// dont need to check this, if this view is loaded it should draw its children
             iterView.onSleekDraw(canvas, info);
         }
+
         canvas.restore();
     }
 
     @Override
     public void onSleekCanvasResize(SleekCanvasInfo info) {
+
         checkCSS();//checks if changes have been made to CSS properties
+
+        if (elementShadowRadius > 0) {
+            elementShadowBitmap = generateShadowBitmap();
+        }
+        else if (elementShadowBitmap != null) {
+            elementShadowBitmap.recycle();
+            elementShadowBitmap = null;
+        }
+
         super.onSleekCanvasResize(info);
+    }
+
+    @Override
+    public void onSleekLoad(SleekCanvasInfo info) {
+        if (elementShadowRadius > 0) {
+            elementShadowBitmap = generateShadowBitmap();
+        }
+        super.onSleekLoad(info);
+    }
+
+    @Override
+    public void onSleekUnload() {
+        super.onSleekUnload();
+        if (elementShadowBitmap != null) {
+            elementShadowBitmap.recycle();
+            elementShadowBitmap = null;
+        }
     }
 
 }

@@ -55,7 +55,7 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
 
     /**
      * Supported syntax:
-     * #RRGGBB, #AARRGGBB, or color words such as "red"
+     * #RRGGBB, #AARRGGBB, or color words such as "red", also supports rgba() syntax.
      * @return an Integer if background-color is set or null if it is not set
      */
     @Override
@@ -68,7 +68,7 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
 
         if (backgroundColorString != null) {
             try {
-                return Color.parseColor(backgroundColorString);
+                return getColorFromString(backgroundColorString);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -78,7 +78,7 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
 
     /**
      * Supported syntax:
-     * #RRGGBB, #AARRGGBB, or color words such as "red"
+     * #RRGGBB, #AARRGGBB, or color words such as "red", also supports rgba() syntax.
      * @return an Integer if background-color is set or null if it is not set
      */
     @Override
@@ -86,7 +86,7 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
         String colorString = Mapd.get(this, CSS.Property.COLOR, String.class);
         if (colorString != null) {
             try {
-                return Color.parseColor(colorString);
+                return getColorFromString(colorString);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -158,6 +158,140 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
     @Override
     public String getVerticalAlign() {
         return Mapd.get(this, CSS.Property.VERTICAL_ALIGN, String.class);
+    }
+
+    @Override
+    public Integer getBoxShadowBlurRadius() {
+
+        //offset-x | offset-y | blur-radius | color
+        //box-shadow: 10px 5px 5px #ff0000;
+
+        String boxShadowString = Mapd.get(this, CSS.Property.BOX_SHADOW, String.class);
+        if (boxShadowString != null) {
+            try {
+                String[] boxShadowParams = boxShadowString.split(" ");
+                String blurRadiusString = boxShadowParams[2];
+                int indexOfPX = blurRadiusString.indexOf(CSS.Unit.PX);
+                if (indexOfPX > -1) {
+                    String valueString = blurRadiusString.substring(0, indexOfPX);
+                    return UtilPx.getPixels(Integer.parseInt(valueString));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Integer getBoxShadowColor() {
+
+        //offset-x | offset-y | blur-radius | color
+        //box-shadow: 10px 5px 5px #ff0000;
+
+        String boxShadowString = Mapd.get(this, CSS.Property.BOX_SHADOW, String.class);
+        if (boxShadowString != null) {
+            try {
+
+                String colorString;
+                if (boxShadowString.indexOf('(') != -1) {
+                    // Convert "10px 5px 5px rgba(255, 0, 0, 0.7)" -> "255, 0, 0, 0.7"
+                    colorString = boxShadowString.substring(
+                            boxShadowString.indexOf('(') + 1,
+                            boxShadowString.length() - 1
+                    );
+                }
+                else {
+                    String[] boxShadowParams = boxShadowString.split(" ");
+                    colorString = boxShadowParams[3];
+                }
+
+                //TODO getColorFromString() IN ALL PLACES WHERE WE RETURN COLOR IN THIS CLASS...
+                //TODO ...TO SUPPORT BOTH #RRGGBBAA and rgba() syntax from CSS !!!!
+                return getColorFromString(colorString);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static final Integer getColorFromString(String colorString) {
+        try {
+            if (colorString.startsWith("#")) {
+                return Color.parseColor(colorString);
+            }
+            else {
+
+                String[] colorValues;
+                int indexOfStartParenthesis = colorString.indexOf('(');
+                if (indexOfStartParenthesis > -1) {// rgba(255, 0, 0, 0.7)
+                    // Convert "rgba(255, 0, 0, 0.7)" -> "255, 0, 0, 0.7"
+                    colorValues = colorString.substring(
+                            indexOfStartParenthesis + 1,
+                            colorString.length() - 1
+                    ).split(",");
+                }
+                else {//255, 0, 0, 0.7
+                    colorValues = colorString.split(",");
+                }
+
+                int red = Integer.parseInt(colorValues[0].trim());
+                int green = Integer.parseInt(colorValues[1].trim());
+                int blue = Integer.parseInt(colorValues[2].trim());
+                float alpha = Float.parseFloat(colorValues[3].trim());
+                return Color.argb((int) (255 * alpha), red, green, blue);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Integer getBoxShadowOffsetX() {
+
+        //offset-x | offset-y | blur-radius | color
+        //box-shadow: 10px 5px 5px #ff0000;
+
+        String boxShadowString = Mapd.get(this, CSS.Property.BOX_SHADOW, String.class);
+        if (boxShadowString != null) {
+            try {
+                String[] boxShadowParams = boxShadowString.split(" ");
+                String offsetXstring = boxShadowParams[0];
+                int indexOfPX = offsetXstring.indexOf(CSS.Unit.PX);
+                if (indexOfPX > -1) {
+                    String valueString = offsetXstring.substring(0, indexOfPX);
+                    return UtilPx.getPixels(Integer.parseInt(valueString));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Integer getBoxShadowOffsetY() {
+
+        //offset-x | offset-y | blur-radius | color
+        //box-shadow: 10px 5px 5px #ff0000;
+
+        String boxShadowString = Mapd.get(this, CSS.Property.BOX_SHADOW, String.class);
+        if (boxShadowString != null) {
+            try {
+                String[] boxShadowParams = boxShadowString.split(" ");
+                String offsetYstring = boxShadowParams[1];
+                int indexOfPX = offsetYstring.indexOf(CSS.Unit.PX);
+                if (indexOfPX > -1) {
+                    String valueString = offsetYstring.substring(0, indexOfPX);
+                    return UtilPx.getPixels(Integer.parseInt(valueString));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     @Override
