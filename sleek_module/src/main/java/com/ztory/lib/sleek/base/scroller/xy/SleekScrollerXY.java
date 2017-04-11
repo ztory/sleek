@@ -295,6 +295,12 @@ public class SleekScrollerXY implements SleekCanvasScroller {
         setPosTop(mTouchStartPosTop + mTouchMoveTravelY);
     }
 
+    @Override
+    public void checkScrollBounds() {
+        constrainPosXY();
+        releaseEdgeEffects();
+    }
+
     protected void constrainPosXY() {
 
         if (mShouldScrollX) {

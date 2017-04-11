@@ -49,10 +49,10 @@ public class SleekCanvas extends RelativeLayout {
 
     public static final int STICKY_TOUCH_PRIO = Integer.MAX_VALUE - 10000;
 
-    protected SleekCanvasInfo drawInfo;
+    protected final SleekCanvasInfo drawInfo = new SleekCanvasInfo();
 
-    final protected Object canvasLockObj = new Object();
-    final protected Object preRunLockObj = new Object();
+    protected final Object canvasLockObj = new Object();
+    protected final Object preRunLockObj = new Object();
 
     protected AtomicInteger atomInt = new AtomicInteger(0);
 
@@ -90,6 +90,8 @@ public class SleekCanvas extends RelativeLayout {
 
     protected boolean shouldCallWindowDetachListener = true;
     protected Runnable windowDetachListener = null;
+
+    protected float[] scrollEdges = null;
 
     public SleekCanvas(Context context) {
         this(context, null, 0, 0);
@@ -156,8 +158,6 @@ public class SleekCanvas extends RelativeLayout {
         activityId = theActivityId;
 
         uiParentId = theUiParentId;
-
-        drawInfo = new SleekCanvasInfo();
 
         resetCanvasInfoStateTimestamp();
 
@@ -295,9 +295,10 @@ public class SleekCanvas extends RelativeLayout {
     };
 
     public void reloadScrollEdges() {
-        float[] edges = getScrollEdges();
-        sleekScroller.setRightScrollEdge(edges[0]);
-        sleekScroller.setBottomScrollEdge(edges[1]);
+        getScrollEdges(true);//initializes scrollEdges member
+        sleekScroller.setRightScrollEdge(scrollEdges[0]);
+        sleekScroller.setBottomScrollEdge(scrollEdges[1]);
+        sleekScroller.checkScrollBounds();
     }
 
     public void invalidateSafe() {
@@ -348,9 +349,73 @@ public class SleekCanvas extends RelativeLayout {
 
             sleek.onSleekParentAdd(SleekCanvas.this, null);
 
+            // Check if size is initialized
             if (drawInfo.width > 0 && drawInfo.height > 0) {
                 sleek.onSleekCanvasResize(drawInfo); // to init size when added at runtime
+
+                if (sleekScroller.isAutoLoading()) {
+                    reloadScrollEdgesFromSleek(sleek);
+                    loadAndUnloadSleek(sleek);
+                }
             }
+        }
+    }
+
+    public boolean isInsideOfLoadBounds(Sleek sleek) {
+        int canvasWidth = getScaledCanvasWidth();
+        int canvasHeight = getScaledCanvasHeight();
+        int scaledWidthLoadPadding = getScaledWidthLoadPadding();
+        int scaledHeightLoadPadding = getScaledHeightLoadPadding();
+        float controllerX = 0;
+        float controllerY = 0;
+        if (!sleek.isSleekFixedPosition()) {//only care about scroll value for non-fixed Sleek
+            controllerX = getScaledScrollerPosLeft();
+            controllerY = getScaledScrollerPosTop();
+        }
+        if (
+                sleek.getSleekX() + sleek.getSleekW() < controllerX - scaledWidthLoadPadding ||
+                sleek.getSleekX() > controllerX + canvasWidth + scaledWidthLoadPadding ||
+                sleek.getSleekY() + sleek.getSleekH() < controllerY - scaledHeightLoadPadding ||
+                sleek.getSleekY() > controllerY + canvasHeight + scaledHeightLoadPadding
+                ) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    /**
+     * Load/unload Sleek-instance if loadable and inside/outside of loading bounds.
+     * @param sleek Sleek instance to check
+     */
+    public void loadAndUnloadSleek(Sleek sleek) {
+        if (sleek.isSleekLoadable()) {
+            if (isInsideOfLoadBounds(sleek)) {
+                if (!sleek.isSleekLoaded()) {
+                    loadSleek(sleek);
+                }
+            }
+            else {
+                if (sleek.isSleekLoaded()) {
+                    sleek.onSleekUnload();
+                }
+            }
+        }
+    }
+
+    /**
+     * Reload scroll edges if Sleek instance is outside of current bounds.
+     * @param sleek Sleek instance to check
+     */
+    public void reloadScrollEdgesFromSleek(Sleek sleek) {
+        float[] scrollerEdges = getScrollEdges(false);// false == use cached values if not null
+        if (
+                sleek.getSleekX() + sleek.getSleekW() > scrollerEdges[0] ||
+                sleek.getSleekY() + sleek.getSleekH() > scrollerEdges[1]
+                ) {
+            //reload scroll edges since added Sleek is outside of old bounds
+            reloadScrollEdges();
         }
     }
 
@@ -422,6 +487,7 @@ public class SleekCanvas extends RelativeLayout {
 
     public void removeSleek(Sleek sleekDrawItem, boolean unloadView) {
         synchronized (canvasLockObj) {
+
             if (sleekDrawItem == null) {
                 return;
             }
@@ -444,6 +510,14 @@ public class SleekCanvas extends RelativeLayout {
             }
 
             sleekDrawItem.onSleekParentRemove(SleekCanvas.this, null);
+
+            // Reload scroll edges so that removed view is no longer taken in to account
+            reloadScrollEdges();
+
+            // If removed view is outside of new scroll-edges then also load/unload new viewport
+            if (!isInsideOfLoadBounds(sleekDrawItem)) {
+                loadAndUnloadSleekLists(true);
+            }
         }
 
         invalidateSafe();
@@ -461,7 +535,11 @@ public class SleekCanvas extends RelativeLayout {
         return drawFixedItemList.size();
     }
 
-    public float[] getScrollEdges() {
+    public float[] getScrollEdges(boolean forceRefresh) {
+
+        if (!forceRefresh && scrollEdges != null) {
+            return scrollEdges;
+        }
 
         float mostRightItem = 0.0f;
         float mostBottomItem = 0.0f;
@@ -470,15 +548,21 @@ public class SleekCanvas extends RelativeLayout {
 
         synchronized (canvasLockObj) {
             for (Sleek iterDraw : drawItemList) {
+
                 iterEdge = iterDraw.getSleekX() + iterDraw.getSleekW();
-                if (iterEdge > mostRightItem) mostRightItem = iterEdge;
+                if (iterEdge > mostRightItem) {
+                    mostRightItem = iterEdge;
+                }
 
                 iterEdge = iterDraw.getSleekY() + iterDraw.getSleekH();
-                if (iterEdge > mostBottomItem) mostBottomItem = iterEdge;
+                if (iterEdge > mostBottomItem) {
+                    mostBottomItem = iterEdge;
+                }
             }
         }
 
-        return new float[] { mostRightItem, mostBottomItem };
+        scrollEdges = new float[] { mostRightItem, mostBottomItem };
+        return scrollEdges;
     }
 
     public void forceUnloadAllSleek() {
@@ -513,34 +597,50 @@ public class SleekCanvas extends RelativeLayout {
             int scaledHeightLoadPadding = getScaledHeightLoadPadding();
 
             for (Sleek iterDraw : drawItemList) {
-                if (!iterDraw.isSleekLoadable()) continue;
+
+                if (!iterDraw.isSleekLoadable()) {
+                    continue;
+                }
+
                 if (
                         iterDraw.getSleekX() + iterDraw.getSleekW() < controllerX - scaledWidthLoadPadding ||
                         iterDraw.getSleekX() > controllerX + canvasWidth + scaledWidthLoadPadding ||
                         iterDraw.getSleekY() + iterDraw.getSleekH() < controllerY - scaledHeightLoadPadding ||
                         iterDraw.getSleekY() > controllerY + canvasHeight + scaledHeightLoadPadding
                         ) {
-                    if (iterDraw.isSleekLoaded()) iterDraw.onSleekUnload();
+                    if (iterDraw.isSleekLoaded()) {
+                        iterDraw.onSleekUnload();
+                    }
                 }
                 else {
-                    if (!iterDraw.isSleekLoaded()) iterDraw.onSleekLoad(drawInfo);
+                    if (!iterDraw.isSleekLoaded()) {
+                        iterDraw.onSleekLoad(drawInfo);
+                    }
                 }
             }
 
             if (!includeFixedViews) return;
 
             for (Sleek iterDraw : drawFixedItemList) {
-                if (!iterDraw.isSleekLoadable()) continue;
+
+                if (!iterDraw.isSleekLoadable()) {
+                    continue;
+                }
+
                 if (
                         iterDraw.getSleekX() + iterDraw.getSleekW() < -scaledWidthLoadPadding ||
                         iterDraw.getSleekX() > canvasWidth + scaledWidthLoadPadding ||
                         iterDraw.getSleekY() + iterDraw.getSleekH() < -scaledHeightLoadPadding ||
                         iterDraw.getSleekY() > canvasHeight + scaledHeightLoadPadding
                         ) {
-                    if (iterDraw.isSleekLoaded()) iterDraw.onSleekUnload();
+                    if (iterDraw.isSleekLoaded()) {
+                        iterDraw.onSleekUnload();
+                    }
                 }
                 else {
-                    if (!iterDraw.isSleekLoaded()) iterDraw.onSleekLoad(drawInfo);
+                    if (!iterDraw.isSleekLoaded()) {
+                        iterDraw.onSleekLoad(drawInfo);
+                    }
                 }
             }
         }

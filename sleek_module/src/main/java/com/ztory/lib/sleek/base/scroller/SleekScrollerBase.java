@@ -34,6 +34,11 @@ public class SleekScrollerBase implements SleekCanvasScroller {
     }
 
     @Override
+    public void checkScrollBounds() {
+
+    }
+
+    @Override
     public void onSleekCanvasSizeChanged(SleekCanvasInfo info) {
 
     }

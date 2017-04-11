@@ -12,6 +12,7 @@ public interface SleekCanvasScroller {
 
     float getPosLeft();
     float getPosTop();
+    void checkScrollBounds();
 
     void onSleekCanvasSizeChanged(SleekCanvasInfo info);
     boolean isAutoLoading();

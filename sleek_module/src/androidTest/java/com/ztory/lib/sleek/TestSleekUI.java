@@ -5,7 +5,10 @@ import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.ztory.lib.sleek.base.SleekParam;
+import com.ztory.lib.sleek.base.element.SleekElement;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
+import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.mapd.Mapd;
 import com.ztory.lib.sleek.util.UtilPx;
 
@@ -155,7 +158,7 @@ public class TestSleekUI {
                 sleekCanvas,
                 "Offscreen #1\nHej!\nDetta är en text!",
                 new CSSblockBase(CSS_STRING_2),
-                0.8f,
+                0.95f,
                 0.1f,
                 600,
                 UtilPx.getPixels(sleekCanvas.getContext(), 150)
@@ -169,10 +172,18 @@ public class TestSleekUI {
                 600,
                 UtilPx.getPixels(sleekCanvas.getContext(), 150)
         );
+        SleekElement sleekElement = new SleekElement(
+                SleekParam.DEFAULT_TOUCHABLE.newPriority(SleekCanvas.STICKY_TOUCH_PRIO + 10)
+        );
+        sleekElement.setElementString("Corner Box");
+        sleekElement.addCSSblock(new CSSblockBase(CSS_STRING_2));
+        sleekElement.getLayout()
+                .x(SL.X.PERCENT_CANVAS, -200, null, 1.0f)
+                .y(SL.Y.PERCENT_CANVAS, -200, null, 1.0f)
+                .w(SL.W.ABSOLUTE, 200, null)
+                .h(SL.H.ABSOLUTE, 200, null);
+        sleekCanvas.addSleek(sleekElement);
         UtilTestSleekUI.addUIcolorAreaDraggable(sleekCanvas);
-
-        //TODO THIS SHOULDNT BE NECESSARY TO CALL !!!!
-        UtilTestSleekUI.reloadUI(sleekCanvas);
 
         Runnable delayAddedView = new Runnable() {
             @Override
@@ -186,12 +197,37 @@ public class TestSleekUI {
                         600,
                         UtilPx.getPixels(sleekCanvas.getContext(), 150)
                 );
-
-                //TODO THIS SHOULDNT BE NECESSARY TO CALL !!!!
-                UtilTestSleekUI.reloadUI(sleekCanvas);
             }
         };
         sleekCanvas.getHandler().postDelayed(delayAddedView, 2000);
+
+        final SleekElement sleekElementAddRemove = new SleekElement(
+                SleekParam.DEFAULT_TOUCHABLE.newPriority(SleekCanvas.STICKY_TOUCH_PRIO + 10)
+        );
+        sleekElementAddRemove.setElementString("Add Remove Box");
+        sleekElementAddRemove.addCSSblock(new CSSblockBase(CSS_STRING_3));
+        sleekElementAddRemove.getLayout()
+                .x(SL.X.PERCENT_CANVAS, 0, null, 1.95f)
+                .y(SL.Y.PERCENT_CANVAS, 0, null, 1.95f)
+                .w(SL.W.ABSOLUTE, 200, null)
+                .h(SL.H.ABSOLUTE, 200, null);
+        Runnable delayAddedView2 = new Runnable() {
+            @Override
+            public void run() {
+                sleekCanvas.addSleek(sleekElementAddRemove);
+
+                Runnable delayAddedView3 = new Runnable() {
+                    @Override
+                    public void run() {
+                        sleekCanvas.removeSleek(sleekElementAddRemove);
+
+                        // SCROLL BOUNDS AND POSITION SHOULD BE REFRESHED HERE AS WELL !!!!
+                    }
+                };
+                sleekCanvas.getHandler().postDelayed(delayAddedView3, 4000);
+            }
+        };
+        sleekCanvas.getHandler().postDelayed(delayAddedView2, 4000);
     }
 
     @Test
