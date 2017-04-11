@@ -149,6 +149,51 @@ public class TestSleekUI {
         UtilTestSleekUI.reloadUI(sleekCanvas);
     }
 
+    private static final void loadUIensureRuntimeAddedViewsGetLoaded(final SleekCanvas sleekCanvas) {
+        UtilTestSleekUI.addUIframeRate(sleekCanvas);
+        UtilTestSleekUI.addUIbasicSleekElement(
+                sleekCanvas,
+                "Offscreen #1\nHej!\nDetta är en text!",
+                new CSSblockBase(CSS_STRING_2),
+                0.8f,
+                0.1f,
+                600,
+                UtilPx.getPixels(sleekCanvas.getContext(), 150)
+        );
+        UtilTestSleekUI.addUIbasicSleekElement(
+                sleekCanvas,
+                "Offscreen #2\nHola muchacho hallå vill du LATTJO?!",
+                new CSSblockBase(CSS_STRING_2),
+                0.2f,
+                0.95f,
+                600,
+                UtilPx.getPixels(sleekCanvas.getContext(), 150)
+        );
+        UtilTestSleekUI.addUIcolorAreaDraggable(sleekCanvas);
+
+        //TODO THIS SHOULDNT BE NECESSARY TO CALL !!!!
+        UtilTestSleekUI.reloadUI(sleekCanvas);
+
+        Runnable delayAddedView = new Runnable() {
+            @Override
+            public void run() {
+                UtilTestSleekUI.addUIbasicSleekElement(
+                        sleekCanvas,
+                        "Offscreen #3 (runtime)\nHola muchacho hallå vill du LATTJO?!",
+                        new CSSblockBase(CSS_STRING_2),
+                        0.95f,
+                        0.95f,
+                        600,
+                        UtilPx.getPixels(sleekCanvas.getContext(), 150)
+                );
+
+                //TODO THIS SHOULDNT BE NECESSARY TO CALL !!!!
+                UtilTestSleekUI.reloadUI(sleekCanvas);
+            }
+        };
+        sleekCanvas.getHandler().postDelayed(delayAddedView, 2000);
+    }
+
     @Test
     public void testCSSblock2() {
 
@@ -186,7 +231,8 @@ public class TestSleekUI {
         UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 
         //loadUIscrollXYareas(mActivityRule.getActivity().getSleekCanvas());
-        loadUIscrollXYbasicSleekElements(mActivityRule.getActivity().getSleekCanvas());
+        //loadUIscrollXYbasicSleekElements(mActivityRule.getActivity().getSleekCanvas());
+        loadUIensureRuntimeAddedViewsGetLoaded(mActivityRule.getActivity().getSleekCanvas());
 
         final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 
