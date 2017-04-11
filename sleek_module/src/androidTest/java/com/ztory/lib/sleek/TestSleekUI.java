@@ -219,9 +219,8 @@ public class TestSleekUI {
                 Runnable delayAddedView3 = new Runnable() {
                     @Override
                     public void run() {
+                        // Scroll bounds and position are refreshed in removeSleek() now as well.
                         sleekCanvas.removeSleek(sleekElementAddRemove);
-
-                        // SCROLL BOUNDS AND POSITION SHOULD BE REFRESHED HERE AS WELL !!!!
                     }
                 };
                 sleekCanvas.getHandler().postDelayed(delayAddedView3, 4000);
