@@ -10,6 +10,8 @@ public interface SleekCanvasScroller {
 
     void setSleekCanvas(SleekCanvas parentSleekCanvas);
 
+    void setPosLeft(float posLeft);
+    void setPosTop(float posTop);
     float getPosLeft();
     float getPosTop();
     void checkScrollBounds();

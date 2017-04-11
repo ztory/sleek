@@ -24,6 +24,16 @@ public class SleekScrollerBase implements SleekCanvasScroller {
     }
 
     @Override
+    public void setPosLeft(float posLeft) {
+
+    }
+
+    @Override
+    public void setPosTop(float posTop) {
+
+    }
+
+    @Override
     public float getPosLeft() {
         return 0;
     }

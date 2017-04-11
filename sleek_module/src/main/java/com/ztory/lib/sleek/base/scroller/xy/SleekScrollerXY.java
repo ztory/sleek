@@ -111,11 +111,13 @@ public class SleekScrollerXY implements SleekCanvasScroller {
         );
     }
 
-    protected void setPosLeft(float posLeft) {
+    @Override
+    public void setPosLeft(float posLeft) {
         mPosLeft = (float) Math.floor(posLeft + 0.5f);
     }
 
-    protected void setPosTop(float posTop) {
+    @Override
+    public void setPosTop(float posTop) {
         mPosTop = (float) Math.floor(posTop + 0.5f);
     }
 
