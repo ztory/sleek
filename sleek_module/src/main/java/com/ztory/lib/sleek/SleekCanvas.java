@@ -73,8 +73,10 @@ public class SleekCanvas extends RelativeLayout {
     protected int activeFixedTouchIndex = -1;
     protected Sleek activeTouchView;
 
-    protected int widthLoadPadding = 400;
-    protected int heightLoadPadding = 400;
+    protected int widthLoadPadding = 0;
+    protected int heightLoadPadding = 0;
+
+    protected boolean loadPaddingEqualToSize = true;
 
     protected boolean hasSleekScroller;
     protected SleekCanvasScroller sleekScroller;
@@ -694,6 +696,10 @@ public class SleekCanvas extends RelativeLayout {
         drawInfo.stateTimestamp = System.currentTimeMillis();
     }
 
+    public void setLoadPaddingEqualToSize(boolean theLoadPaddingEqualToSize) {
+        loadPaddingEqualToSize = theLoadPaddingEqualToSize;
+    }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -724,9 +730,22 @@ public class SleekCanvas extends RelativeLayout {
                 iterDraw.onSleekCanvasResize(drawInfo);
             }
 
+            if (loadPaddingEqualToSize) {
+                widthLoadPadding = w;
+                heightLoadPadding = h;
+            }
+
             if (sleekScroller.isAutoLoading()) {
-                loadAndUnloadSleekLists(true);
+
                 reloadScrollEdges();
+
+                //Reload drawInfo values since reloadScrollEdges() could have affected them
+                drawInfo.scrollerScaleX = sleekScroller.getScaleX();
+                drawInfo.scrollerScaleY = sleekScroller.getScaleY();
+                drawInfo.scrollerPosLeft = sleekScroller.getPosLeft();
+                drawInfo.scrollerPosTop = sleekScroller.getPosTop();
+
+                loadAndUnloadSleekLists(true);
             }
         }
     }
