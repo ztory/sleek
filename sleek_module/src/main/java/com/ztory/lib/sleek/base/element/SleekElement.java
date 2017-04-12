@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvasInfo;
@@ -66,10 +67,14 @@ public class SleekElement extends SleekBaseComposite {
 
     private Bitmap generateShadowBitmap() {
 
+        //TODO LARGE SleekElements EQUALS LARGE BITMAPS EQUALS PERFORMANCE HIT! Optimize this !!!!
+
+        //TODO MAYBE MOVE BITMAP GENERATION TO BACKGROUND THREAD ????
+
+        long timestamp = System.currentTimeMillis();
+
         elementShadowBitmapPaint = new Paint();
         elementShadowBitmapPaint.setAntiAlias(true);
-
-        //long timestamp = System.currentTimeMillis();
 
         Paint paint = new Paint();
         paint.setAntiAlias(true);
@@ -97,7 +102,7 @@ public class SleekElement extends SleekBaseComposite {
                 paint
         );
 
-        //Log.d("SleekElement", "SleekElement | took: " + (System.currentTimeMillis() - timestamp) + "ms");
+        Log.d("SleekElement", "SleekElement | took: " + (System.currentTimeMillis() - timestamp) + "ms");
 
         return bitmap;
     }
@@ -289,19 +294,6 @@ public class SleekElement extends SleekBaseComposite {
     }
 
     @Override
-    public void setSleekBounds(float x, float y, int w, int h) {
-        super.setSleekBounds(x, y, w, h);
-
-        if (elementBackground != null) {
-            elementBackground.setSleekBounds(0, 0, w, h);
-        }
-
-        if (elementText != null) {
-            elementText.setSleekBounds(0, 0, w, h);
-        }
-    }
-
-    @Override
     public void drawView(Sleek view, Canvas canvas, SleekCanvasInfo info) {
 
         canvas.save();
@@ -332,10 +324,19 @@ public class SleekElement extends SleekBaseComposite {
     }
 
     @Override
-    public void onSleekCanvasResize(SleekCanvasInfo info) {
+    public void setSleekBounds(float x, float y, int w, int h) {
+        super.setSleekBounds(x, y, w, h);
 
-        checkCSS();//checks if changes have been made to CSS properties
+        if (elementBackground != null) {
+            elementBackground.setSleekBounds(0, 0, w, h);
+        }
 
+        if (elementText != null) {
+            elementText.setSleekBounds(0, 0, w, h);
+        }
+    }
+
+    protected void updateShadowBitmap() {
         if (elementShadowRadius > 0) {
             elementShadowBitmap = generateShadowBitmap();
         }
@@ -343,8 +344,16 @@ public class SleekElement extends SleekBaseComposite {
             elementShadowBitmap.recycle();
             elementShadowBitmap = null;
         }
+    }
+
+    @Override
+    public void onSleekCanvasResize(SleekCanvasInfo info) {
+
+        checkCSS();//checks if changes have been made to CSS properties
 
         super.onSleekCanvasResize(info);
+
+        updateShadowBitmap();
     }
 
     @Override
