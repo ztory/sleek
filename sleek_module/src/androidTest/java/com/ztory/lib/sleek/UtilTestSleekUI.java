@@ -10,12 +10,14 @@ import com.ztory.lib.sleek.base.SleekFrameRate;
 import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.base.element.SleekElement;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
+import com.ztory.lib.sleek.base.scroller.xy.SleekScrollerXY;
 import com.ztory.lib.sleek.contract.ISleekDrawView;
 import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.touch.ISleekTouchRun;
 import com.ztory.lib.sleek.touch.SleekTouchHandler;
 import com.ztory.lib.sleek.util.UtilPx;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -45,6 +47,56 @@ public class UtilTestSleekUI {
                 .w(SL.W.ABSOLUTE, 120, null)
                 .h(SL.H.ABSOLUTE, 60, null);
         sleekCanvas.addSleek(frameRate);
+    }
+
+    public static void setSleekActivitySleekCanvasScrollerXY(final SleekActivity sleekActivity) {
+        final CountDownLatch waitForSleekCanvasLatch = new CountDownLatch(1);
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                SleekCanvas sleekCanvas = new SleekCanvas(sleekActivity);
+                sleekCanvas.setBackgroundColor(0xffffffff);
+                //sleekCanvas.setSleekScroller(new SleekScrollerBase(true));
+                sleekCanvas.setSleekScroller(new SleekScrollerXY(true, true));
+
+                sleekActivity.setSleekCanvas(sleekCanvas);
+                sleekActivity.setContentView(sleekCanvas);
+
+                waitForSleekCanvasLatch.countDown();
+            }
+        };
+        sleekActivity.getUiHandler().post(runnable);
+
+        try {
+            waitForSleekCanvasLatch.await();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void setSleekActivitySleekCanvasScrollerY(final SleekActivity sleekActivity) {
+        final CountDownLatch waitForSleekCanvasLatch = new CountDownLatch(1);
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                SleekCanvas sleekCanvas = new SleekCanvas(sleekActivity);
+                sleekCanvas.setBackgroundColor(0xffffffff);
+                //sleekCanvas.setSleekScroller(new SleekScrollerBase(true));
+                sleekCanvas.setSleekScroller(new SleekScrollerXY(false, true));
+
+                sleekActivity.setSleekCanvas(sleekCanvas);
+                sleekActivity.setContentView(sleekCanvas);
+
+                waitForSleekCanvasLatch.countDown();
+            }
+        };
+        sleekActivity.getUiHandler().post(runnable);
+
+        try {
+            waitForSleekCanvasLatch.await();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void addUIbasicSleekElement(

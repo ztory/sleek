@@ -2,14 +2,15 @@ package com.ztory.lib.sleek;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Window;
-
-import com.ztory.lib.sleek.base.scroller.xy.SleekScrollerXY;
 
 /**
  * Created by jonruna on 2017-04-06.
  */
 public class SleekActivity extends Activity {
+
+    protected Handler uiHandler;
 
     protected SleekCanvas sleekCanvas = null;
 
@@ -21,11 +22,15 @@ public class SleekActivity extends Activity {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        sleekCanvas = new SleekCanvas(this);
-        sleekCanvas.setBackgroundColor(0xffffffff);
-        //sleekCanvas.setSleekScroller(new SleekScrollerBase(true));
-        sleekCanvas.setSleekScroller(new SleekScrollerXY(true, true));
-        setContentView(sleekCanvas);
+        uiHandler = new Handler();
+    }
+
+    public Handler getUiHandler() {
+        return uiHandler;
+    }
+
+    public void setSleekCanvas(SleekCanvas theSleekCanvas) {
+        sleekCanvas = theSleekCanvas;
     }
 
     public SleekCanvas getSleekCanvas() {

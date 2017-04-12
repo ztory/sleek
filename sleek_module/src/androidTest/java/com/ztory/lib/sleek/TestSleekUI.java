@@ -103,7 +103,18 @@ public class TestSleekUI {
                            "    text-align: center;\n" +
                            "    vertical-align: bottom;\n" +
                            "    box-shadow: 0px 1px 2px #FFA03899;\n" +//offset-x | offset-y | blur-radius | color
-                           "}";
+                           "}",
+            CSS_FEED_ITEM =
+                    "{\n" +
+                    "    background: #fdfdfd;\n" +
+                    "    border-radius: 2px;\n" +
+                    "    color: #121212;\n" +
+                    "    font-size: 20px;\n" +
+                    "    line-height: 24px;\n" +
+                    "    text-align: left;\n" +
+                    "    vertical-align: top;\n" +
+                    "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
+                    "}";
 
     @Rule
     public ActivityTestRule<SleekActivity> mActivityRule = new ActivityTestRule<>(SleekActivity.class, true, true);
@@ -344,6 +355,64 @@ public class TestSleekUI {
         );
     }
 
+    private static final void loadUIscrollYcompleteFeedUI(final SleekCanvas sleekCanvas) {
+
+        //TODO THIS FUNCTION SHOULD REFLECT A EASY TO USE REAL WORLD SCENARIO
+
+        //TODO FIX SO THAT SleekCanvas DEFAULTS TO HAVING loadPadding EQUAL TO width and height of itself !!!!
+
+        sleekCanvas.setBackgroundColor(0xffe8e8e8);
+
+        String feedItemString1 = "Now that there is the Tec-9, a crappy spray gun from South Miami. This gun is advertised as the most popular gun in American crime. Do you believe that shit? It actually says that in the little book that comes with it: the most popular gun in American crime. Like they're actually proud of that shit.";
+        String feedItemString2 = "Well, the way they make shows is, they make one show. That show's called a pilot. Then they show that show to the people who make shows, and on the strength of that one show they decide if they're going to make more shows. Some pilots get picked and become television programs. Some don't, become nothing. She starred in one of the ones that became nothing.";
+        String feedItemString3 = "Look, just because I don't be givin' no man a foot massage don't make it right for Marsellus to throw Antwone into a glass motherfuckin' house, fuckin' up the way the nigger talks. Motherfucker do that shit to me, he better paralyze my ass, 'cause I'll kill the motherfucker, know what I'm sayin'?";
+        String feedItemString4 = "Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting outside on a mechanical helicopter that shakes when you put quarters in it? No? Well, that's what you see at a toy store. And you must think you're in a toy store, because you're here shopping for an infant named Jeb.";
+
+        int feedItemTopMargin = UtilPx.getPixels(20);
+        int feedItemHorizontalMargin = UtilPx.getPixels(80);
+        int feedItemHeight = UtilPx.getPixels(400);
+
+        SleekElement sleekFeedItem, lastSleekFeedItem = null;
+        String feedItemString;
+        for (int i = 1; i <= 12; i++) {
+
+            sleekFeedItem = new SleekElement(
+                    SleekParam.DEFAULT_TOUCHABLE.newPriority(sleekCanvas.getDrawPrioNext())
+            );
+
+            if (i % 4 == 0) {
+                feedItemString = feedItemString1;
+            }
+            else if (i % 3 == 0) {
+                feedItemString = feedItemString2;
+            }
+            else if (i % 2 == 0) {
+                feedItemString = feedItemString3;
+            }
+            else {
+                feedItemString = feedItemString4;
+            }
+            sleekFeedItem.setElementString(feedItemString);
+
+            sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM));
+            sleekFeedItem.getLayout()
+                    .x(SL.X.POS_CENTER, 0, null)
+                    .y(SL.Y.ABSOLUTE, feedItemTopMargin, null)
+                    .w(SL.W.PERCENT_CANVAS, feedItemHorizontalMargin + feedItemHorizontalMargin, null, 1.0f)
+                    .h(SL.H.ABSOLUTE, feedItemHeight, null);
+            if (lastSleekFeedItem != null) {
+                sleekFeedItem.getLayout().y(SL.Y.SOUTH_OF, feedItemTopMargin, lastSleekFeedItem);
+            }
+            else {
+                sleekFeedItem.getLayout().y(SL.Y.ABSOLUTE, feedItemTopMargin, null);
+            }
+            sleekCanvas.addSleek(sleekFeedItem);
+
+            lastSleekFeedItem = sleekFeedItem;
+        }
+
+    }
+
     @Test
     public void testGeneralUI() throws Exception {
 
@@ -358,11 +427,15 @@ public class TestSleekUI {
 
         UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 
+        UtilTestSleekUI.setSleekActivitySleekCanvasScrollerY(mActivityRule.getActivity());
+        //UtilTestSleekUI.setSleekActivitySleekCanvasScrollerXY(mActivityRule.getActivity());
+
         //loadUIscrollXYareas(mActivityRule.getActivity().getSleekCanvas());
         //loadUIscrollXYbasicSleekElements(mActivityRule.getActivity().getSleekCanvas());
         //loadUIensureRuntimeAddedViewsGetLoaded(mActivityRule.getActivity().getSleekCanvas());
         //loadUIruntimeDelayAddViews(mActivityRule.getActivity().getSleekCanvas());
-        loadUIverticalTextCentering(mActivityRule.getActivity().getSleekCanvas());
+        //loadUIverticalTextCentering(mActivityRule.getActivity().getSleekCanvas());
+        loadUIscrollYcompleteFeedUI(mActivityRule.getActivity().getSleekCanvas());
 
         final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 
