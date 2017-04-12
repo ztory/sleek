@@ -484,10 +484,10 @@ public class SleekCanvas extends RelativeLayout {
     }
 
     public void removeSleek(Sleek sleekDrawItem) {
-        removeSleek(sleekDrawItem, true);
+        removeSleek(sleekDrawItem, true, true);
     }
 
-    public void removeSleek(Sleek sleekDrawItem, boolean unloadView) {
+    public void removeSleek(Sleek sleekDrawItem, boolean unloadView, boolean reloadScrollEdges) {
         synchronized (canvasLockObj) {
 
             if (sleekDrawItem == null) {
@@ -513,12 +513,21 @@ public class SleekCanvas extends RelativeLayout {
 
             sleekDrawItem.onSleekParentRemove(SleekCanvas.this, null);
 
-            // Reload scroll edges so that removed view is no longer taken in to account
-            reloadScrollEdges();
+            if (reloadScrollEdges) {
 
-            // If removed view is outside of new scroll-edges then also load/unload new viewport
-            if (!isInsideOfLoadBounds(sleekDrawItem)) {
-                loadAndUnloadSleekLists(true);
+                float scrollLeft = getSleekScroller().getPosLeft();
+                float scrollTop = getSleekScroller().getPosTop();
+
+                // Reload scroll edges so that removed view is no longer taken in to account
+                reloadScrollEdges();
+
+                // If removed view modified scroll position then also load/unload new viewport
+                if (
+                        scrollLeft != getSleekScroller().getPosLeft()
+                        || scrollTop != getSleekScroller().getPosTop()
+                        ) {
+                    loadAndUnloadSleekLists(false);
+                }
             }
         }
 

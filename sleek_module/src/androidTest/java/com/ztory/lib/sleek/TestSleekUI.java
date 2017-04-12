@@ -376,10 +376,28 @@ public class TestSleekUI {
 
         SleekElement sleekFeedItem, lastSleekFeedItem = null;
         String feedItemString;
-        for (int i = 1; i <= 12; i++) {
+        for (int i = 1; i <= 24; i++) {
 
             sleekFeedItem = new SleekElement(
                     SleekParam.DEFAULT_TOUCHABLE.newPriority(sleekCanvas.getDrawPrioNext())
+            );
+
+            final SleekElement finalSleekFeedItem = sleekFeedItem;
+            finalSleekFeedItem.getTouchHandler().setClickAction(
+                    null,
+                    null,
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            finalSleekFeedItem.parentRemove(true);
+                            sleekCanvas.getHandler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    sleekCanvas.addSleek(finalSleekFeedItem);
+                                }
+                            }, 500);
+                        }
+                    }
             );
 
             if (i % 4 == 0) {

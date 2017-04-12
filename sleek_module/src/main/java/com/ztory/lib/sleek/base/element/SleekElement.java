@@ -5,7 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.os.Build;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvasInfo;
@@ -18,11 +20,40 @@ import com.ztory.lib.sleek.base.text.SleekViewText;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by jonruna on 2017-04-07.
  */
 public class SleekElement extends SleekBaseComposite {
+
+    protected static final Executor SLEEK_ELEMENT_EXECUTOR;
+    static {
+        SLEEK_ELEMENT_EXECUTOR = new ThreadPoolExecutor(
+                3,
+                3,
+                4L,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<Runnable>(),
+                new ThreadFactory() {
+                    private final AtomicInteger mCount = new AtomicInteger(1);
+                    public Thread newThread(Runnable runnable) {
+                        return new Thread(
+                                runnable,
+                                "SleekElement Thread #" + mCount.getAndIncrement()
+                        );
+                    }
+                }
+        );
+        if (Build.VERSION.SDK_INT >= 9) {
+            ((ThreadPoolExecutor) SLEEK_ELEMENT_EXECUTOR).allowCoreThreadTimeOut(true);
+        }
+    }
 
     protected final List<CSSblock> elementCSSlist = new ArrayList<>(4);
 
@@ -34,13 +65,19 @@ public class SleekElement extends SleekBaseComposite {
 
     protected String elementString = null;
 
-    protected SleekColorArea elementBackground = null;
+    protected final SleekColorArea elementBackground = new SleekColorArea(
+            SleekColorArea.COLOR_TRANSPARENT,
+            SleekColorArea.ANTI_ALIASED_FALSE,
+            SleekParam.DEFAULT_TOUCHABLE
+    );
     protected SleekViewText elementText = null;
 
+    protected boolean activeGenerateShadowTask = false;
     protected Paint elementShadowBitmapPaint;
-    protected Bitmap elementShadowBitmap;
+    protected volatile Bitmap elementShadowBitmap;
 
     protected int elementBackgroundColor = SleekColorArea.COLOR_TRANSPARENT;
+    protected int elementBorderRadius = 0;
     protected float elementShadowRadius = 0;
     protected float elementShadowOffsetX = 0;
     protected float elementShadowOffsetY = 0;
@@ -67,14 +104,15 @@ public class SleekElement extends SleekBaseComposite {
 
     private Bitmap generateShadowBitmap() {
 
+        if (elementShadowRadius <= 0) {
+            return null;
+        }
+
         //TODO LARGE SleekElements EQUALS LARGE BITMAPS EQUALS PERFORMANCE HIT! Optimize this !!!!
 
         //TODO MAYBE MOVE BITMAP GENERATION TO BACKGROUND THREAD ????
 
         long timestamp = System.currentTimeMillis();
-
-        elementShadowBitmapPaint = new Paint();
-        elementShadowBitmapPaint.setAntiAlias(true);
 
         Paint paint = new Paint();
         paint.setAntiAlias(true);
@@ -89,7 +127,6 @@ public class SleekElement extends SleekBaseComposite {
         );
         bitmap.eraseColor(Color.TRANSPARENT);
         Canvas canvas = new Canvas(bitmap);
-        int borderRadius = elementCSS.getBorderRadius();
         canvas.drawRoundRect(
                 new RectF(
                         elementShadowRadius + elementShadowRadius,
@@ -97,8 +134,8 @@ public class SleekElement extends SleekBaseComposite {
                         elementShadowRadius + elementShadowRadius + sleekW,
                         elementShadowRadius + elementShadowRadius + sleekH
                 ),
-                borderRadius,
-                borderRadius,
+                elementBorderRadius,
+                elementBorderRadius,
                 paint
         );
 
@@ -141,6 +178,14 @@ public class SleekElement extends SleekBaseComposite {
         Integer backgroundColor = elementCSS.getBackgroundColor();
         if (backgroundColor != null) {
             elementBackgroundColor = backgroundColor;
+            elementBackground.getPaint().setColor(backgroundColor);
+        }
+
+        Integer borderRadius = elementCSS.getBorderRadius();
+        if (borderRadius != null) {
+            elementBorderRadius = borderRadius;
+            elementBackground.getPaint().setAntiAlias(true);
+            elementBackground.setRounded(borderRadius);
         }
 
         Integer boxShadowBlurRadius = elementCSS.getBoxShadowBlurRadius();
@@ -161,22 +206,6 @@ public class SleekElement extends SleekBaseComposite {
         }
         else {
             elementShadowRadius = 0;
-        }
-
-        // Only init elementBackground if elementShadowRadius == 0
-        if (elementShadowRadius == 0) {
-
-            if (backgroundColor != null) {
-                createBackground();
-                elementBackground.getPaint().setColor(backgroundColor);
-            }
-
-            Integer borderRadius = elementCSS.getBorderRadius();
-            if (borderRadius != null) {
-                createBackground();
-                elementBackground.getPaint().setAntiAlias(true);
-                elementBackground.setRounded(borderRadius);
-            }
         }
 
         Integer color = elementCSS.getColor();
@@ -259,18 +288,6 @@ public class SleekElement extends SleekBaseComposite {
         return elementString;
     }
 
-    protected void createBackground() {
-        if (elementBackground != null) {
-            return;
-        }
-        elementBackground = new SleekColorArea(
-                SleekColorArea.COLOR_TRANSPARENT,
-                SleekColorArea.ANTI_ALIASED_FALSE,
-                SleekParam.DEFAULT
-        );
-        elementBackground.setSleekBounds(0, 0, sleekW, sleekH);
-    }
-
     public SleekColorArea getBackground() {
         return elementBackground;
     }
@@ -307,7 +324,7 @@ public class SleekElement extends SleekBaseComposite {
                     elementShadowBitmapPaint
             );
         }
-        else if (elementBackground != null) {
+        else {
             elementBackground.onSleekDraw(canvas, info);
         }
 
@@ -327,23 +344,85 @@ public class SleekElement extends SleekBaseComposite {
     public void setSleekBounds(float x, float y, int w, int h) {
         super.setSleekBounds(x, y, w, h);
 
-        if (elementBackground != null) {
-            elementBackground.setSleekBounds(0, 0, w, h);
-        }
+        elementBackground.setSleekBounds(0, 0, w, h);
 
         if (elementText != null) {
             elementText.setSleekBounds(0, 0, w, h);
         }
     }
 
-    protected void updateShadowBitmap() {
-        if (elementShadowRadius > 0) {
-            elementShadowBitmap = generateShadowBitmap();
+//    protected void updateShadowBitmap() {
+//        if (elementShadowRadius > 0) {
+//            elementShadowBitmap = generateShadowBitmap();
+//        }
+//        else if (elementShadowBitmap != null) {
+//            elementShadowBitmap.recycle();
+//            elementShadowBitmap = null;
+//        }
+//    }
+
+    protected void setElementShadowBitmap(Bitmap theShadowBitmap) {
+        synchronized (SleekElement.this) {
+            if (elementShadowBitmap != null) {
+                elementShadowBitmap.recycle();
+            }
+            elementShadowBitmap = theShadowBitmap;
         }
-        else if (elementShadowBitmap != null) {
-            elementShadowBitmap.recycle();
-            elementShadowBitmap = null;
+    }
+
+    protected void unloadElementShadowBitmap() {
+        setElementShadowBitmap(null);
+    }
+
+    protected void loadElementShadowBitmap() {
+
+        if (elementShadowRadius <= 0) {
+            return;
         }
+
+        if (elementShadowBitmap != null) {
+            return;
+        }
+
+        synchronized (SleekElement.this) {
+            if (activeGenerateShadowTask) {
+                return;
+            }
+            activeGenerateShadowTask = true;
+        }
+
+        if (elementShadowBitmapPaint == null) {
+            elementShadowBitmapPaint = new Paint();
+            elementShadowBitmapPaint.setAntiAlias(true);
+        }
+
+        SLEEK_ELEMENT_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+
+                Bitmap shadowBitmap = generateShadowBitmap();
+
+                synchronized (SleekElement.this) {
+                    activeGenerateShadowTask = false;
+                }
+
+                if (!loaded) {
+                    if (shadowBitmap != null) {
+                        shadowBitmap.recycle();
+                    }
+                    return;
+                }
+
+                setElementShadowBitmap(shadowBitmap);
+                invalidateSafe();
+            }
+        });
     }
 
     @Override
@@ -353,24 +432,49 @@ public class SleekElement extends SleekBaseComposite {
 
         super.onSleekCanvasResize(info);
 
-        updateShadowBitmap();
+        unloadElementShadowBitmap();
+        loadElementShadowBitmap();
     }
 
     @Override
     public void onSleekLoad(SleekCanvasInfo info) {
-        if (elementShadowRadius > 0) {
-            elementShadowBitmap = generateShadowBitmap();
-        }
         super.onSleekLoad(info);
+        loadElementShadowBitmap();
     }
 
     @Override
     public void onSleekUnload() {
         super.onSleekUnload();
-        if (elementShadowBitmap != null) {
-            elementShadowBitmap.recycle();
-            elementShadowBitmap = null;
+        unloadElementShadowBitmap();
+    }
+
+    @Override
+    public boolean onSleekTouchEvent(MotionEvent event, SleekCanvasInfo info) {
+
+        if (touchHandler.onSleekTouchEvent(event, info)) {
+            return true;
         }
+
+        event.offsetLocation(-sleekX, -sleekY);
+
+        touchEventReturn = false;
+
+        if (touchable) {
+            for (int i = views.size() - 1; i >= 0; i--) {
+                if (views.get(i).isSleekTouchable() && views.get(i).onSleekTouchEvent(event, info)) {
+                    touchEventReturn = true;
+                    break;
+                }
+            }
+        }
+
+        if (!touchEventReturn) {
+            touchEventReturn = elementBackground.getTouchHandler().onSleekTouchEvent(event, info);
+        }
+
+        event.offsetLocation(sleekX, sleekY);
+
+        return touchEventReturn;
     }
 
 }
