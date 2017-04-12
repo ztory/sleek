@@ -5,9 +5,11 @@ import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.ztory.lib.sleek.animation.SAVfade;
 import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.base.element.SleekElement;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
+import com.ztory.lib.sleek.contract.ISleekDrawView;
 import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.mapd.Mapd;
 import com.ztory.lib.sleek.util.UtilPx;
@@ -384,8 +386,44 @@ public class TestSleekUI {
 
             final SleekElement finalSleekFeedItem = sleekFeedItem;
             finalSleekFeedItem.getTouchHandler().setClickAction(
-                    null,
-                    null,
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            finalSleekFeedItem.setSleekAnimView(new SAVfade(
+                                    finalSleekFeedItem.getBgPaint().getAlpha(),
+                                    25,
+                                    800,
+                                    finalSleekFeedItem.getBgPaint(),
+                                    ISleekDrawView.NO_DRAW
+                            ));
+                            finalSleekFeedItem.getText().setSleekAnimView(new SAVfade(
+                                    finalSleekFeedItem.getText().getTextPaint().getAlpha(),
+                                    25,
+                                    800,
+                                    finalSleekFeedItem.getText().getTextPaint(),
+                                    ISleekDrawView.NO_DRAW
+                            ));
+                        }
+                    },
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            finalSleekFeedItem.setSleekAnimView(new SAVfade(
+                                    finalSleekFeedItem.getBgPaint().getAlpha(),
+                                    255,
+                                    300,
+                                    finalSleekFeedItem.getBgPaint(),
+                                    ISleekDrawView.NO_DRAW
+                            ));
+                            finalSleekFeedItem.getText().setSleekAnimView(new SAVfade(
+                                    finalSleekFeedItem.getText().getTextPaint().getAlpha(),
+                                    255,
+                                    300,
+                                    finalSleekFeedItem.getText().getTextPaint(),
+                                    ISleekDrawView.NO_DRAW
+                            ));
+                        }
+                    },
                     new Runnable() {
                         @Override
                         public void run() {

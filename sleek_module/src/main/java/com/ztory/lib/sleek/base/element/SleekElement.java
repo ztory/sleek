@@ -288,6 +288,19 @@ public class SleekElement extends SleekBaseComposite {
         return elementString;
     }
 
+    public Paint getBgPaint() {
+        if (elementShadowRadius > 0) {
+            if (elementShadowBitmapPaint == null) {
+                elementShadowBitmapPaint = new Paint();
+                elementShadowBitmapPaint.setAntiAlias(true);
+            }
+            return elementShadowBitmapPaint;
+        }
+        else {
+            return elementBackground.getPaint();
+        }
+    }
+
     public SleekColorArea getBackground() {
         return elementBackground;
     }
