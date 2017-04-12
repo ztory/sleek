@@ -314,33 +314,34 @@ public class TestSleekUI {
                 boxWidth,
                 boxHeight
         );
-    }
 
-    @Test
-    public void testCSSblock2() {
-
-        UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
-
-        CSSblockBase cssBlock = new CSSblockBase(CSS_STRING_2);
-        assertEquals(0x9933E776, cssBlock.getBackgroundColor().intValue());
-        assertEquals("#33E77699", Mapd.get(cssBlock, "background", String.class));
-        assertEquals(UtilPx.getPixels(8), cssBlock.getBorderRadius().intValue());
-        assertEquals(0xff4860E3, cssBlock.getColor().intValue());
-        assertEquals(UtilPx.getPixels(16), cssBlock.getFontSize().intValue());
-        assertEquals(UtilPx.getPixels(30), cssBlock.getLineHeight().intValue());
-        assertEquals("center", cssBlock.getTextAlign());
-        assertEquals("bottom", cssBlock.getVerticalAlign());
-    }
-
-    @Test
-    public void testCSSblock4() {
-
-        UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
-
-        CSSblockBase cssBlock = new CSSblockBase(CSS_STRING_4);
-        assertEquals(Color.argb(255, 255, 0, 0), cssBlock.getBackgroundColor().intValue());
-        assertEquals(Color.argb(127, 0, 255, 0), cssBlock.getBoxShadowColor().intValue());
-        assertEquals(Color.argb((int) (255 * 0.7), 0, 0, 255), cssBlock.getColor().intValue());
+        UtilTestSleekUI.addUIbasicSleekElement(
+                sleekCanvas,
+                "Lynx ÅÄÖ yjq Labs",
+                new CSSblockBase(CSS_STRING_5),
+                0.5f,
+                0.1f,
+                boxWidth,
+                UtilPx.getPixels(sleekCanvas.getContext(), 40)
+        );
+        UtilTestSleekUI.addUIbasicSleekElement(
+                sleekCanvas,
+                "Lynx ÅÄÖ yjq Labs",
+                new CSSblockBase(CSS_STRING_6),
+                0.5f,
+                0.35f,
+                boxWidth,
+                UtilPx.getPixels(sleekCanvas.getContext(), 40)
+        );
+        UtilTestSleekUI.addUIbasicSleekElement(
+                sleekCanvas,
+                "Lynx ÅÄÖ yjq Labs",
+                new CSSblockBase(CSS_STRING_7),
+                0.5f,
+                0.6f,
+                boxWidth,
+                UtilPx.getPixels(sleekCanvas.getContext(), 40)
+        );
     }
 
     @Test
@@ -373,6 +374,33 @@ public class TestSleekUI {
         });
 
         activityPauseLatch.await();
+    }
+
+    @Test
+    public void testCSSblock2() {
+
+        UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+
+        CSSblockBase cssBlock = new CSSblockBase(CSS_STRING_2);
+        assertEquals(0x9933E776, cssBlock.getBackgroundColor().intValue());
+        assertEquals("#33E77699", Mapd.get(cssBlock, "background", String.class));
+        assertEquals(UtilPx.getPixels(8), cssBlock.getBorderRadius().intValue());
+        assertEquals(0xff4860E3, cssBlock.getColor().intValue());
+        assertEquals(UtilPx.getPixels(16), cssBlock.getFontSize().intValue());
+        assertEquals(UtilPx.getPixels(30), cssBlock.getLineHeight().intValue());
+        assertEquals("center", cssBlock.getTextAlign());
+        assertEquals("bottom", cssBlock.getVerticalAlign());
+    }
+
+    @Test
+    public void testCSSblock4() {
+
+        UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+
+        CSSblockBase cssBlock = new CSSblockBase(CSS_STRING_4);
+        assertEquals(Color.argb(255, 255, 0, 0), cssBlock.getBackgroundColor().intValue());
+        assertEquals(Color.argb(127, 0, 255, 0), cssBlock.getBoxShadowColor().intValue());
+        assertEquals(Color.argb((int) (255 * 0.7), 0, 0, 255), cssBlock.getColor().intValue());
     }
 
 }
