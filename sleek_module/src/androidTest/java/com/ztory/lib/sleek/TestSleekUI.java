@@ -73,6 +73,36 @@ public class TestSleekUI {
                            "    text-align: center;\n" +
                            "    vertical-align: top;\n" +
                            "    box-shadow: 0px 0px 12px rgba(0, 255, 0, 0.5);\n" +//offset-x | offset-y | blur-radius | color
+                           "}",
+            CSS_STRING_5 = "{\n" +
+                           "    background: #FF5B38;\n" +
+                           "    border-radius: 2px;\n" +
+                           "    color: #38B0DE;\n" +
+                           "    font-size: 20px;\n" +
+                           "    line-height: 30px;\n" +
+                           "    text-align: center;\n" +
+                           "    vertical-align: top;\n" +
+                           "    box-shadow: 0px 1px 2px #FFA03899;\n" +//offset-x | offset-y | blur-radius | color
+                           "}",
+            CSS_STRING_6 = "{\n" +
+                           "    background: #FF5B38;\n" +
+                           "    border-radius: 2px;\n" +
+                           "    color: #38B0DE;\n" +
+                           "    font-size: 20px;\n" +
+                           "    line-height: 30px;\n" +
+                           "    text-align: center;\n" +
+                           "    vertical-align: middle;\n" +
+                           "    box-shadow: 0px 1px 2px #FFA03899;\n" +//offset-x | offset-y | blur-radius | color
+                           "}",
+            CSS_STRING_7 = "{\n" +
+                           "    background: #FF5B38;\n" +
+                           "    border-radius: 2px;\n" +
+                           "    color: #38B0DE;\n" +
+                           "    font-size: 20px;\n" +
+                           "    line-height: 30px;\n" +
+                           "    text-align: center;\n" +
+                           "    vertical-align: bottom;\n" +
+                           "    box-shadow: 0px 1px 2px #FFA03899;\n" +//offset-x | offset-y | blur-radius | color
                            "}";
 
     @Rule
@@ -229,6 +259,63 @@ public class TestSleekUI {
         sleekCanvas.getHandler().postDelayed(delayAddedView2, 4000);
     }
 
+    private static final void loadUIruntimeDelayAddViews(final SleekCanvas sleekCanvas) {
+        final int boxWidth = UtilPx.getPixels(sleekCanvas.getContext(), 160);
+        final int boxHeight = UtilPx.getPixels(sleekCanvas.getContext(), 160);
+        for (int i = 0; i < 10; i++) {
+            final int finalIndex = i;
+            Runnable delayAddedView = new Runnable() {
+                @Override
+                public void run() {
+                    UtilTestSleekUI.addUIbasicSleekElement(
+                            sleekCanvas,
+                            "ÅÄÖ Runtime Square #" + finalIndex,
+                            new CSSblockBase(CSS_STRING_5),
+                            0.55f + (finalIndex / 5.0f),
+                            0.55f + (finalIndex / 5.0f),
+                            boxWidth,
+                            boxHeight
+                    );
+                }
+            };
+            sleekCanvas.getHandler().postDelayed(delayAddedView, 1000 * i);
+        }
+    }
+
+    private static final void loadUIverticalTextCentering(final SleekCanvas sleekCanvas) {
+
+        final int boxWidth = UtilPx.getPixels(sleekCanvas.getContext(), 200);
+        final int boxHeight = UtilPx.getPixels(sleekCanvas.getContext(), 200);
+
+        UtilTestSleekUI.addUIbasicSleekElement(
+                sleekCanvas,
+                "Detta är ett ÅÄÖ test komplett med åäö och yjq!",
+                new CSSblockBase(CSS_STRING_5),
+                0.1f,
+                0.1f,
+                boxWidth,
+                boxHeight
+        );
+        UtilTestSleekUI.addUIbasicSleekElement(
+                sleekCanvas,
+                "Detta är ett ÅÄÖ test komplett med åäö och yjq!",
+                new CSSblockBase(CSS_STRING_6),
+                0.1f,
+                0.35f,
+                boxWidth,
+                boxHeight
+        );
+        UtilTestSleekUI.addUIbasicSleekElement(
+                sleekCanvas,
+                "Detta är ett ÅÄÖ test komplett med åäö och yjq!",
+                new CSSblockBase(CSS_STRING_7),
+                0.1f,
+                0.6f,
+                boxWidth,
+                boxHeight
+        );
+    }
+
     @Test
     public void testCSSblock2() {
 
@@ -259,6 +346,11 @@ public class TestSleekUI {
     @Test
     public void testGeneralUI() throws Exception {
 
+//        Log.d("TestSleekUI",
+//                "TestSleekUI" +
+//                " | activity: " + mActivityRule.getActivity()
+//        );
+
         if (mActivityRule.getActivity() == null) {
             throw new IllegalStateException("mActivityRule.getActivity() == null");
         }
@@ -267,7 +359,9 @@ public class TestSleekUI {
 
         //loadUIscrollXYareas(mActivityRule.getActivity().getSleekCanvas());
         //loadUIscrollXYbasicSleekElements(mActivityRule.getActivity().getSleekCanvas());
-        loadUIensureRuntimeAddedViewsGetLoaded(mActivityRule.getActivity().getSleekCanvas());
+        //loadUIensureRuntimeAddedViewsGetLoaded(mActivityRule.getActivity().getSleekCanvas());
+        //loadUIruntimeDelayAddViews(mActivityRule.getActivity().getSleekCanvas());
+        loadUIverticalTextCentering(mActivityRule.getActivity().getSleekCanvas());
 
         final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 

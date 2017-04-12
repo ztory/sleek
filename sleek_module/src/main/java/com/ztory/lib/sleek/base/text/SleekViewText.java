@@ -138,29 +138,36 @@ public class SleekViewText extends SleekBase {
             mSleekText.setMaxSize(sleekW, sleekH);
         }
 
-        float textAscent = mSleekText.getTextPaint().ascent();
-        float textDescent = mSleekText.getTextPaint().descent();
+        //http://stackoverflow.com/questions/27631736/meaning-of-top-ascent-baseline-descent-bottom-and-leading-in-androids-font
+        float textTop = mSleekText.getTextPaint().getFontMetrics().top;
+        float textBottom = mSleekText.getTextPaint().getFontMetrics().bottom;
 
         //Fallback textLineHeight to be equal to textSize
         if (textLineHeight == SleekText.LINE_HEIGHT_DYNAMIC) {
             textLineHeight = textSize;
         }
 
+//        Log.d("SleekViewText",
+//                "SleekViewText" +
+//                " | textTop: " + textTop +
+//                " | textBottom: " + textBottom
+//        );
+
         //________________ -START- calc Y ________________
         float calcTextY;
         int linesAboveOne = mSleekText.getLineCount() - 1;
         if (textAlignVertInt == ALIGN_TOP) {
-            calcTextY = sleekY - textAscent - textDescent;
+            calcTextY = sleekY - textTop;
         }
         else if (textAlignVertInt == ALIGN_BOTTOM) {
-            calcTextY = sleekY + ((sleekH - textDescent));
+            calcTextY = sleekY + sleekH - textBottom;
 
             if (linesAboveOne > 0) {
                 calcTextY -= (textLineHeight) * linesAboveOne;
             }
         }
         else {// center text inside of sleekH
-            calcTextY = sleekY + ((sleekH - textAscent - textDescent) / 2.0f);
+            calcTextY = sleekY + ((sleekH - textTop - textBottom) / 2.0f);
 
             if (linesAboveOne > 0) {
                 calcTextY -= (textLineHeight / 2.0f) * linesAboveOne;
