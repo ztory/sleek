@@ -108,6 +108,17 @@ public class TestSleekUI {
                            "}",
             CSS_FEED_ITEM =
                     "{\n" +
+                    "    background: #fdfdfd;\n" +
+                    "    border-radius: 2px;\n" +
+                    "    color: #121212;\n" +
+                    "    font-size: 20px;\n" +
+                    "    line-height: 24px;\n" +
+                    "    text-align: left;\n" +
+                    "    vertical-align: top;\n" +
+                    "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
+                    "}",
+            CSS_FEED_ITEM_DEBUG =
+                    "{\n" +
                     "    background: #0000ff99;\n" +//"    background: #fdfdfd;\n" +
                     "    border-radius: 2px;\n" +
                     "    color: #121212;\n" +
@@ -115,7 +126,7 @@ public class TestSleekUI {
                     "    line-height: 24px;\n" +
                     "    text-align: left;\n" +
                     "    vertical-align: top;\n" +
-                    "    box-shadow: 0px 0px 10px #0f0;\n" +//"    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
+                    "    box-shadow: -30px 0px 10px #0f0;\n" +//"    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
                     "}";
 
     @Rule
@@ -474,7 +485,7 @@ public class TestSleekUI {
             }
             sleekFeedItem.setElementString(feedItemString);
 
-            sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM));
+            sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_DEBUG));
             sleekFeedItem.getLayout()
                     .x(SL.X.POS_CENTER, 0, null)
                     .y(SL.Y.ABSOLUTE, feedItemTopMargin, null)

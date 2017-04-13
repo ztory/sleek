@@ -236,67 +236,6 @@ public class SleekElement extends SleekBaseComposite {
         return elementCSS;
     }
 
-    protected boolean drawShadowBitmap(Canvas canvas, SleekCanvasInfo info) {
-
-        //TODO Add boolean that keeps track of if (elementShadowBitmapList.size() < 4) !
-
-        if (elementShadowBitmapList.size() < 4) {
-            return false;
-        }
-
-        //TODO FIX SO THAT ALPHA ANIMATION WORKS AS IT SHOULD WITH MIDDLE AREA AND BORDER AREAS !!!!
-        //TODO Maybe we can set bitmap-bg-paint to alpha==255, and shadow to delta of real...
-        //TODO ... bg-alpha and its shadow-alpha ????
-        //TODO NEED TO add interface that is called HasAlpha and has getAlpha and setAlpha methods.
-
-        if (elementShadowBitmapPaint == null) {
-            elementShadowBitmapPaint = new Paint();
-            //elementShadowBitmapPaint.setAntiAlias(true);
-        }
-        //elementShadowBitmapPaint.setColor(elementBackgroundColor);
-        canvas.drawRect(
-                elementBorderRadius,
-                elementBorderRadius,
-                sleekW - elementBorderRadius,
-                sleekH - elementBorderRadius,
-                elementBackground.getPaint()//using elementBackground.getPaint to have correct Alpha
-        );
-
-        canvas.drawBitmap(
-                elementShadowBitmapList.get(0),
-                -elementShadowRadius,
-                -elementShadowRadius,
-                elementShadowBitmapPaint
-        );
-
-        canvas.drawBitmap(
-                elementShadowBitmapList.get(1),
-                -elementShadowRadius,
-                sleekH - elementBorderRadius,// - elementBorderRadius - elementShadowRadius + elementShadowOffsetY,
-                elementShadowBitmapPaint
-        );
-
-        canvas.drawBitmap(
-                elementShadowBitmapList.get(2),
-                -elementShadowRadius,
-                elementBorderRadius,
-                elementShadowBitmapPaint
-        );
-
-        canvas.drawBitmap(
-                elementShadowBitmapList.get(3),
-                sleekW - elementBorderRadius,
-                elementBorderRadius,
-                elementShadowBitmapPaint
-        );
-
-//        elementBackground.getPaint().setColor(0x99ff0000);
-//        elementBackground.onSleekDraw(canvas, info);
-//        elementBackground.getPaint().setColor(elementBackgroundColor);
-
-        return true;
-    }
-
     @Override
     public void drawView(Sleek view, Canvas canvas, SleekCanvasInfo info) {
 
@@ -409,6 +348,76 @@ public class SleekElement extends SleekBaseComposite {
         return touchEventReturn;
     }
 
+    protected boolean drawShadowBitmap(Canvas canvas, SleekCanvasInfo info) {
+
+        //TODO Add boolean that keeps track of if (elementShadowBitmapList.size() < 4) !
+
+        if (elementShadowBitmapList.size() < 4) {
+            return false;
+        }
+
+        //TODO FIX SO THAT ALPHA ANIMATION WORKS AS IT SHOULD WITH MIDDLE AREA AND BORDER AREAS !!!!
+        //TODO Maybe we can set bitmap-bg-paint to alpha==255, and shadow to delta of real...
+        //TODO ... bg-alpha and its shadow-alpha ????
+        //TODO NEED TO add interface that is called HasAlpha and has getAlpha and setAlpha methods.
+
+        if (elementShadowBitmapPaint == null) {
+            elementShadowBitmapPaint = new Paint();
+            //elementShadowBitmapPaint.setAntiAlias(true);
+        }
+        //elementShadowBitmapPaint.setColor(elementBackgroundColor);
+        canvas.drawRect(
+                elementBorderRadius,
+                elementBorderRadius,
+                sleekW - elementBorderRadius,
+                sleekH - elementBorderRadius,
+                elementBackground.getPaint()//using elementBackground.getPaint to have correct Alpha
+        );
+
+        float leftOffset = 0;
+        if (elementShadowOffsetX < 0) {
+            leftOffset = elementShadowOffsetX;
+        }
+
+        // Top Bitmap
+        canvas.drawBitmap(
+                elementShadowBitmapList.get(0),
+                -elementShadowRadius + leftOffset,
+                -elementShadowRadius,
+                elementShadowBitmapPaint
+        );
+
+        // Bottom Bitmap
+        canvas.drawBitmap(
+                elementShadowBitmapList.get(1),
+                -elementShadowRadius + leftOffset,
+                sleekH - elementBorderRadius,// - elementBorderRadius - elementShadowRadius + elementShadowOffsetY,
+                elementShadowBitmapPaint
+        );
+
+        // Left Bitmap
+        canvas.drawBitmap(
+                elementShadowBitmapList.get(2),
+                -elementShadowRadius + leftOffset,
+                elementBorderRadius,
+                elementShadowBitmapPaint
+        );
+
+        // Right Bitmap
+        canvas.drawBitmap(
+                elementShadowBitmapList.get(3),
+                sleekW - elementBorderRadius,
+                elementBorderRadius,
+                elementShadowBitmapPaint
+        );
+
+        elementBackground.getPaint().setColor(0x99ffffff);
+        elementBackground.onSleekDraw(canvas, info);
+        elementBackground.getPaint().setColor(elementBackgroundColor);
+
+        return true;
+    }
+
     protected List<Bitmap> generateShadowBitmap() {
 
         if (elementShadowRadius <= 0) {
@@ -433,7 +442,7 @@ public class SleekElement extends SleekBaseComposite {
         final float cornerHeight = elementShadowRadius;
 
         //____________________ -START- Top Bitmap ____________________
-        bitmapW = (int) (sleekW + cornerWidth + cornerWidth + elementShadowOffsetX);//TODO Math.abs(elementShadowOffsetX) ????
+        bitmapW = (int) (sleekW + cornerWidth + cornerWidth + Math.abs(elementShadowOffsetX));
         bitmapH = (int) (elementBorderRadius + cornerHeight - elementShadowOffsetY);
         if (bitmapW < 1) {
             bitmapW = 1;
@@ -447,7 +456,11 @@ public class SleekElement extends SleekBaseComposite {
                 Bitmap.Config.ARGB_8888
         );
         bitmap.eraseColor(Color.TRANSPARENT);
+        //bitmap.eraseColor(0x66ff00ff);
         canvas = new Canvas(bitmap);
+        if (elementShadowOffsetX < 0) {
+            canvas.translate(-elementShadowOffsetX, 0);
+        }
         canvas.drawRoundRect(
                 new RectF(
                         cornerWidth,
@@ -463,7 +476,7 @@ public class SleekElement extends SleekBaseComposite {
         //____________________ - END - Top Bitmap ____________________
 
         //____________________ -START- Bottom Bitmap ____________________
-        bitmapW = (int) (sleekW + cornerWidth + cornerWidth + elementShadowOffsetX);//TODO Math.abs(elementShadowOffsetX) ????
+        bitmapW = (int) (sleekW + cornerWidth + cornerWidth + Math.abs(elementShadowOffsetX));
         bitmapH = (int) (elementBorderRadius + cornerHeight + elementShadowOffsetY);
         if (bitmapW < 1) {
             bitmapW = 1;
@@ -477,8 +490,14 @@ public class SleekElement extends SleekBaseComposite {
                 Bitmap.Config.ARGB_8888
         );
         bitmap.eraseColor(Color.TRANSPARENT);
+        //bitmap.eraseColor(0x66ff00ff);
         canvas = new Canvas(bitmap);
-        canvas.translate(0, -sleekH - elementShadowRadius + elementBorderRadius);
+        if (elementShadowOffsetX < 0) {
+            canvas.translate(-elementShadowOffsetX, -sleekH - elementShadowRadius + elementBorderRadius);
+        }
+        else {
+            canvas.translate(0, -sleekH - elementShadowRadius + elementBorderRadius);
+        }
         canvas.drawRoundRect(
                 new RectF(
                         cornerWidth,
@@ -494,7 +513,10 @@ public class SleekElement extends SleekBaseComposite {
         //____________________ - END - Bottom Bitmap ____________________
 
         //____________________ -START- Left Bitmap ____________________
-        bitmapW = (int) (elementBorderRadius + cornerWidth - elementShadowOffsetX);
+        bitmapW = (int) (elementBorderRadius + cornerWidth);// - elementShadowOffsetX);
+        if (elementShadowOffsetX < 0) {
+            bitmapW = bitmapW - (int) elementShadowOffsetX;
+        }
         bitmapH = (int) (sleekH - elementBorderRadius - elementBorderRadius);
         if (bitmapW < 1) {
             bitmapW = 1;
@@ -508,10 +530,14 @@ public class SleekElement extends SleekBaseComposite {
                 Bitmap.Config.ARGB_8888
         );
         bitmap.eraseColor(Color.TRANSPARENT);
-        //bitmap.eraseColor(0x66000000);
+        //bitmap.eraseColor(0x99ff0000);
         canvas = new Canvas(bitmap);
-        //canvas.translate(0, - elementBorderRadius - elementBorderRadius);
-        canvas.translate(0, -cornerHeight - elementBorderRadius);
+        if (elementShadowOffsetX < 0) {
+            canvas.translate(-elementShadowOffsetX, -cornerHeight - elementBorderRadius);
+        }
+        else {
+            canvas.translate(0, -cornerHeight - elementBorderRadius);
+        }
         canvas.drawRoundRect(
                 new RectF(
                         cornerWidth,
@@ -527,7 +553,10 @@ public class SleekElement extends SleekBaseComposite {
         //____________________ - END - Left Bitmap ____________________
 
         //____________________ -START- Right Bitmap ____________________
-        bitmapW = (int) (elementBorderRadius + cornerWidth + elementShadowOffsetX);
+        bitmapW = (int) (elementBorderRadius + cornerWidth);
+        if (elementShadowOffsetX > 0) {
+            bitmapW = bitmapW + (int) elementShadowOffsetX;
+        }
         bitmapH = (int) (sleekH - elementBorderRadius - elementBorderRadius);
         if (bitmapW < 1) {
             bitmapW = 1;
