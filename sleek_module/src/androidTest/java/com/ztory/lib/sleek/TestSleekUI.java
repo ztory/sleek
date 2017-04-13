@@ -5,7 +5,7 @@ import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.ztory.lib.sleek.animation.SAVfade;
+import com.ztory.lib.sleek.animation.SAVtransXYWH;
 import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.base.element.SleekElement;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
@@ -108,14 +108,14 @@ public class TestSleekUI {
                            "}",
             CSS_FEED_ITEM =
                     "{\n" +
-                    "    background: #fdfdfd;\n" +
+                    "    background: #0000ff99;\n" +//"    background: #fdfdfd;\n" +
                     "    border-radius: 2px;\n" +
                     "    color: #121212;\n" +
                     "    font-size: 20px;\n" +
                     "    line-height: 24px;\n" +
                     "    text-align: left;\n" +
                     "    vertical-align: top;\n" +
-                    "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
+                    "    box-shadow: 0px 0px 10px #0f0;\n" +//"    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
                     "}";
 
     @Rule
@@ -372,7 +372,7 @@ public class TestSleekUI {
         String feedItemString3 = "Look, just because I don't be givin' no man a foot massage don't make it right for Marsellus to throw Antwone into a glass motherfuckin' house, fuckin' up the way the nigger talks. Motherfucker do that shit to me, he better paralyze my ass, 'cause I'll kill the motherfucker, know what I'm sayin'?";
         String feedItemString4 = "Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting outside on a mechanical helicopter that shakes when you put quarters in it? No? Well, that's what you see at a toy store. And you must think you're in a toy store, because you're here shopping for an infant named Jeb.";
 
-        int feedItemTopMargin = UtilPx.getPixels(20);
+        int feedItemTopMargin = UtilPx.getPixels(40);
         int feedItemHorizontalMargin = UtilPx.getPixels(80);
         int feedItemHeight = UtilPx.getPixels(400);
 
@@ -384,56 +384,78 @@ public class TestSleekUI {
                     SleekParam.DEFAULT_TOUCHABLE.newPriority(sleekCanvas.getDrawPrioNext())
             );
 
-            final SleekElement finalSleekFeedItem = sleekFeedItem;
-            finalSleekFeedItem.getTouchHandler().setClickAction(
+            final SleekElement finalFeedItem = sleekFeedItem;
+            finalFeedItem.getTouchHandler().setClickAction(
                     new Runnable() {
                         @Override
                         public void run() {
-                            finalSleekFeedItem.setSleekAnimView(new SAVfade(
-                                    finalSleekFeedItem.getBgPaint().getAlpha(),
-                                    25,
-                                    800,
-                                    finalSleekFeedItem.getBgPaint(),
+
+                            //TODO TESTA XYWH ANIMATION, HUR SER DET UT MED SHADOW DÅ ????
+                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() + 160,
+                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() + 160,
+                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() - 160,
+                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() - 160,
+                                    500,
                                     ISleekDrawView.NO_DRAW
                             ));
-                            finalSleekFeedItem.getText().setSleekAnimView(new SAVfade(
-                                    finalSleekFeedItem.getText().getTextPaint().getAlpha(),
-                                    25,
-                                    800,
-                                    finalSleekFeedItem.getText().getTextPaint(),
-                                    ISleekDrawView.NO_DRAW
-                            ));
+
+//                            finalSleekFeedItem.setSleekAnimView(new SAVfade(
+//                                    finalSleekFeedItem.getBgPaint().getAlpha(),
+//                                    25,
+//                                    800,
+//                                    finalSleekFeedItem.getBgPaint(),
+//                                    ISleekDrawView.NO_DRAW
+//                            ));
+//                            finalSleekFeedItem.getText().setSleekAnimView(new SAVfade(
+//                                    finalSleekFeedItem.getText().getTextPaint().getAlpha(),
+//                                    25,
+//                                    800,
+//                                    finalSleekFeedItem.getText().getTextPaint(),
+//                                    ISleekDrawView.NO_DRAW
+//                            ));
                         }
                     },
                     new Runnable() {
                         @Override
                         public void run() {
-                            finalSleekFeedItem.setSleekAnimView(new SAVfade(
-                                    finalSleekFeedItem.getBgPaint().getAlpha(),
-                                    255,
-                                    300,
-                                    finalSleekFeedItem.getBgPaint(),
+
+                            //TODO TESTA XYWH ANIMATION, HUR SER DET UT MED SHADOW DÅ ????
+                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - 160,
+                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - 160,
+                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() + 160,
+                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + 160,
+                                    500,
                                     ISleekDrawView.NO_DRAW
                             ));
-                            finalSleekFeedItem.getText().setSleekAnimView(new SAVfade(
-                                    finalSleekFeedItem.getText().getTextPaint().getAlpha(),
-                                    255,
-                                    300,
-                                    finalSleekFeedItem.getText().getTextPaint(),
-                                    ISleekDrawView.NO_DRAW
-                            ));
+
+//                            finalSleekFeedItem.setSleekAnimView(new SAVfade(
+//                                    finalSleekFeedItem.getBgPaint().getAlpha(),
+//                                    255,
+//                                    300,
+//                                    finalSleekFeedItem.getBgPaint(),
+//                                    ISleekDrawView.NO_DRAW
+//                            ));
+//                            finalSleekFeedItem.getText().setSleekAnimView(new SAVfade(
+//                                    finalSleekFeedItem.getText().getTextPaint().getAlpha(),
+//                                    255,
+//                                    300,
+//                                    finalSleekFeedItem.getText().getTextPaint(),
+//                                    ISleekDrawView.NO_DRAW
+//                            ));
                         }
                     },
                     new Runnable() {
                         @Override
                         public void run() {
-                            finalSleekFeedItem.parentRemove(true);
-                            sleekCanvas.getHandler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    sleekCanvas.addSleek(finalSleekFeedItem);
-                                }
-                            }, 500);
+//                            finalFeedItem.parentRemove(true);
+//                            sleekCanvas.getHandler().postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    sleekCanvas.addSleek(finalFeedItem);
+//                                }
+//                            }, 500);
                         }
                     }
             );

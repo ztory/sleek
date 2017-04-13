@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.os.Build;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -20,40 +19,11 @@ import com.ztory.lib.sleek.base.text.SleekViewText;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by jonruna on 2017-04-07.
  */
 public class SleekElement extends SleekBaseComposite {
-
-    protected static final Executor SLEEK_ELEMENT_EXECUTOR;
-    static {
-        SLEEK_ELEMENT_EXECUTOR = new ThreadPoolExecutor(
-                3,
-                3,
-                4L,
-                TimeUnit.SECONDS,
-                new LinkedBlockingQueue<Runnable>(),
-                new ThreadFactory() {
-                    private final AtomicInteger mCount = new AtomicInteger(1);
-                    public Thread newThread(Runnable runnable) {
-                        return new Thread(
-                                runnable,
-                                "SleekElement Thread #" + mCount.getAndIncrement()
-                        );
-                    }
-                }
-        );
-        if (Build.VERSION.SDK_INT >= 9) {
-            ((ThreadPoolExecutor) SLEEK_ELEMENT_EXECUTOR).allowCoreThreadTimeOut(true);
-        }
-    }
 
     protected final List<CSSblock> elementCSSlist = new ArrayList<>(4);
 
@@ -72,9 +42,8 @@ public class SleekElement extends SleekBaseComposite {
     );
     protected SleekViewText elementText = null;
 
-    protected boolean activeGenerateShadowTask = false;
     protected Paint elementShadowBitmapPaint;
-    protected volatile Bitmap elementShadowBitmap;
+    protected final List<Bitmap> elementShadowBitmapList = new ArrayList<>();
 
     protected int elementBackgroundColor = SleekColorArea.COLOR_TRANSPARENT;
     protected int elementBorderRadius = 0;
@@ -85,63 +54,7 @@ public class SleekElement extends SleekBaseComposite {
 
     public SleekElement(SleekParam sleekParam) {
         super(sleekParam);
-
         setDimensionIgnoreBounds(true);
-
-        //TODO DO WE NEED TO KEEP elementBackground ELEMENT NON-NULL FOR POSITIONING OF CHILDREN ??
-
-        //TODO KEEP elementBackground, because for SleekElements without a box-shadow it is more...
-        //TODO ...lightweight to just draw a SleekColorArea then to generate a bitmap and keep...
-        //TODO ...memory for all background-drawing. CREATE a fina elementBackground when...
-        //TODO ...SleekElement is instantiated, so that it always exists.
-
-        //TODO HOW TO HANDLE elementBackground.getPaint() and elementShadowBitmapPaint, when...
-        //TODO ...someone wants to animate the alpha of the background of this view, which...
-        //TODO ... Paint object should be returned? Can we use elementBackground Paint to draw...
-        //TODO ...the elementShadowBitmap ????
-
-    }
-
-    private Bitmap generateShadowBitmap() {
-
-        if (elementShadowRadius <= 0) {
-            return null;
-        }
-
-        //TODO LARGE SleekElements EQUALS LARGE BITMAPS EQUALS PERFORMANCE HIT! Optimize this !!!!
-
-        //TODO MAYBE MOVE BITMAP GENERATION TO BACKGROUND THREAD ????
-
-        long timestamp = System.currentTimeMillis();
-
-        Paint paint = new Paint();
-        paint.setAntiAlias(true);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(elementBackgroundColor);
-        paint.setShadowLayer(elementShadowRadius, elementShadowOffsetX, elementShadowOffsetY, elementShadowColor);
-
-        Bitmap bitmap = Bitmap.createBitmap(
-                (int) (sleekW + elementShadowRadius + elementShadowRadius + elementShadowRadius + elementShadowRadius + elementShadowOffsetX),
-                (int) (sleekH + elementShadowRadius + elementShadowRadius + elementShadowRadius + elementShadowRadius + elementShadowOffsetY),
-                Bitmap.Config.ARGB_8888
-        );
-        bitmap.eraseColor(Color.TRANSPARENT);
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawRoundRect(
-                new RectF(
-                        elementShadowRadius + elementShadowRadius,
-                        elementShadowRadius + elementShadowRadius,
-                        elementShadowRadius + elementShadowRadius + sleekW,
-                        elementShadowRadius + elementShadowRadius + sleekH
-                ),
-                elementBorderRadius,
-                elementBorderRadius,
-                paint
-        );
-
-        Log.d("SleekElement", "SleekElement | took: " + (System.currentTimeMillis() - timestamp) + "ms");
-
-        return bitmap;
     }
 
     public void checkCSS() {
@@ -292,7 +205,7 @@ public class SleekElement extends SleekBaseComposite {
         if (elementShadowRadius > 0) {
             if (elementShadowBitmapPaint == null) {
                 elementShadowBitmapPaint = new Paint();
-                elementShadowBitmapPaint.setAntiAlias(true);
+                //elementShadowBitmapPaint.setAntiAlias(true);
             }
             return elementShadowBitmapPaint;
         }
@@ -323,21 +236,74 @@ public class SleekElement extends SleekBaseComposite {
         return elementCSS;
     }
 
+    protected boolean drawShadowBitmap(Canvas canvas, SleekCanvasInfo info) {
+
+        //TODO Add boolean that keeps track of if (elementShadowBitmapList.size() < 4) !
+
+        if (elementShadowBitmapList.size() < 4) {
+            return false;
+        }
+
+        //TODO FIX SO THAT ALPHA ANIMATION WORKS AS IT SHOULD WITH MIDDLE AREA AND BORDER AREAS !!!!
+        //TODO Maybe we can set bitmap-bg-paint to alpha==255, and shadow to delta of real...
+        //TODO ... bg-alpha and its shadow-alpha ????
+        //TODO NEED TO add interface that is called HasAlpha and has getAlpha and setAlpha methods.
+
+        if (elementShadowBitmapPaint == null) {
+            elementShadowBitmapPaint = new Paint();
+            //elementShadowBitmapPaint.setAntiAlias(true);
+        }
+        //elementShadowBitmapPaint.setColor(elementBackgroundColor);
+        canvas.drawRect(
+                elementBorderRadius,
+                elementBorderRadius,
+                sleekW - elementBorderRadius,
+                sleekH - elementBorderRadius,
+                elementBackground.getPaint()//using elementBackground.getPaint to have correct Alpha
+        );
+
+        canvas.drawBitmap(
+                elementShadowBitmapList.get(0),
+                -elementShadowRadius,
+                -elementShadowRadius,
+                elementShadowBitmapPaint
+        );
+
+        canvas.drawBitmap(
+                elementShadowBitmapList.get(1),
+                -elementShadowRadius,
+                sleekH - elementBorderRadius,// - elementBorderRadius - elementShadowRadius + elementShadowOffsetY,
+                elementShadowBitmapPaint
+        );
+
+        canvas.drawBitmap(
+                elementShadowBitmapList.get(2),
+                -elementShadowRadius,
+                elementBorderRadius,
+                elementShadowBitmapPaint
+        );
+
+        canvas.drawBitmap(
+                elementShadowBitmapList.get(3),
+                sleekW - elementBorderRadius,
+                elementBorderRadius,
+                elementShadowBitmapPaint
+        );
+
+//        elementBackground.getPaint().setColor(0x99ff0000);
+//        elementBackground.onSleekDraw(canvas, info);
+//        elementBackground.getPaint().setColor(elementBackgroundColor);
+
+        return true;
+    }
+
     @Override
     public void drawView(Sleek view, Canvas canvas, SleekCanvasInfo info) {
 
         canvas.save();
         canvas.translate(sleekX, sleekY);
 
-        if (elementShadowBitmap != null) {
-            canvas.drawBitmap(
-                    elementShadowBitmap,
-                    -elementShadowRadius - elementShadowRadius,
-                    -elementShadowRadius - elementShadowRadius,
-                    elementShadowBitmapPaint
-            );
-        }
-        else {
+        if (!drawShadowBitmap(canvas, info)) {
             elementBackground.onSleekDraw(canvas, info);
         }
 
@@ -355,6 +321,10 @@ public class SleekElement extends SleekBaseComposite {
 
     @Override
     public void setSleekBounds(float x, float y, int w, int h) {
+
+        final int oldW = sleekW;
+        final int oldH = sleekH;
+
         super.setSleekBounds(x, y, w, h);
 
         elementBackground.setSleekBounds(0, 0, w, h);
@@ -362,80 +332,30 @@ public class SleekElement extends SleekBaseComposite {
         if (elementText != null) {
             elementText.setSleekBounds(0, 0, w, h);
         }
-    }
 
-//    protected void updateShadowBitmap() {
-//        if (elementShadowRadius > 0) {
-//            elementShadowBitmap = generateShadowBitmap();
-//        }
-//        else if (elementShadowBitmap != null) {
-//            elementShadowBitmap.recycle();
-//            elementShadowBitmap = null;
-//        }
-//    }
-
-    protected void setElementShadowBitmap(Bitmap theShadowBitmap) {
-        synchronized (SleekElement.this) {
-            if (elementShadowBitmap != null) {
-                elementShadowBitmap.recycle();
+        if (loaded && elementShadowRadius > 0) {
+            if (sleekW != oldW || sleekH != oldH) {
+                setElementShadowBitmap(generateShadowBitmap());
             }
-            elementShadowBitmap = theShadowBitmap;
         }
     }
 
-    protected void unloadElementShadowBitmap() {
-        setElementShadowBitmap(null);
-    }
-
-    protected void loadElementShadowBitmap() {
-
-        if (elementShadowRadius <= 0) {
-            return;
-        }
-
-        if (elementShadowBitmap != null) {
-            return;
-        }
-
+    protected void setElementShadowBitmap(List<Bitmap> theShadowBitmapList) {
         synchronized (SleekElement.this) {
-            if (activeGenerateShadowTask) {
-                return;
-            }
-            activeGenerateShadowTask = true;
-        }
 
-        if (elementShadowBitmapPaint == null) {
-            elementShadowBitmapPaint = new Paint();
-            elementShadowBitmapPaint.setAntiAlias(true);
-        }
-
-        SLEEK_ELEMENT_EXECUTOR.execute(new Runnable() {
-            @Override
-            public void run() {
-
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-
-                Bitmap shadowBitmap = generateShadowBitmap();
-
-                synchronized (SleekElement.this) {
-                    activeGenerateShadowTask = false;
-                }
-
-                if (!loaded) {
-                    if (shadowBitmap != null) {
-                        shadowBitmap.recycle();
+            if (elementShadowBitmapList.size() > 0) {
+                for (Bitmap iterShadowBitmap : elementShadowBitmapList) {
+                    if (iterShadowBitmap != null) {
+                        iterShadowBitmap.recycle();
                     }
-                    return;
                 }
-
-                setElementShadowBitmap(shadowBitmap);
-                invalidateSafe();
+                elementShadowBitmapList.clear();
             }
-        });
+
+            if (theShadowBitmapList != null) {
+                elementShadowBitmapList.addAll(theShadowBitmapList);
+            }
+        }
     }
 
     @Override
@@ -445,20 +365,19 @@ public class SleekElement extends SleekBaseComposite {
 
         super.onSleekCanvasResize(info);
 
-        unloadElementShadowBitmap();
-        loadElementShadowBitmap();
+        setElementShadowBitmap(generateShadowBitmap());
     }
 
     @Override
     public void onSleekLoad(SleekCanvasInfo info) {
         super.onSleekLoad(info);
-        loadElementShadowBitmap();
+        setElementShadowBitmap(generateShadowBitmap());
     }
 
     @Override
     public void onSleekUnload() {
         super.onSleekUnload();
-        unloadElementShadowBitmap();
+        setElementShadowBitmap(null);
     }
 
     @Override
@@ -488,6 +407,164 @@ public class SleekElement extends SleekBaseComposite {
         event.offsetLocation(sleekX, sleekY);
 
         return touchEventReturn;
+    }
+
+    protected List<Bitmap> generateShadowBitmap() {
+
+        if (elementShadowRadius <= 0) {
+            return null;
+        }
+
+        //TODO fix shadowOffset X and Y to work as it should with these bitmaps as well!
+
+        long timestamp = System.currentTimeMillis();
+
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(elementBackgroundColor);
+        paint.setShadowLayer(elementShadowRadius, elementShadowOffsetX, elementShadowOffsetY, elementShadowColor);
+
+        List<Bitmap> returnList = new ArrayList<>(4);
+        int bitmapW, bitmapH;
+        Bitmap bitmap;
+        Canvas canvas;
+        final float cornerWidth = elementShadowRadius;
+        final float cornerHeight = elementShadowRadius;
+
+        //____________________ -START- Top Bitmap ____________________
+        bitmapW = (int) (sleekW + cornerWidth + cornerWidth + elementShadowOffsetX);//TODO Math.abs(elementShadowOffsetX) ????
+        bitmapH = (int) (elementBorderRadius + cornerHeight - elementShadowOffsetY);
+        if (bitmapW < 1) {
+            bitmapW = 1;
+        }
+        if (bitmapH < 1) {
+            bitmapH = 1;
+        }
+        bitmap = Bitmap.createBitmap(
+                bitmapW,
+                bitmapH,
+                Bitmap.Config.ARGB_8888
+        );
+        bitmap.eraseColor(Color.TRANSPARENT);
+        canvas = new Canvas(bitmap);
+        canvas.drawRoundRect(
+                new RectF(
+                        cornerWidth,
+                        cornerHeight,
+                        cornerWidth + sleekW,
+                        cornerHeight + sleekH
+                ),
+                elementBorderRadius,
+                elementBorderRadius,
+                paint
+        );
+        returnList.add(bitmap);
+        //____________________ - END - Top Bitmap ____________________
+
+        //____________________ -START- Bottom Bitmap ____________________
+        bitmapW = (int) (sleekW + cornerWidth + cornerWidth + elementShadowOffsetX);//TODO Math.abs(elementShadowOffsetX) ????
+        bitmapH = (int) (elementBorderRadius + cornerHeight + elementShadowOffsetY);
+        if (bitmapW < 1) {
+            bitmapW = 1;
+        }
+        if (bitmapH < 1) {
+            bitmapH = 1;
+        }
+        bitmap = Bitmap.createBitmap(
+                bitmapW,
+                bitmapH,
+                Bitmap.Config.ARGB_8888
+        );
+        bitmap.eraseColor(Color.TRANSPARENT);
+        canvas = new Canvas(bitmap);
+        canvas.translate(0, -sleekH - elementShadowRadius + elementBorderRadius);
+        canvas.drawRoundRect(
+                new RectF(
+                        cornerWidth,
+                        cornerHeight,
+                        cornerWidth + sleekW,
+                        cornerHeight + sleekH
+                ),
+                elementBorderRadius,
+                elementBorderRadius,
+                paint
+        );
+        returnList.add(bitmap);
+        //____________________ - END - Bottom Bitmap ____________________
+
+        //____________________ -START- Left Bitmap ____________________
+        bitmapW = (int) (elementBorderRadius + cornerWidth - elementShadowOffsetX);
+        bitmapH = (int) (sleekH - elementBorderRadius - elementBorderRadius);
+        if (bitmapW < 1) {
+            bitmapW = 1;
+        }
+        if (bitmapH < 1) {
+            bitmapH = 1;
+        }
+        bitmap = Bitmap.createBitmap(
+                bitmapW,
+                bitmapH,
+                Bitmap.Config.ARGB_8888
+        );
+        bitmap.eraseColor(Color.TRANSPARENT);
+        //bitmap.eraseColor(0x66000000);
+        canvas = new Canvas(bitmap);
+        //canvas.translate(0, - elementBorderRadius - elementBorderRadius);
+        canvas.translate(0, -cornerHeight - elementBorderRadius);
+        canvas.drawRoundRect(
+                new RectF(
+                        cornerWidth,
+                        cornerHeight,
+                        cornerWidth + sleekW,
+                        cornerHeight + sleekH
+                ),
+                elementBorderRadius,
+                elementBorderRadius,
+                paint
+        );
+        returnList.add(bitmap);
+        //____________________ - END - Left Bitmap ____________________
+
+        //____________________ -START- Right Bitmap ____________________
+        bitmapW = (int) (elementBorderRadius + cornerWidth + elementShadowOffsetX);
+        bitmapH = (int) (sleekH - elementBorderRadius - elementBorderRadius);
+        if (bitmapW < 1) {
+            bitmapW = 1;
+        }
+        if (bitmapH < 1) {
+            bitmapH = 1;
+        }
+        bitmap = Bitmap.createBitmap(
+                bitmapW,
+                bitmapH,
+                Bitmap.Config.ARGB_8888
+        );
+        bitmap.eraseColor(Color.TRANSPARENT);
+        //bitmap.eraseColor(0x66000000);
+        canvas = new Canvas(bitmap);
+        //canvas.translate(0, - elementBorderRadius - elementBorderRadius);
+        canvas.translate(
+                -sleekW - elementShadowRadius + elementBorderRadius,
+                -cornerHeight - elementBorderRadius
+        );
+        canvas.drawRoundRect(
+                new RectF(
+                        cornerWidth,
+                        cornerHeight,
+                        cornerWidth + sleekW,
+                        cornerHeight + sleekH
+                ),
+                elementBorderRadius,
+                elementBorderRadius,
+                paint
+        );
+        returnList.add(bitmap);
+        //____________________ - END - Right Bitmap ____________________
+
+        Log.d("SleekElement", "SleekElement | took: " + (System.currentTimeMillis() - timestamp) + "ms");
+
+        return returnList;
     }
 
 }

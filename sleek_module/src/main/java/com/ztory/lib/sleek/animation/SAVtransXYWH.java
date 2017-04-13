@@ -71,8 +71,8 @@ public class SAVtransXYWH implements ISleekAnimView {
         if (progressTs < duration) {
             percent = (float) progressTs / (float) duration;
             percent = percent * percent;
-            currTransX = startX + (amountTransX * percent);
-            currTransY = startY + (amountTransY * percent);
+            currTransX = startX + (int) (amountTransX * percent);
+            currTransY = startY + (int) (amountTransY * percent);
             currTransW = startW + (int) (amountTransW * percent);
             currTransH = startH + (int) (amountTransH * percent);
         }
