@@ -1,5 +1,6 @@
 package com.ztory.lib.sleek;
 
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
@@ -395,29 +396,69 @@ public class TestSleekUI {
             final SleekElement finalFeedItem = sleekFeedItem;
             finalFeedItem.getTouchHandler().setClickAction(
                     new Runnable() {
+                        long touchTs = 0;
                         @Override
                         public void run() {
+                            if (System.currentTimeMillis() - touchTs < 2000) {
+                                return;
+                            }
+                            touchTs = finalFeedItem.getTouchHandler().getLastTouchDown();
+
                             finalFeedItem.setSleekAnimView(new SAVtransXYWH(
-                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() + 160,
-                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() + 160,
-                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() - 160,
-                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() - 160,
+                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - 100,
+                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - 100,
+                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() + 200,
+                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + 200,
                                     500,
-                                    ISleekDrawView.NO_DRAW
+                                    new ISleekDrawView() {
+                                        @Override
+                                        public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+
+                                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() + 300,
+                                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() + 300,
+                                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() - 600,
+                                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() - 600,
+                                                    1000,
+                                                    new ISleekDrawView() {
+                                                        @Override
+                                                        public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+                                                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                                                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - 200,
+                                                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - 200,
+                                                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() + 400,
+                                                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + 400,
+                                                                    500,
+                                                                    ISleekDrawView.NO_DRAW
+                                                            ));
+                                                        }
+                                                    }
+                                            ));
+                                        }
+                                    }
                             ));
+
+//                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+//                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() + 160,
+//                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() + 160,
+//                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() - 160,
+//                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() - 160,
+//                                    500,
+//                                    ISleekDrawView.NO_DRAW
+//                            ));
                         }
                     },
                     new Runnable() {
                         @Override
                         public void run() {
-                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
-                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - 160,
-                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - 160,
-                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() + 160,
-                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + 160,
-                                    500,
-                                    ISleekDrawView.NO_DRAW
-                            ));
+//                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+//                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - 160,
+//                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - 160,
+//                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() + 160,
+//                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + 160,
+//                                    500,
+//                                    ISleekDrawView.NO_DRAW
+//                            ));
                         }
                     },
                     new Runnable() {
@@ -599,8 +640,8 @@ public class TestSleekUI {
         //loadUIensureRuntimeAddedViewsGetLoaded(mActivityRule.getActivity().getSleekCanvas());
         //loadUIruntimeDelayAddViews(mActivityRule.getActivity().getSleekCanvas());
         //loadUIverticalTextCentering(mActivityRule.getActivity().getSleekCanvas());
-        //loadUIscrollYcompleteFeedUItransXYWH(mActivityRule.getActivity().getSleekCanvas());
-        loadUIscrollYcompleteFeedUIfade(mActivityRule.getActivity().getSleekCanvas());
+        loadUIscrollYcompleteFeedUItransXYWH(mActivityRule.getActivity().getSleekCanvas());
+        //loadUIscrollYcompleteFeedUIfade(mActivityRule.getActivity().getSleekCanvas());
 
         final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 
