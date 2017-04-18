@@ -1,5 +1,7 @@
 package com.ztory.lib.sleek.base.element.css;
 
+import android.graphics.Rect;
+
 import java.util.Map;
 
 /**
@@ -21,4 +23,6 @@ public interface CSSblock extends Map<String, String> {
     Integer getBoxShadowColor();
     Integer getBoxShadowOffsetX();
     Integer getBoxShadowOffsetY();
+
+    Rect getPadding();
 }

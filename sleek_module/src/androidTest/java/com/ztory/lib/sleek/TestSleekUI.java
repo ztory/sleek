@@ -43,6 +43,13 @@ public class TestSleekUI {
     text-align: center;
 }
     */
+
+    private static final String
+            FEED_ITEM_STRING_1 = "Now that there is the Tec-9, a crappy spray gun from South Miami. This gun is advertised as the most popular gun in American crime. Do you believe that shit? It actually says that in the little book that comes with it: the most popular gun in American crime. Like they're actually proud of that shit.",
+            FEED_ITEM_STRING_2 = "Well, the way they make shows is, they make one show. That show's called a pilot. Then they show that show to the people who make shows, and on the strength of that one show they decide if they're going to make more shows. Some pilots get picked and become television programs. Some don't, become nothing. She starred in one of the ones that became nothing.",
+            FEED_ITEM_STRING_3 = "Look, just because I don't be givin' no man a foot massage don't make it right for Marsellus to throw Antwone into a glass motherfuckin' house, fuckin' up the way the nigger talks. Motherfucker do that shit to me, he better paralyze my ass, 'cause I'll kill the motherfucker, know what I'm sayin'?",
+            FEED_ITEM_STRING_4 = "Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting outside on a mechanical helicopter that shakes when you put quarters in it? No? Well, that's what you see at a toy store. And you must think you're in a toy store, because you're here shopping for an infant named Jeb.";
+
     private static final String
             CSS_STRING_1 = "{\n" +
                            "    background: #999;\n" +
@@ -108,17 +115,6 @@ public class TestSleekUI {
                            "    vertical-align: bottom;\n" +
                            "    box-shadow: 0px 1px 2px #FFA03899;\n" +//offset-x | offset-y | blur-radius | color
                            "}",
-            CSS_FEED_ITEM =
-                    "{\n" +
-                    "    background: #fdfdfd;\n" +
-                    "    border-radius: 2px;\n" +
-                    "    color: #121212;\n" +
-                    "    font-size: 20px;\n" +
-                    "    line-height: 24px;\n" +
-                    "    text-align: left;\n" +
-                    "    vertical-align: top;\n" +
-                    "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
-                    "}",
             CSS_FEED_ITEM_DEBUG =
                     "{\n" +
                     "    background: #fdfdfd;\n" +
@@ -129,6 +125,34 @@ public class TestSleekUI {
                     "    text-align: left;\n" +
                     "    vertical-align: top;\n" +
                     "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +//"    box-shadow: -30px -30px 10px #ff0000;\n"
+                    "}",
+            CSS_PADDING_X4 =// top | right | bottom | left
+                    "{\n" +
+                    "    padding: 5px 10px 15px 20px;\n" +
+                    "}",
+            CSS_PADDING_X3 =// top | left+right | bottom
+                    "{\n" +
+                    "    padding: 10px 5px 20px;\n" +
+                    "}",
+            CSS_PADDING_X2 =// top+bottom | left+right
+                    "{\n" +
+                    "    padding: 10px 20px;\n" +
+                    "}",
+            CSS_PADDING_X1 =// top+right+bottom+left
+                    "{\n" +
+                    "    padding: 10px;\n" +
+                    "}",
+            CSS_FEED_ITEM_PADDING =
+                    "{\n" +
+                    "    background: #fdfdfd;\n" +
+                    "    border-radius: 2px;\n" +
+                    "    color: #121212;\n" +
+                    "    font-size: 20px;\n" +
+                    "    line-height: 24px;\n" +
+                    "    text-align: left;\n" +
+                    "    vertical-align: top;\n" +
+                    "    padding: 5px 10px 15px 20px;\n" +
+                    //"    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
                     "}";
 
     @Rule
@@ -376,11 +400,6 @@ public class TestSleekUI {
 
         UtilTestSleekUI.addUIframeRate(sleekCanvas);
 
-        String feedItemString1 = "Now that there is the Tec-9, a crappy spray gun from South Miami. This gun is advertised as the most popular gun in American crime. Do you believe that shit? It actually says that in the little book that comes with it: the most popular gun in American crime. Like they're actually proud of that shit.";
-        String feedItemString2 = "Well, the way they make shows is, they make one show. That show's called a pilot. Then they show that show to the people who make shows, and on the strength of that one show they decide if they're going to make more shows. Some pilots get picked and become television programs. Some don't, become nothing. She starred in one of the ones that became nothing.";
-        String feedItemString3 = "Look, just because I don't be givin' no man a foot massage don't make it right for Marsellus to throw Antwone into a glass motherfuckin' house, fuckin' up the way the nigger talks. Motherfucker do that shit to me, he better paralyze my ass, 'cause I'll kill the motherfucker, know what I'm sayin'?";
-        String feedItemString4 = "Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting outside on a mechanical helicopter that shakes when you put quarters in it? No? Well, that's what you see at a toy store. And you must think you're in a toy store, because you're here shopping for an infant named Jeb.";
-
         int feedItemTopMargin = UtilPx.getPixels(80);
         int feedItemHorizontalMargin = UtilPx.getPixels(80);
         int feedItemHeight = UtilPx.getPixels(400);
@@ -476,16 +495,16 @@ public class TestSleekUI {
             );
 
             if (i % 4 == 0) {
-                feedItemString = feedItemString1;
+                feedItemString = FEED_ITEM_STRING_1;
             }
             else if (i % 3 == 0) {
-                feedItemString = feedItemString2;
+                feedItemString = FEED_ITEM_STRING_2;
             }
             else if (i % 2 == 0) {
-                feedItemString = feedItemString3;
+                feedItemString = FEED_ITEM_STRING_3;
             }
             else {
-                feedItemString = feedItemString4;
+                feedItemString = FEED_ITEM_STRING_4;
             }
             sleekFeedItem.setElementString(feedItemString);
 
@@ -513,11 +532,6 @@ public class TestSleekUI {
         sleekCanvas.setBackgroundColor(0xffe8e8e8);
 
         UtilTestSleekUI.addUIframeRate(sleekCanvas);
-
-        String feedItemString1 = "Now that there is the Tec-9, a crappy spray gun from South Miami. This gun is advertised as the most popular gun in American crime. Do you believe that shit? It actually says that in the little book that comes with it: the most popular gun in American crime. Like they're actually proud of that shit.";
-        String feedItemString2 = "Well, the way they make shows is, they make one show. That show's called a pilot. Then they show that show to the people who make shows, and on the strength of that one show they decide if they're going to make more shows. Some pilots get picked and become television programs. Some don't, become nothing. She starred in one of the ones that became nothing.";
-        String feedItemString3 = "Look, just because I don't be givin' no man a foot massage don't make it right for Marsellus to throw Antwone into a glass motherfuckin' house, fuckin' up the way the nigger talks. Motherfucker do that shit to me, he better paralyze my ass, 'cause I'll kill the motherfucker, know what I'm sayin'?";
-        String feedItemString4 = "Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting outside on a mechanical helicopter that shakes when you put quarters in it? No? Well, that's what you see at a toy store. And you must think you're in a toy store, because you're here shopping for an infant named Jeb.";
 
         int feedItemTopMargin = UtilPx.getPixels(80);
         int feedItemHorizontalMargin = UtilPx.getPixels(80);
@@ -586,20 +600,125 @@ public class TestSleekUI {
             );
 
             if (i % 4 == 0) {
-                feedItemString = feedItemString1;
+                feedItemString = FEED_ITEM_STRING_1;
             }
             else if (i % 3 == 0) {
-                feedItemString = feedItemString2;
+                feedItemString = FEED_ITEM_STRING_2;
             }
             else if (i % 2 == 0) {
-                feedItemString = feedItemString3;
+                feedItemString = FEED_ITEM_STRING_3;
             }
             else {
-                feedItemString = feedItemString4;
+                feedItemString = FEED_ITEM_STRING_4;
             }
             sleekFeedItem.setElementString(feedItemString);
 
             sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_DEBUG));
+            sleekFeedItem.getLayout()
+                    .x(SL.X.POS_CENTER, 0, null)
+                    .y(SL.Y.ABSOLUTE, feedItemTopMargin, null)
+                    .w(SL.W.PERCENT_CANVAS, feedItemHorizontalMargin + feedItemHorizontalMargin, null, 1.0f)
+                    .h(SL.H.ABSOLUTE, feedItemHeight, null);
+            if (lastSleekFeedItem != null) {
+                sleekFeedItem.getLayout().y(SL.Y.SOUTH_OF, feedItemTopMargin, lastSleekFeedItem);
+            }
+            else {
+                sleekFeedItem.getLayout().y(SL.Y.ABSOLUTE, feedItemTopMargin, null);
+            }
+            sleekCanvas.addSleek(sleekFeedItem);
+
+            lastSleekFeedItem = sleekFeedItem;
+        }
+
+    }
+
+    private static final void loadUItextElementsWithPadding(final SleekCanvas sleekCanvas) {
+
+        sleekCanvas.setBackgroundColor(0xffe8e8e8);
+
+        UtilTestSleekUI.addUIframeRate(sleekCanvas);
+
+        int feedItemTopMargin = UtilPx.getPixels(80);
+        int feedItemHorizontalMargin = UtilPx.getPixels(80);
+        int feedItemHeight = UtilPx.getPixels(400);
+
+        SleekElement sleekFeedItem, lastSleekFeedItem = null;
+        String feedItemString;
+        for (int i = 1; i <= 24; i++) {
+
+            sleekFeedItem = new SleekElement(
+                    SleekParam.DEFAULT_TOUCHABLE.newPriority(sleekCanvas.getDrawPrioNext())
+            );
+
+            final SleekElement finalFeedItem = sleekFeedItem;
+            finalFeedItem.getTouchHandler().setClickAction(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            finalFeedItem.setSleekAnimView(new SAVfade(
+                                    finalFeedItem.getBgPaint().getAlpha(),
+                                    0,
+                                    500,
+                                    finalFeedItem.getBgPaint(),
+                                    ISleekDrawView.NO_DRAW
+                            ));
+                            finalFeedItem.getText().setSleekAnimView(new SAVfade(
+                                    finalFeedItem.getText().getTextPaint().getAlpha(),
+                                    0,
+                                    500,
+                                    finalFeedItem.getText().getTextPaint(),
+                                    ISleekDrawView.NO_DRAW
+                            ));
+                        }
+                    },
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            finalFeedItem.setSleekAnimView(new SAVfade(
+                                    finalFeedItem.getBgPaint().getAlpha(),
+                                    255,
+                                    300,
+                                    finalFeedItem.getBgPaint(),
+                                    ISleekDrawView.NO_DRAW
+                            ));
+                            finalFeedItem.getText().setSleekAnimView(new SAVfade(
+                                    finalFeedItem.getText().getTextPaint().getAlpha(),
+                                    255,
+                                    300,
+                                    finalFeedItem.getText().getTextPaint(),
+                                    ISleekDrawView.NO_DRAW
+                            ));
+                        }
+                    },
+                    new Runnable() {
+                        @Override
+                        public void run() {
+//                            finalFeedItem.parentRemove(true);
+//                            sleekCanvas.getHandler().postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    sleekCanvas.addSleek(finalFeedItem);
+//                                }
+//                            }, 500);
+                        }
+                    }
+            );
+
+            if (i % 4 == 0) {
+                feedItemString = FEED_ITEM_STRING_1;
+            }
+            else if (i % 3 == 0) {
+                feedItemString = FEED_ITEM_STRING_2;
+            }
+            else if (i % 2 == 0) {
+                feedItemString = FEED_ITEM_STRING_3;
+            }
+            else {
+                feedItemString = FEED_ITEM_STRING_4;
+            }
+            sleekFeedItem.setElementString(feedItemString);
+
+            sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_PADDING));
             sleekFeedItem.getLayout()
                     .x(SL.X.POS_CENTER, 0, null)
                     .y(SL.Y.ABSOLUTE, feedItemTopMargin, null)
@@ -640,8 +759,9 @@ public class TestSleekUI {
         //loadUIensureRuntimeAddedViewsGetLoaded(mActivityRule.getActivity().getSleekCanvas());
         //loadUIruntimeDelayAddViews(mActivityRule.getActivity().getSleekCanvas());
         //loadUIverticalTextCentering(mActivityRule.getActivity().getSleekCanvas());
-        loadUIscrollYcompleteFeedUItransXYWH(mActivityRule.getActivity().getSleekCanvas());
+        //loadUIscrollYcompleteFeedUItransXYWH(mActivityRule.getActivity().getSleekCanvas());
         //loadUIscrollYcompleteFeedUIfade(mActivityRule.getActivity().getSleekCanvas());
+        loadUItextElementsWithPadding(mActivityRule.getActivity().getSleekCanvas());
 
         final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 
@@ -680,6 +800,41 @@ public class TestSleekUI {
         assertEquals(Color.argb(255, 255, 0, 0), cssBlock.getBackgroundColor().intValue());
         assertEquals(Color.argb(127, 0, 255, 0), cssBlock.getBoxShadowColor().intValue());
         assertEquals(Color.argb((int) (255 * 0.7), 0, 0, 255), cssBlock.getColor().intValue());
+    }
+
+    @Test
+    public void testCSSfeedItemPadding() {
+
+        UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+
+        CSSblockBase cssBlock;
+        //padding: 5px 10px 15px 20px;
+        cssBlock = new CSSblockBase(CSS_PADDING_X4);
+        assertEquals(UtilPx.getPixels(5), cssBlock.getPadding().top);
+        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().right);
+        assertEquals(UtilPx.getPixels(15), cssBlock.getPadding().bottom);
+        assertEquals(UtilPx.getPixels(20), cssBlock.getPadding().left);
+
+        //padding: 10px 5px 20px;
+        cssBlock = new CSSblockBase(CSS_PADDING_X3);
+        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().top);
+        assertEquals(UtilPx.getPixels(5), cssBlock.getPadding().right);
+        assertEquals(UtilPx.getPixels(20), cssBlock.getPadding().bottom);
+        assertEquals(UtilPx.getPixels(5), cssBlock.getPadding().left);
+
+        //padding: 10px 20px;
+        cssBlock = new CSSblockBase(CSS_PADDING_X2);
+        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().top);
+        assertEquals(UtilPx.getPixels(20), cssBlock.getPadding().right);
+        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().bottom);
+        assertEquals(UtilPx.getPixels(20), cssBlock.getPadding().left);
+
+        //padding: 10px;
+        cssBlock = new CSSblockBase(CSS_PADDING_X1);
+        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().top);
+        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().right);
+        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().bottom);
+        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().left);
     }
 
 }

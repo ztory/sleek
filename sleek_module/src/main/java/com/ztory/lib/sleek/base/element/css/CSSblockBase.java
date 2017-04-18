@@ -1,6 +1,7 @@
 package com.ztory.lib.sleek.base.element.css;
 
 import android.graphics.Color;
+import android.graphics.Rect;
 
 import com.ztory.lib.sleek.mapd.Mapd;
 import com.ztory.lib.sleek.util.UtilPx;
@@ -312,6 +313,69 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
                     String valueString = offsetYstring.substring(0, indexOfPX);
                     return UtilPx.getPixels(Integer.parseInt(valueString));
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Supported syntax:
+     * padding: 5px 10px 15px 20px;
+     * padding: 5px 10px 20px;
+     * padding: 10px 20px;
+     * padding: 10px;
+     * @return an Integer if border-radius is set or null if it is not set
+     */
+    @Override
+    public Rect getPadding() {
+        String boxShadowString = Mapd.get(this, CSS.Property.PADDING, String.class);
+        if (boxShadowString != null) {
+            try {
+                String[] paddingParams = boxShadowString.split(" ");
+                String topPaddingString;
+                String rightPaddingString;
+                String bottomPaddingString;
+                String leftPaddingString;
+
+                if (paddingParams.length == 4) {
+                    topPaddingString = paddingParams[0].substring(0, paddingParams[0].indexOf(CSS.Unit.PX));
+                    rightPaddingString = paddingParams[1].substring(0, paddingParams[1].indexOf(CSS.Unit.PX));
+                    bottomPaddingString = paddingParams[2].substring(0, paddingParams[2].indexOf(CSS.Unit.PX));
+                    leftPaddingString = paddingParams[3].substring(0, paddingParams[3].indexOf(CSS.Unit.PX));
+                }
+                else if (paddingParams.length == 3) {
+                    topPaddingString = paddingParams[0].substring(0, paddingParams[0].indexOf(CSS.Unit.PX));
+                    rightPaddingString = paddingParams[1].substring(0, paddingParams[1].indexOf(CSS.Unit.PX));
+                    bottomPaddingString = paddingParams[2].substring(0, paddingParams[2].indexOf(CSS.Unit.PX));
+                    leftPaddingString = paddingParams[1].substring(0, paddingParams[1].indexOf(CSS.Unit.PX));
+                }
+                else if (paddingParams.length == 2) {
+                    topPaddingString = paddingParams[0].substring(0, paddingParams[0].indexOf(CSS.Unit.PX));
+                    rightPaddingString = paddingParams[1].substring(0, paddingParams[1].indexOf(CSS.Unit.PX));
+                    bottomPaddingString = paddingParams[0].substring(0, paddingParams[0].indexOf(CSS.Unit.PX));
+                    leftPaddingString = paddingParams[1].substring(0, paddingParams[1].indexOf(CSS.Unit.PX));
+                }
+                else if (paddingParams.length == 1) {
+                    topPaddingString = paddingParams[0].substring(0, paddingParams[0].indexOf(CSS.Unit.PX));
+                    rightPaddingString = paddingParams[0].substring(0, paddingParams[0].indexOf(CSS.Unit.PX));
+                    bottomPaddingString = paddingParams[0].substring(0, paddingParams[0].indexOf(CSS.Unit.PX));
+                    leftPaddingString = paddingParams[0].substring(0, paddingParams[0].indexOf(CSS.Unit.PX));
+                }
+                else {
+                    topPaddingString = "0";
+                    rightPaddingString = "0";
+                    bottomPaddingString = "0";
+                    leftPaddingString = "0";
+                }
+
+                return new Rect(
+                        UtilPx.getPixels(Integer.parseInt(leftPaddingString)),//left,
+                        UtilPx.getPixels(Integer.parseInt(topPaddingString)),//top,
+                        UtilPx.getPixels(Integer.parseInt(rightPaddingString)),//right,
+                        UtilPx.getPixels(Integer.parseInt(bottomPaddingString))//bottom
+                );
             } catch (Exception e) {
                 e.printStackTrace();
             }
