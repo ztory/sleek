@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -51,6 +52,8 @@ public class SleekElement extends SleekBaseComposite {
     protected float elementShadowOffsetX = 0;
     protected float elementShadowOffsetY = 0;
     protected int elementShadowColor = 0;
+
+    protected Rect paddingRect;
 
     public SleekElement(SleekParam sleekParam) {
         super(sleekParam);
@@ -175,6 +178,7 @@ public class SleekElement extends SleekBaseComposite {
             elementText.initText();
         }
 
+        paddingRect = elementCSS.getPadding();
 
     }
 
@@ -221,9 +225,7 @@ public class SleekElement extends SleekBaseComposite {
             return;
         }
         elementText = new SleekViewText(SleekParam.DEFAULT);
-        elementText.setSleekBounds(0, 0, sleekW, sleekH);
-        //elementText.setBackgroundColor(0x66000000);
-        //elementText.setTextAlignVertInt(SleekViewText.ALIGN_TOP);
+        //elementText.setBackgroundColor(0x99ff0000);
     }
 
     public SleekViewText getText() {
@@ -267,7 +269,22 @@ public class SleekElement extends SleekBaseComposite {
         elementBackground.setSleekBounds(0, 0, w, h);
 
         if (elementText != null) {
-            elementText.setSleekBounds(0, 0, w, h);
+            if (paddingRect != null) {
+                elementText.setSleekBounds(
+                        paddingRect.left,
+                        paddingRect.top,
+                        w - paddingRect.left - paddingRect.right,
+                        h - paddingRect.top - paddingRect.bottom
+                );
+            }
+            else {
+                elementText.setSleekBounds(
+                        0,
+                        0,
+                        w,
+                        h
+                );
+            }
         }
 
         if (loaded && elementShadowRadius > 0) {

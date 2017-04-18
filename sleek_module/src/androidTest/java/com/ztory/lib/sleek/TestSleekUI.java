@@ -653,53 +653,59 @@ public class TestSleekUI {
             final SleekElement finalFeedItem = sleekFeedItem;
             finalFeedItem.getTouchHandler().setClickAction(
                     new Runnable() {
+                        long touchTs = 0;
                         @Override
                         public void run() {
-                            finalFeedItem.setSleekAnimView(new SAVfade(
-                                    finalFeedItem.getBgPaint().getAlpha(),
-                                    0,
+                            if (System.currentTimeMillis() - touchTs < 2000) {
+                                return;
+                            }
+                            touchTs = finalFeedItem.getTouchHandler().getLastTouchDown();
+
+                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - 100,
+                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - 100,
+                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() + 200,
+                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + 200,
                                     500,
-                                    finalFeedItem.getBgPaint(),
-                                    ISleekDrawView.NO_DRAW
-                            ));
-                            finalFeedItem.getText().setSleekAnimView(new SAVfade(
-                                    finalFeedItem.getText().getTextPaint().getAlpha(),
-                                    0,
-                                    500,
-                                    finalFeedItem.getText().getTextPaint(),
-                                    ISleekDrawView.NO_DRAW
+                                    new ISleekDrawView() {
+                                        @Override
+                                        public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+
+                                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() + 300,
+                                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() + 300,
+                                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() - 600,
+                                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() - 600,
+                                                    1000,
+                                                    new ISleekDrawView() {
+                                                        @Override
+                                                        public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+                                                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                                                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - 200,
+                                                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - 200,
+                                                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() + 400,
+                                                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + 400,
+                                                                    500,
+                                                                    ISleekDrawView.NO_DRAW
+                                                            ));
+                                                        }
+                                                    }
+                                            ));
+                                        }
+                                    }
                             ));
                         }
                     },
                     new Runnable() {
                         @Override
                         public void run() {
-                            finalFeedItem.setSleekAnimView(new SAVfade(
-                                    finalFeedItem.getBgPaint().getAlpha(),
-                                    255,
-                                    300,
-                                    finalFeedItem.getBgPaint(),
-                                    ISleekDrawView.NO_DRAW
-                            ));
-                            finalFeedItem.getText().setSleekAnimView(new SAVfade(
-                                    finalFeedItem.getText().getTextPaint().getAlpha(),
-                                    255,
-                                    300,
-                                    finalFeedItem.getText().getTextPaint(),
-                                    ISleekDrawView.NO_DRAW
-                            ));
+                            //DO NOTHING
                         }
                     },
                     new Runnable() {
                         @Override
                         public void run() {
-//                            finalFeedItem.parentRemove(true);
-//                            sleekCanvas.getHandler().postDelayed(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    sleekCanvas.addSleek(finalFeedItem);
-//                                }
-//                            }, 500);
+                            //DO NOTHING
                         }
                     }
             );
