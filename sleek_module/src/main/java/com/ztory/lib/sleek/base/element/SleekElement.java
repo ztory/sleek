@@ -112,6 +112,8 @@ public class SleekElement extends SleekBaseComposite {
                 elementShadowOffsetX = boxShadowOffsetX;
                 elementShadowOffsetY = boxShadowOffsetY;
                 elementShadowColor = boxShadowColor;
+                elementShadowBitmapPaint = new Paint();
+                elementShadowBitmapPaint.setColor(elementBackgroundColor);
             }
             else {
                 elementShadowRadius = 0;
@@ -203,10 +205,6 @@ public class SleekElement extends SleekBaseComposite {
 
     public Paint getBgPaint() {
         if (elementShadowRadius > 0) {
-            if (elementShadowBitmapPaint == null) {
-                elementShadowBitmapPaint = new Paint();
-                //elementShadowBitmapPaint.setAntiAlias(true);
-            }
             return elementShadowBitmapPaint;
         }
         else {
@@ -361,17 +359,12 @@ public class SleekElement extends SleekBaseComposite {
         //TODO ... bg-alpha and its shadow-alpha ????
         //TODO NEED TO add interface that is called HasAlpha and has getAlpha and setAlpha methods.
 
-        if (elementShadowBitmapPaint == null) {
-            elementShadowBitmapPaint = new Paint();
-            //elementShadowBitmapPaint.setAntiAlias(true);
-        }
-        //elementShadowBitmapPaint.setColor(elementBackgroundColor);
         canvas.drawRect(
                 elementBorderRadius,
                 elementBorderRadius,
                 sleekW - elementBorderRadius,
                 sleekH - elementBorderRadius,
-                elementBackground.getPaint()//using elementBackground.getPaint to have correct Alpha
+                elementShadowBitmapPaint
         );
 
         /*
