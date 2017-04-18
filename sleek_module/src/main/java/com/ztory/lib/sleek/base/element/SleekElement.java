@@ -55,9 +55,25 @@ public class SleekElement extends SleekBaseComposite {
 
     protected Rect paddingRect;
 
+    protected boolean wrapTextWidth = false, wrapTextHeight = false;
+
     public SleekElement(SleekParam sleekParam) {
         super(sleekParam);
         setDimensionIgnoreBounds(true);
+    }
+
+    public void setWrapTextWidth(boolean shouldWrapTextWidth) {
+        wrapTextWidth = shouldWrapTextWidth;
+        if (elementText != null) {
+            elementText.setWrapWidth(wrapTextWidth);
+        }
+    }
+
+    public void setWrapTextHeight(boolean shouldWrapTextHeight) {
+        wrapTextHeight = shouldWrapTextHeight;
+        if (elementText != null) {
+            elementText.setWrapHeight(wrapTextHeight);
+        }
     }
 
     public void checkCSS() {
@@ -220,12 +236,13 @@ public class SleekElement extends SleekBaseComposite {
         return elementBackground;
     }
 
-    protected void createText() {
+    public void createText() {
         if (elementText != null) {
             return;
         }
         elementText = new SleekViewText(SleekParam.DEFAULT);
-        //elementText.setBackgroundColor(0x99ff0000);
+        elementText.setWrapWidth(wrapTextWidth);
+        elementText.setWrapHeight(wrapTextHeight);
     }
 
     public SleekViewText getText() {
@@ -264,10 +281,6 @@ public class SleekElement extends SleekBaseComposite {
         final int oldW = sleekW;
         final int oldH = sleekH;
 
-        super.setSleekBounds(x, y, w, h);
-
-        elementBackground.setSleekBounds(0, 0, w, h);
-
         if (elementText != null) {
             if (paddingRect != null) {
                 elementText.setSleekBounds(
@@ -286,6 +299,26 @@ public class SleekElement extends SleekBaseComposite {
                 );
             }
         }
+
+        int elementWidth = w;
+        int elementHeight = h;
+
+        if ((wrapTextWidth || wrapTextHeight) && elementText != null) {
+
+            int paddingTopBottom = paddingRect != null ? paddingRect.top + paddingRect.bottom : 0;
+            int paddingLeftRight = paddingRect != null ? paddingRect.left + paddingRect.right : 0;
+
+            if (wrapTextWidth) {//wrap only width
+                elementWidth = elementText.getSleekW() + paddingLeftRight;
+            }
+
+            if (wrapTextHeight) {//wrap only height
+                elementHeight = elementText.getSleekH() + paddingTopBottom;
+            }
+        }
+
+        super.setSleekBounds(x, y, elementWidth, elementHeight);
+        elementBackground.setSleekBounds(0, 0, elementWidth, elementHeight);
 
         if (loaded && elementShadowRadius > 0) {
             if (sleekW != oldW || sleekH != oldH) {

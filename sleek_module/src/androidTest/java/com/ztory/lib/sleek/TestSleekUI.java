@@ -153,6 +153,18 @@ public class TestSleekUI {
                     "    vertical-align: top;\n" +
                     "    padding: 5px 10px 15px 20px;\n" +
                     //"    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
+                    "}",
+            CSS_FEED_ITEM_PADDING_BOX_SHADOW =
+                    "{\n" +
+                    "    background: #fdfdfd;\n" +
+                    "    border-radius: 2px;\n" +
+                    "    color: #121212;\n" +
+                    "    font-size: 20px;\n" +
+                    "    line-height: 24px;\n" +
+                    "    text-align: left;\n" +
+                    "    vertical-align: bottom;\n" +
+                    "    padding: 20px 10px;\n" +
+                    "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
                     "}";
 
     @Rule
@@ -743,6 +755,116 @@ public class TestSleekUI {
 
     }
 
+    private static final void loadUItextElementsWrappedWithPadding(final SleekCanvas sleekCanvas) {
+
+        sleekCanvas.setBackgroundColor(0xff999999);
+
+        UtilTestSleekUI.addUIframeRate(sleekCanvas);
+
+        final int feedItemTopMargin = UtilPx.getPixels(60);
+        final int feedItemHorizontalMargin = UtilPx.getPixels(80);
+        int feedItemHeight = UtilPx.getPixels(400);
+
+        SleekElement sleekFeedItem, lastSleekFeedItem = null;
+        String feedItemString;
+        for (int i = 1; i <= 24; i++) {
+
+            sleekFeedItem = new SleekElement(
+                    SleekParam.DEFAULT_TOUCHABLE.newPriority(sleekCanvas.getDrawPrioNext())
+            );
+
+            final SleekElement finalFeedItem = sleekFeedItem;
+            finalFeedItem.getTouchHandler().setClickAction(
+                    new Runnable() {
+                        long touchTs = 0;
+                        @Override
+                        public void run() {
+                            if (System.currentTimeMillis() - touchTs < 1000) {
+                                return;
+                            }
+                            touchTs = finalFeedItem.getTouchHandler().getLastTouchDown();
+
+                            final float startX = finalFeedItem.getSleekX();
+                            final float startY = finalFeedItem.getSleekY();
+                            final int startW = finalFeedItem.getSleekW();
+                            final int startH = finalFeedItem.getSleekH();
+                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                                    startX, startX - feedItemHorizontalMargin,
+                                    startY, startY - feedItemTopMargin,
+                                    startW, startW + feedItemHorizontalMargin + feedItemHorizontalMargin,
+                                    startH, startH + feedItemTopMargin + feedItemTopMargin,
+                                    500,
+                                    new ISleekDrawView() {
+                                        @Override
+                                        public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+                                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                                                    finalFeedItem.getSleekX(), startX,
+                                                    finalFeedItem.getSleekY(), startY,
+                                                    finalFeedItem.getSleekW(), startW,
+                                                    finalFeedItem.getSleekH(), startH,
+                                                    500,
+                                                    ISleekDrawView.NO_DRAW
+                                            ));
+                                        }
+                                    }
+                            ));
+                        }
+                    },
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            //DO NOTHING
+                        }
+                    },
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            //DO NOTHING
+                        }
+                    }
+            );
+
+            if (i % 4 == 0) {
+                feedItemString = "Kenny Powers";
+                sleekFeedItem.setWrapTextWidth(true);
+                sleekFeedItem.setWrapTextHeight(true);
+            }
+            else if (i % 3 == 0) {
+                feedItemString = "Wrap: Width\n" + FEED_ITEM_STRING_2;
+                sleekFeedItem.setWrapTextWidth(true);
+            }
+            else if (i % 2 == 0) {
+                feedItemString = "Wrap: Height\n" + FEED_ITEM_STRING_3;
+                sleekFeedItem.setWrapTextHeight(true);
+            }
+            else {
+                feedItemString = "Wrap: Width + Height\n" + FEED_ITEM_STRING_4;
+                sleekFeedItem.setWrapTextWidth(true);
+                sleekFeedItem.setWrapTextHeight(true);
+            }
+            sleekFeedItem.setElementString(feedItemString);
+
+            sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_PADDING_BOX_SHADOW));
+            sleekFeedItem.createText();
+            sleekFeedItem.getText().setBackgroundColor(0x990000ff);
+            sleekFeedItem.getLayout()
+                    .x(SL.X.POS_CENTER, 0, null)
+                    .y(SL.Y.ABSOLUTE, feedItemTopMargin, null)
+                    .w(SL.W.PERCENT_CANVAS, feedItemHorizontalMargin + feedItemHorizontalMargin, null, 1.0f)
+                    .h(SL.H.ABSOLUTE, feedItemHeight, null);
+            if (lastSleekFeedItem != null) {
+                sleekFeedItem.getLayout().y(SL.Y.SOUTH_OF, feedItemTopMargin, lastSleekFeedItem);
+            }
+            else {
+                sleekFeedItem.getLayout().y(SL.Y.ABSOLUTE, feedItemTopMargin, null);
+            }
+            sleekCanvas.addSleek(sleekFeedItem);
+
+            lastSleekFeedItem = sleekFeedItem;
+        }
+
+    }
+
     @Test
     public void testGeneralUI() throws Exception {
 
@@ -767,7 +889,8 @@ public class TestSleekUI {
         //loadUIverticalTextCentering(mActivityRule.getActivity().getSleekCanvas());
         //loadUIscrollYcompleteFeedUItransXYWH(mActivityRule.getActivity().getSleekCanvas());
         //loadUIscrollYcompleteFeedUIfade(mActivityRule.getActivity().getSleekCanvas());
-        loadUItextElementsWithPadding(mActivityRule.getActivity().getSleekCanvas());
+        //loadUItextElementsWithPadding(mActivityRule.getActivity().getSleekCanvas());
+        loadUItextElementsWrappedWithPadding(mActivityRule.getActivity().getSleekCanvas());
 
         final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 
