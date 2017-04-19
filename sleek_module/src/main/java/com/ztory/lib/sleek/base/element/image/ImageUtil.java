@@ -1,6 +1,7 @@
 package com.ztory.lib.sleek.base.element.image;
 
 import android.os.Build;
+import android.util.Log;
 
 import com.ztory.lib.sleek.util.UtilPx;
 
@@ -15,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -29,6 +31,34 @@ public class ImageUtil {
 
     public static final Executor
             EXECUTOR = createExecutor(ImageUtil.class.getName() + "_EXECUTOR", 8);
+
+    private static ConcurrentHashMap<String, Boolean>
+            sActiveDownloads = new ConcurrentHashMap<>(10, 0.75f, 2);
+
+    public static boolean fetchFromUrlDownloading(String urlString) {
+        return sActiveDownloads.get(urlString) != null;
+    }
+
+    public static void waitForFetchFromUrlToFinish(String urlString, long maxWaitTimeMs) {
+        long startTime = System.currentTimeMillis();
+        while (fetchFromUrlDownloading(urlString)) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            Log.d("ImageUtil",
+                    "ImageUtil" +
+                    " | Waited: " + (System.currentTimeMillis() - startTime)
+            );
+
+            // Wait a maximum of maxWaitTimeMs
+            if (System.currentTimeMillis() - startTime > maxWaitTimeMs) {
+                break;
+            }
+        }
+    }
 
     public static File fetchFromUrl(String urlString) {
 
@@ -49,6 +79,8 @@ public class ImageUtil {
             if (downloadFile.exists() && downloadFile.length() > 0) {
                 return downloadFile;
             }
+
+            sActiveDownloads.put(urlString, true);
 
             URL url = new URL(urlString);
             URLConnection cn = url.openConnection();
@@ -127,6 +159,8 @@ public class ImageUtil {
                 }
             }
         }
+
+        sActiveDownloads.remove(urlString);
 
         if (success) {
             return downloadFile;

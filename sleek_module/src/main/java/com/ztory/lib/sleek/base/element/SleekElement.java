@@ -271,57 +271,59 @@ public class SleekElement extends SleekBaseComposite {
         if (elementBackgroundImage != null) {
             return;
         }
-        //TODO LOAD/UNLOAD THIS WHEN SleekElement is LOADED / UNLOADED !!!!
+
         elementBackgroundImage = new SleekBaseImage(elementBorderRadius, SleekParam.DEFAULT);
         elementBackgroundImage.setFadeAnimOnLoad(false);
 
-        Log.d("SleekElement",
-                "SleekElement" +
-                " | elementBackgroundImageUrl: " + elementBackgroundImageUrl
-        );
-
         if (elementBackgroundImageUrl != null) {
-            if (localElementBackgroundImageUrl) {
-                elementBackgroundImage.setBitmapFetcher(null, null, null);//clear fetcher
-            }
-            else {
-                elementBackgroundImage.setBitmapFetcher(
-                        mSlkCanvas.getHandler(),
-                        ImageUtil.EXECUTOR,
-                        new ISleekData<Bitmap>() {
-                            @Override
-                            public Bitmap getData(Sleek sleekBaseImage) {
 
-                                File bmFile = ImageUtil.fetchFromUrl(elementBackgroundImageUrl);
-                                Bitmap bm = null;
-
-                                if (bmFile != null) {
-                                    try {
-                                        bm = BitmapFactory.decodeStream(
-                                                new FileInputStream(bmFile)
-                                        );
-                                        sleekBaseImage.setSleekBounds(
-                                                0,
-                                                0,
-                                                bm.getWidth(),
-                                                bm.getHeight()
-                                        );
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-
-                                return bm;
-                            }
-                        }
-                );
-
-            }
+            initElementBackgroundImageFetcher();
 
             if (loaded && addedToParent) {
                 mSlkCanvas.loadSleek(elementBackgroundImage);
-                checkSetLocalBackground();//TODO CHECK IF THIS CAN WORK ATM !!!!
+                checkSetLocalBackground();
             }
+        }
+    }
+
+    public void initElementBackgroundImageFetcher() {
+        if (elementBackgroundImageUrl == null || localElementBackgroundImageUrl) {
+            elementBackgroundImage.setBitmapFetcher(null, null, null);//clear fetcher
+        }
+        else {
+            elementBackgroundImage.setBitmapFetcher(
+                    mSlkCanvas.getHandler(),
+                    ImageUtil.EXECUTOR,
+                    new ISleekData<Bitmap>() {
+                        @Override
+                        public Bitmap getData(Sleek sleekBaseImage) {
+
+                            // If active download for url then wait max 15 sec for it to finish
+                            ImageUtil.waitForFetchFromUrlToFinish(elementBackgroundImageUrl, 15000);
+
+                            File bmFile = ImageUtil.fetchFromUrl(elementBackgroundImageUrl);
+                            Bitmap bm = null;
+
+                            if (bmFile != null) {
+                                try {
+                                    bm = BitmapFactory.decodeStream(
+                                            new FileInputStream(bmFile)
+                                    );
+                                    sleekBaseImage.setSleekBounds(
+                                            0,
+                                            0,
+                                            bm.getWidth(),
+                                            bm.getHeight()
+                                    );
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            return bm;
+                        }
+                    }
+            );
         }
     }
 
