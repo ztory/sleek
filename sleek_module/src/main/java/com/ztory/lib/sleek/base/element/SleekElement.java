@@ -16,7 +16,11 @@ import com.ztory.lib.sleek.base.SleekColorArea;
 import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.base.element.css.CSSblock;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
+import com.ztory.lib.sleek.base.element.image.ImageUtil;
+import com.ztory.lib.sleek.base.image.SleekBaseImage;
 import com.ztory.lib.sleek.base.text.SleekViewText;
+import com.ztory.lib.sleek.contract.ISleekData;
+import com.ztory.lib.sleek.util.UtilResources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +58,10 @@ public class SleekElement extends SleekBaseComposite {
     protected int elementShadowColor = 0;
 
     protected Rect paddingRect;
+
+    protected boolean localElementBackgroundImageUrl;
+    protected String elementBackgroundImageUrl = null;
+    protected SleekBaseImage elementBackgroundImage = null;
 
     protected boolean wrapTextWidth = false, wrapTextHeight = false;
 
@@ -196,6 +204,13 @@ public class SleekElement extends SleekBaseComposite {
 
         paddingRect = elementCSS.getPadding();
 
+        elementBackgroundImageUrl = elementCSS.getBackgroundImage();
+        if (elementBackgroundImageUrl != null) {
+            localElementBackgroundImageUrl =
+                    !elementBackgroundImageUrl.startsWith("https://")
+                    && !elementBackgroundImageUrl.startsWith("http://");
+            createBackgroundImage();
+        }
     }
 
     public void setCSSneedsUpdate() {
@@ -249,6 +264,88 @@ public class SleekElement extends SleekBaseComposite {
         return elementText;
     }
 
+    public void createBackgroundImage() {
+        if (elementBackgroundImage != null) {
+            return;
+        }
+        //TODO LOAD/UNLOAD THIS WHEN SleekElement is LOADED / UNLOADED !!!!
+        elementBackgroundImage = new SleekBaseImage(elementBorderRadius, SleekParam.DEFAULT);
+
+        Log.d("SleekElement",
+                "SleekElement" +
+                " | elementBackgroundImageUrl: " + elementBackgroundImageUrl
+        );
+
+        if (elementBackgroundImageUrl != null) {
+            if (localElementBackgroundImageUrl) {
+                elementBackgroundImage.setBitmapFetcher(null, null, null);//clear fetcher
+            }
+            else {
+                elementBackgroundImage.setBitmapFetcher(
+                        mSlkCanvas.getHandler(),
+                        ImageUtil.EXECUTOR,
+                        new ISleekData<Bitmap>() {
+                            @Override
+                            public Bitmap getData(Sleek sleekBaseImage) {
+
+                                //TODO DEBUG !!!!
+
+                                sleekBaseImage.setSleekBounds(
+                                        0,
+                                        0,
+                                        200,
+                                        200
+                                );
+
+                                return UtilResources.getBitmap(android.R.drawable.sym_def_app_icon);
+                            }
+                        }
+                );
+
+            }
+
+            if (loaded && addedToParent) {
+                mSlkCanvas.loadSleek(elementBackgroundImage);
+                checkSetLocalBackground();//TODO CHECK IF THIS CAN WORK ATM !!!!
+            }
+        }
+    }
+
+    public void checkSetLocalBackground() {
+
+        if (elementBackgroundImageUrl != null && localElementBackgroundImageUrl) {
+
+            // DEBUG CODE, because we have no drawable resources in sleek library.
+//            int resId = UtilPx.getDefaultContext().getResources().getIdentifier(
+//                    elementBackgroundImageUrl,
+//                    "drawable",
+//                    "android"
+//            );
+//            elementBackgroundImage.setBitmap(UtilResources.getBitmap(resId));
+//            elementBackgroundImage.setSleekBounds(
+//                    0,
+//                    0,
+//                    200,
+//                    200
+//            );
+
+            Bitmap bitmapResource = UtilResources.getBitmap(
+                    UtilResources.getResourceIdDrawable(elementBackgroundImageUrl)
+            );
+            elementBackgroundImage.setBitmap(bitmapResource);
+            elementBackgroundImage.setSleekBounds(
+                    0,
+                    0,
+                    bitmapResource.getWidth(),
+                    bitmapResource.getHeight()
+            );
+        }
+    }
+
+    public SleekBaseImage getBackgroundImage() {
+        return elementBackgroundImage;
+    }
+
     public CSSblock getCSS() {
         return elementCSS;
     }
@@ -261,6 +358,10 @@ public class SleekElement extends SleekBaseComposite {
 
         if (!drawShadowBitmap(canvas, info)) {
             elementBackground.onSleekDraw(canvas, info);
+        }
+
+        if (elementBackgroundImage != null) {
+            elementBackgroundImage.onSleekDraw(canvas, info);
         }
 
         if (elementText != null) {
@@ -359,12 +460,19 @@ public class SleekElement extends SleekBaseComposite {
     public void onSleekLoad(SleekCanvasInfo info) {
         super.onSleekLoad(info);
         setElementShadowBitmap(generateShadowBitmap());
+        if (elementBackgroundImage != null) {
+            elementBackgroundImage.onSleekLoad(info);
+            checkSetLocalBackground();
+        }
     }
 
     @Override
     public void onSleekUnload() {
         super.onSleekUnload();
         setElementShadowBitmap(null);
+        if (elementBackgroundImage != null) {
+            elementBackgroundImage.onSleekUnload();
+        }
     }
 
     @Override

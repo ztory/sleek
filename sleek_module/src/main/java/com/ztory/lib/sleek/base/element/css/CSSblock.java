@@ -10,6 +10,7 @@ import java.util.Map;
 public interface CSSblock extends Map<String, String> {
     long getModifiedTimestamp();
     Integer getBackgroundColor();
+    String getBackgroundImage();
     Integer getColor();
     Integer getBorderRadius();
     Integer getFontSize();

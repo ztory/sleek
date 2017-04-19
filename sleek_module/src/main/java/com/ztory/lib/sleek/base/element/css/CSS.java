@@ -9,6 +9,7 @@ public class CSS {
         public static final String
                 BACKGROUND = "background",
                 BACKGROUND_COLOR = "background-color",
+                BACKGROUND_IMAGE = "background-image",
                 BORDER_RADIUS = "border-radius",
                 COLOR = "color",
                 FONT_SIZE = "font-size",

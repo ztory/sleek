@@ -45,12 +45,23 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
         for (String iterKeyValue : keyValuePairs) {
             iterKeyValue = iterKeyValue.trim();
             try {
-                String[] keyValueArrau = iterKeyValue.split(":");
-                String key = keyValueArrau[0].trim();
-                String value = keyValueArrau[1].trim();
-                put(key, value);
+                if (iterKeyValue.contains("url(")) {
+                    //String[] keyValueArrau = iterKeyValue.split(":");
+                    String key = iterKeyValue.substring(0, iterKeyValue.indexOf(':'));
+                    String value = iterKeyValue.substring(
+                            iterKeyValue.indexOf(':') + 1,
+                            iterKeyValue.length()
+                    ).trim();
+                    put(key, value);
+                }
+                else {
+                    String[] keyValueArrau = iterKeyValue.split(":");
+                    String key = keyValueArrau[0].trim();
+                    String value = keyValueArrau[1].trim();
+                    put(key, value);
+                }
             } catch (Exception e) {
-                //e.printStackTrace();
+                e.printStackTrace();
             }
         }
     }
@@ -74,6 +85,16 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        return null;
+    }
+
+    @Override
+    public String getBackgroundImage() {
+        String backgroundImageString = Mapd.get(this, CSS.Property.BACKGROUND_IMAGE, String.class);
+        if (backgroundImageString != null) {
+            //background-image: url("https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png")
+            return backgroundImageString.substring(5, backgroundImageString.length() - 2);
         }
         return null;
     }
