@@ -93,7 +93,6 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
     public String getBackgroundImage() {
         String backgroundImageString = Mapd.get(this, CSS.Property.BACKGROUND_IMAGE, String.class);
         if (backgroundImageString != null) {
-            //background-image: url("https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png")
             return backgroundImageString.substring(5, backgroundImageString.length() - 2);
         }
         return null;

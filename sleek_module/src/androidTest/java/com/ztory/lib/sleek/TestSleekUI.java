@@ -170,7 +170,7 @@ public class TestSleekUI {
             CSS_FEED_ITEM_IMAGE =
                     "{\n" +
                     "    background: #33E776;\n" +
-                    "    background-image: url(\"https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png\");\n" +
+                    "    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");\n" +
                     "    border-radius: 8px;\n" +
                     "    color: #121212;\n" +
                     "    font-size: 20px;\n" +
@@ -1112,7 +1112,7 @@ public class TestSleekUI {
 
         CSSblockBase cssBlock = new CSSblockBase(CSS_FEED_ITEM_IMAGE);
         assertEquals(
-                "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png",
+                "https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg",
                 cssBlock.getBackgroundImage()
         );
     }

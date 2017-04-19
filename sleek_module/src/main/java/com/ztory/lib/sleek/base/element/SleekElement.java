@@ -1,6 +1,7 @@
 package com.ztory.lib.sleek.base.element;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -22,6 +23,8 @@ import com.ztory.lib.sleek.base.text.SleekViewText;
 import com.ztory.lib.sleek.contract.ISleekData;
 import com.ztory.lib.sleek.util.UtilResources;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -270,6 +273,7 @@ public class SleekElement extends SleekBaseComposite {
         }
         //TODO LOAD/UNLOAD THIS WHEN SleekElement is LOADED / UNLOADED !!!!
         elementBackgroundImage = new SleekBaseImage(elementBorderRadius, SleekParam.DEFAULT);
+        elementBackgroundImage.setFadeAnimOnLoad(false);
 
         Log.d("SleekElement",
                 "SleekElement" +
@@ -288,16 +292,26 @@ public class SleekElement extends SleekBaseComposite {
                             @Override
                             public Bitmap getData(Sleek sleekBaseImage) {
 
-                                //TODO DEBUG !!!!
+                                File bmFile = ImageUtil.fetchFromUrl(elementBackgroundImageUrl);
+                                Bitmap bm = null;
 
-                                sleekBaseImage.setSleekBounds(
-                                        0,
-                                        0,
-                                        200,
-                                        200
-                                );
+                                if (bmFile != null) {
+                                    try {
+                                        bm = BitmapFactory.decodeStream(
+                                                new FileInputStream(bmFile)
+                                        );
+                                        sleekBaseImage.setSleekBounds(
+                                                0,
+                                                0,
+                                                bm.getWidth(),
+                                                bm.getHeight()
+                                        );
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
 
-                                return UtilResources.getBitmap(android.R.drawable.sym_def_app_icon);
+                                return bm;
                             }
                         }
                 );
