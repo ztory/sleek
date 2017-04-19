@@ -1003,6 +1003,10 @@ public class TestSleekUI {
 
     }
 
+    private static final void loadUIcompleteAppUIexample1(final SleekCanvas sleekCanvas) {
+        //TODO Build a simple complete App UI to test and demonstrate how easy Sleek is to use.
+    }
+
     @Test
     public void testGeneralUI() throws Exception {
 
