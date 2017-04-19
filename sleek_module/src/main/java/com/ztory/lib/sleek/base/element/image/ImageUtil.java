@@ -2,6 +2,19 @@ package com.ztory.lib.sleek.base.element.image;
 
 import android.os.Build;
 
+import com.ztory.lib.sleek.util.UtilPx;
+
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -16,6 +29,152 @@ public class ImageUtil {
 
     public static final Executor
             EXECUTOR = createExecutor(ImageUtil.class.getName() + "_EXECUTOR", 8);
+
+    public static File fetchFromUrl(String urlString) {
+
+        boolean success = false;
+
+        File downloadFile = null;
+
+        InputStream urlInputStream = null;
+        File tempDownloadFile = null;
+        FileOutputStream tempFileOutputStream = null;
+        try {
+            downloadFile = new File(
+                    UtilPx.getDefaultContext().getCacheDir(),
+                    fileNameFromUrl(urlString)
+            );
+
+            // Early return if file has already been downloaded
+            if (downloadFile.exists() && downloadFile.length() > 0) {
+                return downloadFile;
+            }
+
+            URL url = new URL(urlString);
+            URLConnection cn = url.openConnection();
+            cn.connect();
+            urlInputStream = cn.getInputStream();
+            if (urlInputStream == null) {
+                throw new RuntimeException("stream is null");
+            }
+
+            float percentProgress = 0.0f;
+            String contentLengthString = cn.getHeaderField("Content-Length");
+            long contentLength = 0;
+            try {
+                contentLength = Long.parseLong(contentLengthString);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Need to download to a temporary file, and when download is complete...
+            // ...copy temp file contents to actual download file.
+            // This prevents corrupted file data caused by interupted downloads.
+            tempDownloadFile = new File(
+                    UtilPx.getDefaultContext().getCacheDir(),
+                    System.currentTimeMillis() +
+                    fileNameFromUrl(urlString)
+            );
+
+            tempFileOutputStream = new FileOutputStream(tempDownloadFile);
+            int bufSize = 1024;
+            long bytesRead = 0;
+            byte buf[] = new byte[bufSize];
+            do {
+
+                bytesRead += bufSize;
+
+                if (contentLength > 0) {
+                    percentProgress = (float) bytesRead / (float) contentLength;
+                }
+
+                if (percentProgress > 1.0f) {
+                    percentProgress = 1.0f;
+                }
+
+                // If progress-listeners are added then then can listen to percentProgress here.
+
+                int numread = urlInputStream.read(buf);
+                if (numread <= 0) {
+                    break;
+                }
+
+                tempFileOutputStream.write(buf, 0, numread);
+            } while (true);
+
+            if (!copyFile(tempDownloadFile, downloadFile)) {
+                throw new IOException(
+                        "Failed to copy [" + tempDownloadFile.getAbsolutePath() +
+                        "] to [" + downloadFile.getAbsolutePath() + "] !"
+                );
+            }
+
+            success = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            success = false;
+        } finally {
+
+            closeSafe(urlInputStream);
+            closeSafe(tempFileOutputStream);
+
+            if (tempDownloadFile != null) {
+                try {
+                    tempDownloadFile.delete();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+            }
+        }
+
+        if (success) {
+            return downloadFile;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public static String fileNameFromUrl(String urlString) throws UnsupportedEncodingException {
+        return URLEncoder.encode(urlString, "UTF-8");
+    }
+
+    public static boolean copyFile(File source, File destination) {
+        InputStream in = null;
+        OutputStream out = null;
+        boolean success = false;
+        try {
+            in = new FileInputStream(source);
+            out = new FileOutputStream(destination);
+
+            // Transfer bytes from in to out
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+            success = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeSafe(in);
+            closeSafe(out);
+        }
+        return success;
+    }
+
+    private static void closeSafe(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public static ThreadPoolExecutor createExecutor(
             final String threadNamePrefix,
