@@ -20,6 +20,7 @@ import com.ztory.lib.sleek.base.element.css.CSSblockBase;
 import com.ztory.lib.sleek.base.element.image.ImageUtil;
 import com.ztory.lib.sleek.base.image.SleekBaseImage;
 import com.ztory.lib.sleek.base.text.SleekViewText;
+import com.ztory.lib.sleek.contract.ISleekCallback;
 import com.ztory.lib.sleek.contract.ISleekData;
 import com.ztory.lib.sleek.util.UtilResources;
 
@@ -207,12 +208,23 @@ public class SleekElement extends SleekBaseComposite {
 
         paddingRect = elementCSS.getPadding();
 
+        String oldElementBackgroundImageUrl = elementBackgroundImageUrl;
         elementBackgroundImageUrl = elementCSS.getBackgroundImage();
         if (elementBackgroundImageUrl != null) {
-            localElementBackgroundImageUrl =
-                    !elementBackgroundImageUrl.startsWith("https://")
-                    && !elementBackgroundImageUrl.startsWith("http://");
+
             createBackgroundImage();
+
+            if (!elementBackgroundImageUrl.equals(oldElementBackgroundImageUrl)) {
+                localElementBackgroundImageUrl =
+                        !elementBackgroundImageUrl.startsWith("https://")
+                        && !elementBackgroundImageUrl.startsWith("http://");
+
+                reloadBackgroundImage();
+            }
+        }
+        else if (elementBackgroundImage != null) {
+            initBackgroundImageBitmapFetcher();
+            elementBackgroundImage.setBitmap(null);
         }
     }
 
@@ -274,11 +286,35 @@ public class SleekElement extends SleekBaseComposite {
 
         elementBackgroundImage = new SleekBaseImage(elementBorderRadius, SleekParam.DEFAULT);
         elementBackgroundImage.setFadeAnimOnLoad(false);
+        elementBackgroundImage.setBitmapListener(new ISleekCallback<SleekBaseImage>() {
+            @Override
+            public void sleekCallback(SleekBaseImage sleekBaseImage) {
+                positionBackgroundImage();
+            }
+        });
+    }
+
+    public void positionBackgroundImage() {
+
+        if (elementBackgroundImage == null || elementBackgroundImage.getBitmap() == null) {
+            return;
+        }
+
+        //TODO ADD BITMAP POSITIONING LOGIC HERE
+
+        elementBackgroundImage.setSleekBounds(
+                0,
+                0,
+                elementBackgroundImage.getBitmap().getWidth(),
+                elementBackgroundImage.getBitmap().getHeight()
+        );
+    }
+
+    public void reloadBackgroundImage() {
+
+        initBackgroundImageBitmapFetcher();
 
         if (elementBackgroundImageUrl != null) {
-
-            initBackgroundImageBitmapFetcher();
-
             if (loaded && addedToParent) {
                 mSlkCanvas.loadSleek(elementBackgroundImage);
                 checkSetLocalBackground();
@@ -296,7 +332,7 @@ public class SleekElement extends SleekBaseComposite {
                     ImageUtil.EXECUTOR,
                     new ISleekData<Bitmap>() {
                         @Override
-                        public Bitmap getData(Sleek sleekBaseImage) {
+                        public Bitmap getData(Sleek sleek) {
 
                             // If active download for url then wait max 15 sec for it to finish
                             ImageUtil.waitForFetchFromUrlToFinish(elementBackgroundImageUrl, 15000);
@@ -306,15 +342,7 @@ public class SleekElement extends SleekBaseComposite {
 
                             if (bmFile != null) {
                                 try {
-                                    bm = BitmapFactory.decodeStream(
-                                            new FileInputStream(bmFile)
-                                    );
-                                    sleekBaseImage.setSleekBounds(
-                                            0,
-                                            0,
-                                            bm.getWidth(),
-                                            bm.getHeight()
-                                    );
+                                    bm = BitmapFactory.decodeStream(new FileInputStream(bmFile));
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -338,23 +366,11 @@ public class SleekElement extends SleekBaseComposite {
 //                    "android"
 //            );
 //            elementBackgroundImage.setBitmap(UtilResources.getBitmap(resId));
-//            elementBackgroundImage.setSleekBounds(
-//                    0,
-//                    0,
-//                    200,
-//                    200
-//            );
 
             Bitmap bitmapResource = UtilResources.getBitmap(
                     UtilResources.getResourceIdDrawable(elementBackgroundImageUrl)
             );
             elementBackgroundImage.setBitmap(bitmapResource);
-            elementBackgroundImage.setSleekBounds(
-                    0,
-                    0,
-                    bitmapResource.getWidth(),
-                    bitmapResource.getHeight()
-            );
         }
     }
 
@@ -437,10 +453,15 @@ public class SleekElement extends SleekBaseComposite {
         super.setSleekBounds(x, y, elementWidth, elementHeight);
         elementBackground.setSleekBounds(0, 0, elementWidth, elementHeight);
 
-        if (loaded && elementShadowRadius > 0) {
-            if (sleekW != oldW || sleekH != oldH) {
-                setElementShadowBitmap(generateShadowBitmap());
+        if (loaded && addedToParent) {
+
+            if (elementShadowRadius > 0) {
+                if (elementShadowBitmapList.size() == 0 || sleekW != oldW || sleekH != oldH) {
+                    setElementShadowBitmap(generateShadowBitmap());
+                }
             }
+
+            positionBackgroundImage();
         }
     }
 
@@ -468,8 +489,6 @@ public class SleekElement extends SleekBaseComposite {
         checkCSS();//checks if changes have been made to CSS properties
 
         super.onSleekCanvasResize(info);
-
-        setElementShadowBitmap(generateShadowBitmap());
     }
 
     @Override
