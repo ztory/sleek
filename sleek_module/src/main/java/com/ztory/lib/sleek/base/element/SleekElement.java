@@ -277,7 +277,7 @@ public class SleekElement extends SleekBaseComposite {
 
         if (elementBackgroundImageUrl != null) {
 
-            initElementBackgroundImageFetcher();
+            initBackgroundImageBitmapFetcher();
 
             if (loaded && addedToParent) {
                 mSlkCanvas.loadSleek(elementBackgroundImage);
@@ -286,7 +286,7 @@ public class SleekElement extends SleekBaseComposite {
         }
     }
 
-    public void initElementBackgroundImageFetcher() {
+    public void initBackgroundImageBitmapFetcher() {
         if (elementBackgroundImageUrl == null || localElementBackgroundImageUrl) {
             elementBackgroundImage.setBitmapFetcher(null, null, null);//clear fetcher
         }
