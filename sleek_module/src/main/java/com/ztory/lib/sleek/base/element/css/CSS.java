@@ -10,6 +10,7 @@ public class CSS {
                 BACKGROUND = "background",
                 BACKGROUND_COLOR = "background-color",
                 BACKGROUND_IMAGE = "background-image",
+                BACKGROUND_SIZE = "background-size",
                 BORDER_RADIUS = "border-radius",
                 COLOR = "color",
                 FONT_SIZE = "font-size",
@@ -23,6 +24,12 @@ public class CSS {
     public static final class Unit {
         public static final String
                 PX = "px";
+    }
+
+    public static final class Value {
+        public static final String
+                COVER = "cover",
+                CONTAIN = "contain";
     }
 
 }

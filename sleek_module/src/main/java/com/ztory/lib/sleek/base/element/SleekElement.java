@@ -15,6 +15,7 @@ import com.ztory.lib.sleek.SleekCanvasInfo;
 import com.ztory.lib.sleek.base.SleekBaseComposite;
 import com.ztory.lib.sleek.base.SleekColorArea;
 import com.ztory.lib.sleek.base.SleekParam;
+import com.ztory.lib.sleek.base.element.css.CSS;
 import com.ztory.lib.sleek.base.element.css.CSSblock;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
 import com.ztory.lib.sleek.base.element.image.ImageUtil;
@@ -62,6 +63,8 @@ public class SleekElement extends SleekBaseComposite {
     protected int elementShadowColor = 0;
 
     protected Rect paddingRect;
+
+    protected String elementBackgroundSize = null;
 
     protected boolean localElementBackgroundImageUrl;
     protected String elementBackgroundImageUrl = null;
@@ -226,6 +229,8 @@ public class SleekElement extends SleekBaseComposite {
             initBackgroundImageBitmapFetcher();
             elementBackgroundImage.setBitmap(null);
         }
+
+        elementBackgroundSize = elementCSS.getBackgroundSize();
     }
 
     public void setCSSneedsUpdate() {
@@ -300,14 +305,81 @@ public class SleekElement extends SleekBaseComposite {
             return;
         }
 
-        //TODO ADD BITMAP POSITIONING LOGIC HERE
+        //TODO ADD BITMAP POSITIONING LOGIC HERE !!!!
 
+        //TODO WHAT DIFFERENT POSITIONING RULES DO WE NEED FOR background-image ????
+
+        //TODO HOW TO DECLARE NEEDED BACKGROUND POSITIONING RULES IN CSS ????
+
+        int backgroundX = 0;
+        int backgroundY = 0;
+        int backgroundWidth = elementBackgroundImage.getBitmap().getWidth();
+        int backgroundHeight = elementBackgroundImage.getBitmap().getHeight();
+
+        if (elementBackgroundSize != null) {
+
+            //TODO ADD SUPPORT FOR 100% width and 100% height
+
+            if (elementBackgroundSize.equals(CSS.Value.CONTAIN)) {
+                /*
+                contain
+                A keyword that scales the image as large as possible and maintains image aspect
+                ratio (image doesn't get squished). Image is letterboxed within the container.
+                When the image and container have different dimensions, the empty
+                areas (either top/bottom of left/right) are filled with the background-color.
+                 */
+                float elementRatio = (float) sleekW / (float) sleekH;
+                float bitmapRatio = (float) backgroundWidth / (float) backgroundHeight;
+
+
+
+                if (bitmapRatio > elementRatio) {
+                    backgroundWidth = sleekW;
+                    backgroundHeight = (int) (sleekW / bitmapRatio);
+                    backgroundY = (int) ((sleekH - backgroundHeight) / 2.0f);
+                }
+                else {
+                    backgroundHeight = sleekH;
+                    backgroundWidth = (int) (sleekH * bitmapRatio);
+                    backgroundX = (int) ((sleekW - backgroundWidth) / 2.0f);
+                }
+            }
+            else if (elementBackgroundSize.equals(CSS.Value.COVER)) {
+                /*
+                cover
+                A keyword that is the inverse of contain.
+                Scales the image as large as possible and maintains image aspect
+                ratio (image doesn't get squished). The image "covers" the entire
+                width or height of the container. When the image and container have
+                different dimensions, the image is clipped either left/right or top/bottom.
+                 */
+            }
+        }
+
+        if (backgroundX > elementBorderRadius || backgroundY > elementBorderRadius) {
+            elementBackgroundImage.setRoundedRadius(0);
+        }
+        else {
+            elementBackgroundImage.setRoundedRadius(elementBorderRadius);
+        }
+
+        //TODO NEED X and Y position here as well !
         elementBackgroundImage.setSleekBounds(
-                0,
-                0,
-                elementBackgroundImage.getBitmap().getWidth(),
-                elementBackgroundImage.getBitmap().getHeight()
+                backgroundX,
+                backgroundY,
+                backgroundWidth,
+                backgroundHeight
         );
+
+        // 100% width and height
+//        elementBackgroundImage.setSleekBounds(
+//                0,
+//                0,
+//                sleekW,
+//                sleekH
+//        );
+
+
     }
 
     public void reloadBackgroundImage() {

@@ -13,6 +13,9 @@ import java.util.Map;
  * Supported CSS properties:
 {
     background: #d8d8d8;
+    background-color: #d8d8d8;
+    background-image: url("https://example.com/example.png");
+    background-size: cover;
     border-radius: 22px;
     color: #666;
     font-size: 10px;
@@ -20,6 +23,7 @@ import java.util.Map;
     text-align: center;
     vertical-align: middle;
     box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);
+    padding: 5px 10px 15px 20px;
 }
  * Created by jonruna on 2017-04-07.
  */
@@ -96,6 +100,11 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
             return backgroundImageString.substring(5, backgroundImageString.length() - 2);
         }
         return null;
+    }
+
+    @Override
+    public String getBackgroundSize() {
+        return Mapd.get(this, CSS.Property.BACKGROUND_SIZE, String.class);
     }
 
     /**
@@ -346,7 +355,7 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
      * padding: 5px 10px 20px;
      * padding: 10px 20px;
      * padding: 10px;
-     * @return an Integer if border-radius is set or null if it is not set
+     * @return an Integer if padding is set or null if it is not set
      */
     @Override
     public Rect getPadding() {

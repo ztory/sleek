@@ -69,10 +69,14 @@ public class SleekBaseImage extends SleekBase {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
 
-        mRoundedRadius = theRoundedRadius;
-        mUseShader = mRoundedRadius > 0;
+        setRoundedRadius(theRoundedRadius);
 
         setUnloadOnRemove(true);
+    }
+
+    public void setRoundedRadius(int theRoundedRadius) {
+        mRoundedRadius = theRoundedRadius;
+        mUseShader = mRoundedRadius > 0;
     }
 
     /**
