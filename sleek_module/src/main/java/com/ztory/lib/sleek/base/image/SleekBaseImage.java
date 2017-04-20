@@ -290,9 +290,17 @@ public class SleekBaseImage extends SleekBase {
     }
 
     public void setShaderMatrix() {
-        Matrix shaderMatrix = new Matrix();
-        shaderMatrix.setRectToRect(new RectF(mSourceRect), mImgSize, Matrix.ScaleToFit.FILL);
-        mShader.setLocalMatrix(shaderMatrix);
+        if (mUseShader && mBitmap != null && !mBitmap.isRecycled()) {
+
+            if (mShader == null) {
+                mShader = new BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+                mPaint.setShader(mShader);
+            }
+
+            Matrix shaderMatrix = new Matrix();
+            shaderMatrix.setRectToRect(new RectF(mSourceRect), mImgSize, Matrix.ScaleToFit.FILL);
+            mShader.setLocalMatrix(shaderMatrix);
+        }
     }
 
     public Rect getSourceRect() {

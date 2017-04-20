@@ -11,6 +11,8 @@ import com.ztory.lib.sleek.animation.SAVtransXYWH;
 import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.base.element.SleekElement;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
+import com.ztory.lib.sleek.base.image.SleekBaseImage;
+import com.ztory.lib.sleek.contract.ISleekCallback;
 import com.ztory.lib.sleek.contract.ISleekDrawView;
 import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.mapd.Mapd;
@@ -1237,40 +1239,6 @@ public class TestSleekUI {
                                         }
                                     }
                             ));
-
-//                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
-//                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - 100,
-//                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - 100,
-//                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() + 200,
-//                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + 200,
-//                                    500,
-//                                    new ISleekDrawView() {
-//                                        @Override
-//                                        public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
-//
-//                                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
-//                                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() + 300,
-//                                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() + 300,
-//                                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() - 600,
-//                                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() - 600,
-//                                                    1000,
-//                                                    new ISleekDrawView() {
-//                                                        @Override
-//                                                        public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
-//                                                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
-//                                                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - 200,
-//                                                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - 200,
-//                                                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() + 400,
-//                                                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + 400,
-//                                                                    500,
-//                                                                    ISleekDrawView.NO_DRAW
-//                                                            ));
-//                                                        }
-//                                                    }
-//                                            ));
-//                                        }
-//                                    }
-//                            ));
                         }
                     },
                     new Runnable() {
@@ -1325,6 +1293,161 @@ public class TestSleekUI {
         }
     }
 
+    private static final void loadUIbackgroundImageResizeElement(final SleekCanvas sleekCanvas) {
+
+        sleekCanvas.setBackgroundColor(0xffe8e8e8);
+
+        UtilTestSleekUI.addUIframeRate(sleekCanvas);
+
+        int feedItemTopMargin = UtilPx.getPixels(200);
+        final int feedItemWidth = UtilPx.getPixels(360);
+        final int feedItemHeight = UtilPx.getPixels(360);
+
+        SleekElement sleekFeedItem, lastSleekFeedItem = null;
+        String feedItemString;
+        for (int i = 1; i <= 24; i++) {
+
+            sleekFeedItem = new SleekElement(
+                    SleekParam.DEFAULT_TOUCHABLE.newPriority(sleekCanvas.getDrawPrioNext())
+            );
+
+            final SleekElement finalFeedItem = sleekFeedItem;
+            finalFeedItem.getTouchHandler().setClickAction(
+                    new Runnable() {
+                        long touchTs = 0;
+                        @Override
+                        public void run() {
+                            if (System.currentTimeMillis() - touchTs < 2000) {
+                                return;
+                            }
+                            touchTs = finalFeedItem.getTouchHandler().getLastTouchDown();
+
+                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - (feedItemWidth / 2.0f),
+                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY(),
+                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() + feedItemWidth,
+                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH(),
+                                    500,
+                                    new ISleekDrawView() {
+                                        @Override
+                                        public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+
+                                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() + (feedItemWidth / 2.0f),
+                                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY(),
+                                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW() - feedItemWidth,
+                                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH(),
+                                                    500,
+                                                    new ISleekDrawView() {
+                                                        @Override
+                                                        public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+                                                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                                                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX(),
+                                                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - (feedItemHeight / 2.0f),
+                                                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW(),
+                                                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + feedItemHeight,
+                                                                    500,
+                                                                    new ISleekDrawView() {
+                                                                        @Override
+                                                                        public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+                                                                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                                                                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX(),
+                                                                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() + (feedItemHeight / 2.0f),
+                                                                                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW(),
+                                                                                    finalFeedItem.getSleekH(), finalFeedItem.getSleekH() - feedItemHeight,
+                                                                                    500,
+                                                                                    ISleekDrawView.NO_DRAW
+                                                                            ));
+                                                                        }
+                                                                    }
+                                                            ));
+                                                        }
+                                                    }
+                                            ));
+                                        }
+                                    }
+                            ));
+                        }
+                    },
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            //DO NOTHING
+                        }
+                    },
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            //DO NOTHING
+                        }
+                    }
+            );
+
+            if (i % 4 == 0) {
+                feedItemString = FEED_ITEM_STRING_1;
+            }
+            else if (i % 3 == 0) {
+                feedItemString = FEED_ITEM_STRING_2;
+            }
+            else if (i % 2 == 0) {
+                feedItemString = FEED_ITEM_STRING_3;
+            }
+            else {
+                feedItemString = FEED_ITEM_STRING_4;
+            }
+            sleekFeedItem.setElementString(feedItemString);
+
+            if (i % 2 == 0) {
+                sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_IMAGE_COVER));
+            }
+            else {
+                sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_IMAGE_COVER_TWO));
+            }
+
+            sleekFeedItem.getLayout()
+                    .x(SL.X.POS_CENTER, 0, null)
+                    .y(SL.Y.ABSOLUTE, feedItemTopMargin, null)
+                    .w(SL.W.ABSOLUTE, feedItemWidth, null)
+                    .h(SL.H.ABSOLUTE, feedItemHeight, null);
+            if (lastSleekFeedItem != null) {
+                sleekFeedItem.getLayout().y(SL.Y.SOUTH_OF, feedItemTopMargin, lastSleekFeedItem);
+            }
+            else {
+                sleekFeedItem.getLayout().y(SL.Y.ABSOLUTE, feedItemTopMargin, null);
+            }
+
+            sleekFeedItem.createBackgroundImage();
+            sleekFeedItem.getBackgroundImage().setBitmapListener(new ISleekCallback<SleekBaseImage>() {
+                @Override
+                public void sleekCallback(SleekBaseImage sleekBaseImage) {
+
+                    //TODO THIS IS BLOATED FUNCTIONALITY! COME UP WITH A SIMPLER WAY OF DOING THIS!!
+
+                    finalFeedItem.positionBackgroundImage();
+
+                    if (sleekBaseImage.getBitmap() != null) {
+                        float bitmapRatio =
+                                (float) sleekBaseImage.getBitmap().getWidth()
+                                / (float) sleekBaseImage.getBitmap().getHeight();
+                        finalFeedItem.getLayout()
+                                .h(SL.H.ABSOLUTE, (int) (feedItemWidth / bitmapRatio), null);
+                        //finalFeedItem.requestLayout();
+                        finalFeedItem.getSleekCanvas().onSizeChanged(
+                                finalFeedItem.getSleekCanvas().getWidth(),
+                                finalFeedItem.getSleekCanvas().getHeight(),
+                                finalFeedItem.getSleekCanvas().getWidth(),
+                                finalFeedItem.getSleekCanvas().getHeight()
+                        );
+                    }
+                }
+            });
+
+            sleekCanvas.addSleek(sleekFeedItem);
+
+            lastSleekFeedItem = sleekFeedItem;
+        }
+    }
+
     private static final void loadUIcompleteAppUIexample1(final SleekCanvas sleekCanvas) {
         //TODO Build a simple complete App UI to test and demonstrate how easy Sleek is to use.
     }
@@ -1357,7 +1480,8 @@ public class TestSleekUI {
         //loadUItextElementsWrappedWithPadding(mActivityRule.getActivity().getSleekCanvas());
         //loadUIelementsWithBackgroundImage(mActivityRule.getActivity().getSleekCanvas());
         //loadUIelementsWithBackgroundImageContainCover(mActivityRule.getActivity().getSleekCanvas());
-        loadUIelementsWithBackgroundImageCoverOnly(mActivityRule.getActivity().getSleekCanvas());
+        //loadUIelementsWithBackgroundImageCoverOnly(mActivityRule.getActivity().getSleekCanvas());
+        loadUIbackgroundImageResizeElement(mActivityRule.getActivity().getSleekCanvas());
 
         final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 
