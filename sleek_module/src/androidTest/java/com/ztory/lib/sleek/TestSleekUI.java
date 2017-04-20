@@ -196,8 +196,24 @@ public class TestSleekUI {
             CSS_FEED_ITEM_IMAGE_CONTAIN =
                     "{\n" +
                     "    background: #33E776;\n" +
-                    "    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");\n" +
+//                    "    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");\n" +
+                    "    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/3/39/Beach_Days.jpg\");\n" +
                     "    background-size: contain;\n" +
+                    "    border-radius: 8px;\n" +
+                    "    color: #121212;\n" +
+                    "    font-size: 20px;\n" +
+                    "    line-height: 24px;\n" +
+                    "    text-align: left;\n" +
+                    "    vertical-align: top;\n" +
+                    "    padding: 12px;\n" +
+                    "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
+                    "}",
+            CSS_FEED_ITEM_IMAGE_COVER =
+                    "{\n" +
+                    "    background: #33E776;\n" +
+//                    "    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");\n" +
+                    "    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/3/39/Beach_Days.jpg\");\n" +
+                    "    background-size: cover;\n" +
                     "    border-radius: 8px;\n" +
                     "    color: #121212;\n" +
                     "    font-size: 20px;\n" +
@@ -1016,15 +1032,15 @@ public class TestSleekUI {
         }
     }
 
-    private static final void loadUIelementsWithBackgroundImageContain(final SleekCanvas sleekCanvas) {
+    private static final void loadUIelementsWithBackgroundImageContainCover(final SleekCanvas sleekCanvas) {
 
         sleekCanvas.setBackgroundColor(0xffe8e8e8);
 
         UtilTestSleekUI.addUIframeRate(sleekCanvas);
 
-        int feedItemTopMargin = UtilPx.getPixels(80);
-        int feedItemHorizontalMargin = UtilPx.getPixels(80);
-        int feedItemHeight = UtilPx.getPixels(440);
+        int feedItemTopMargin = UtilPx.getPixels(70);
+        int feedItemHorizontalMargin = UtilPx.getPixels(120);
+        int feedItemHeight = UtilPx.getPixels(400);
 
         SleekElement sleekFeedItem, lastSleekFeedItem = null;
         String feedItemString;
@@ -1108,7 +1124,13 @@ public class TestSleekUI {
             }
             sleekFeedItem.setElementString(feedItemString);
 
-            sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_IMAGE_CONTAIN));
+            if (i % 2 == 0) {
+                sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_IMAGE_COVER));
+            }
+            else {
+                sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_IMAGE_CONTAIN));
+            }
+
             sleekFeedItem.getLayout()
                     .x(SL.X.POS_CENTER, 0, null)
                     .y(SL.Y.ABSOLUTE, feedItemTopMargin, null)
@@ -1157,7 +1179,7 @@ public class TestSleekUI {
         //loadUItextElementsWithPadding(mActivityRule.getActivity().getSleekCanvas());
         //loadUItextElementsWrappedWithPadding(mActivityRule.getActivity().getSleekCanvas());
         //loadUIelementsWithBackgroundImage(mActivityRule.getActivity().getSleekCanvas());
-        loadUIelementsWithBackgroundImageContain(mActivityRule.getActivity().getSleekCanvas());
+        loadUIelementsWithBackgroundImageContainCover(mActivityRule.getActivity().getSleekCanvas());
 
         final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 

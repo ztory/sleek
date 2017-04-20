@@ -316,6 +316,15 @@ public class SleekElement extends SleekBaseComposite {
         int backgroundWidth = elementBackgroundImage.getBitmap().getWidth();
         int backgroundHeight = elementBackgroundImage.getBitmap().getHeight();
 
+        // Reset source rect
+        elementBackgroundImage.getSourceRect().set(
+                0,
+                0,
+                backgroundWidth,
+                backgroundHeight
+        );
+        elementBackgroundImage.setShaderMatrix();
+
         if (elementBackgroundSize != null) {
 
             //TODO ADD SUPPORT FOR 100% width and 100% height
@@ -330,9 +339,6 @@ public class SleekElement extends SleekBaseComposite {
                  */
                 float elementRatio = (float) sleekW / (float) sleekH;
                 float bitmapRatio = (float) backgroundWidth / (float) backgroundHeight;
-
-
-
                 if (bitmapRatio > elementRatio) {
                     backgroundWidth = sleekW;
                     backgroundHeight = (int) (sleekW / bitmapRatio);
@@ -353,6 +359,60 @@ public class SleekElement extends SleekBaseComposite {
                 width or height of the container. When the image and container have
                 different dimensions, the image is clipped either left/right or top/bottom.
                  */
+
+                //TODO DEBUG
+                elementBackgroundImage.getPaint().setAlpha(150);
+
+                float elementRatio = (float) sleekW / (float) sleekH;
+                float bitmapRatio = (float) backgroundWidth / (float) backgroundHeight;
+                if (bitmapRatio > elementRatio) {
+                    backgroundHeight = sleekH;
+                    backgroundWidth = (int) (sleekH * bitmapRatio);
+                    backgroundX = (int) ((sleekW - backgroundWidth) / 2.0f);
+                }
+                else {
+                    backgroundWidth = sleekW;
+                    backgroundHeight = (int) (sleekW / bitmapRatio);
+                    backgroundY = (int) ((sleekH - backgroundHeight) / 2.0f);
+                }
+
+                final int bitmapW = elementBackgroundImage.getBitmap().getWidth();
+                final int bitmapH = elementBackgroundImage.getBitmap().getHeight();
+                float bitmapScale = (float) sleekW / (float) bitmapW;
+                int bitmapScaledW = (int) (bitmapW * bitmapScale);
+                int bitmapScaledH = (int) (bitmapH * bitmapScale);
+
+                Log.d("SleekElement",
+                        "SleekElement" +
+                        " | x: " + backgroundX +
+                        " | y: " + backgroundY +
+                        " | w: " + backgroundWidth +
+                        " | h: " + backgroundHeight +
+                        " | bmScaledW: " + bitmapScaledW +
+                        " | bmScaledH: " + bitmapScaledH +
+                        " | bmWidth: " + elementBackgroundImage.getBitmap().getWidth() +
+                        " | bmHeight: " + elementBackgroundImage.getBitmap().getHeight()
+                );
+
+                int sourceTop = (int) ((backgroundY / bitmapScale) * -1.0f);
+                int sourceBottom = bitmapH - sourceTop;
+                int sourceLeft = (int) ((backgroundX / bitmapScale) * -1.0f);
+                int sourceRight = bitmapW - sourceLeft;
+                elementBackgroundImage.getSourceRect().set(
+                        sourceLeft,
+                        sourceTop,
+                        sourceRight,
+                        sourceBottom
+                );
+                elementBackgroundImage.setShaderMatrix();
+
+                //Reset paint position
+                backgroundX = 0;
+                backgroundY = 0;
+
+                // Reset drawing size to element size
+                backgroundWidth = sleekW;
+                backgroundHeight = sleekH;
             }
         }
 

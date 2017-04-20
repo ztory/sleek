@@ -289,10 +289,14 @@ public class SleekBaseImage extends SleekBase {
         setBitmap(null);
     }
 
-    protected void setShaderMatrix() {
+    public void setShaderMatrix() {
         Matrix shaderMatrix = new Matrix();
         shaderMatrix.setRectToRect(new RectF(mSourceRect), mImgSize, Matrix.ScaleToFit.FILL);
         mShader.setLocalMatrix(shaderMatrix);
+    }
+
+    public Rect getSourceRect() {
+        return mSourceRect;
     }
 
 }
