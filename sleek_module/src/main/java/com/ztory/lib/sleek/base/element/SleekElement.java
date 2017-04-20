@@ -360,39 +360,33 @@ public class SleekElement extends SleekBaseComposite {
                 different dimensions, the image is clipped either left/right or top/bottom.
                  */
 
-                //TODO DEBUG
-                elementBackgroundImage.getPaint().setAlpha(150);
-
+                final int bitmapW = elementBackgroundImage.getBitmap().getWidth();
+                final int bitmapH = elementBackgroundImage.getBitmap().getHeight();
+                float bitmapScale;
                 float elementRatio = (float) sleekW / (float) sleekH;
                 float bitmapRatio = (float) backgroundWidth / (float) backgroundHeight;
                 if (bitmapRatio > elementRatio) {
-                    backgroundHeight = sleekH;
+                    bitmapScale = (float) sleekH / (float) bitmapH;
+                    //backgroundHeight = sleekH;
                     backgroundWidth = (int) (sleekH * bitmapRatio);
                     backgroundX = (int) ((sleekW - backgroundWidth) / 2.0f);
                 }
                 else {
-                    backgroundWidth = sleekW;
+                    bitmapScale = (float) sleekW / (float) bitmapW;
+                    //backgroundWidth = sleekW;
                     backgroundHeight = (int) (sleekW / bitmapRatio);
                     backgroundY = (int) ((sleekH - backgroundHeight) / 2.0f);
                 }
 
-                final int bitmapW = elementBackgroundImage.getBitmap().getWidth();
-                final int bitmapH = elementBackgroundImage.getBitmap().getHeight();
-                float bitmapScale = (float) sleekW / (float) bitmapW;
-                int bitmapScaledW = (int) (bitmapW * bitmapScale);
-                int bitmapScaledH = (int) (bitmapH * bitmapScale);
-
-                Log.d("SleekElement",
-                        "SleekElement" +
-                        " | x: " + backgroundX +
-                        " | y: " + backgroundY +
-                        " | w: " + backgroundWidth +
-                        " | h: " + backgroundHeight +
-                        " | bmScaledW: " + bitmapScaledW +
-                        " | bmScaledH: " + bitmapScaledH +
-                        " | bmWidth: " + elementBackgroundImage.getBitmap().getWidth() +
-                        " | bmHeight: " + elementBackgroundImage.getBitmap().getHeight()
-                );
+//                Log.d("SleekElement",
+//                        "SleekElement" +
+//                        " | x: " + backgroundX +
+//                        " | y: " + backgroundY +
+//                        " | w: " + backgroundWidth +
+//                        " | h: " + backgroundHeight +
+//                        " | bmWidth: " + elementBackgroundImage.getBitmap().getWidth() +
+//                        " | bmHeight: " + elementBackgroundImage.getBitmap().getHeight()
+//                );
 
                 int sourceTop = (int) ((backgroundY / bitmapScale) * -1.0f);
                 int sourceBottom = bitmapH - sourceTop;
@@ -423,7 +417,6 @@ public class SleekElement extends SleekBaseComposite {
             elementBackgroundImage.setRoundedRadius(elementBorderRadius);
         }
 
-        //TODO NEED X and Y position here as well !
         elementBackgroundImage.setSleekBounds(
                 backgroundX,
                 backgroundY,
@@ -431,15 +424,14 @@ public class SleekElement extends SleekBaseComposite {
                 backgroundHeight
         );
 
-        // 100% width and height
+        // TODO DO WE NEED FUNCTIONALITY FOR 100% width and height ?
+        // TODO Can use background-size: cover; and react to bitmap-size to scale SleekElement
 //        elementBackgroundImage.setSleekBounds(
 //                0,
 //                0,
 //                sleekW,
 //                sleekH
 //        );
-
-
     }
 
     public void reloadBackgroundImage() {
