@@ -305,11 +305,8 @@ public class SleekElement extends SleekBaseComposite {
             return;
         }
 
-        //TODO ADD BITMAP POSITIONING LOGIC HERE !!!!
-
-        //TODO WHAT DIFFERENT POSITIONING RULES DO WE NEED FOR background-image ????
-
-        //TODO HOW TO DECLARE NEEDED BACKGROUND POSITIONING RULES IN CSS ????
+        //NOTE: Background logic for "cover" and "contain" is calculated as if this CSS was set:
+        //      background-position: center center;
 
         int backgroundX = 0;
         int backgroundY = 0;
@@ -326,8 +323,6 @@ public class SleekElement extends SleekBaseComposite {
         elementBackgroundImage.setShaderMatrix();
 
         if (elementBackgroundSize != null) {
-
-            //TODO ADD SUPPORT FOR 100% width and 100% height
 
             if (elementBackgroundSize.equals(CSS.Value.CONTAIN)) {
                 /*
@@ -359,7 +354,6 @@ public class SleekElement extends SleekBaseComposite {
                 width or height of the container. When the image and container have
                 different dimensions, the image is clipped either left/right or top/bottom.
                  */
-
                 final int bitmapW = elementBackgroundImage.getBitmap().getWidth();
                 final int bitmapH = elementBackgroundImage.getBitmap().getHeight();
                 float bitmapScale;
@@ -378,16 +372,6 @@ public class SleekElement extends SleekBaseComposite {
                     backgroundY = (int) ((sleekH - backgroundHeight) / 2.0f);
                 }
 
-//                Log.d("SleekElement",
-//                        "SleekElement" +
-//                        " | x: " + backgroundX +
-//                        " | y: " + backgroundY +
-//                        " | w: " + backgroundWidth +
-//                        " | h: " + backgroundHeight +
-//                        " | bmWidth: " + elementBackgroundImage.getBitmap().getWidth() +
-//                        " | bmHeight: " + elementBackgroundImage.getBitmap().getHeight()
-//                );
-
                 int sourceTop = (int) ((backgroundY / bitmapScale) * -1.0f);
                 int sourceBottom = bitmapH - sourceTop;
                 int sourceLeft = (int) ((backgroundX / bitmapScale) * -1.0f);
@@ -400,7 +384,7 @@ public class SleekElement extends SleekBaseComposite {
                 );
                 elementBackgroundImage.setShaderMatrix();
 
-                //Reset paint position
+                //Reset drawing position
                 backgroundX = 0;
                 backgroundY = 0;
 
@@ -423,15 +407,6 @@ public class SleekElement extends SleekBaseComposite {
                 backgroundWidth,
                 backgroundHeight
         );
-
-        // TODO DO WE NEED FUNCTIONALITY FOR 100% width and height ?
-        // TODO Can use background-size: cover; and react to bitmap-size to scale SleekElement
-//        elementBackgroundImage.setSleekBounds(
-//                0,
-//                0,
-//                sleekW,
-//                sleekH
-//        );
     }
 
     public void reloadBackgroundImage() {
