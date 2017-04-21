@@ -146,6 +146,18 @@ public class SleekBase implements Sleek, ISleekDrawView {
         setSleekDrawView(this);// use ISleekDrawView to support animations while drawing
     }
 
+    public void executeSleekCanvasResize() {
+        final SleekCanvas theSleekCanvas = mSlkCanvas;
+        if (theSleekCanvas != null) {
+            theSleekCanvas.addPreDrawRun(new ISleekAnimRun() {
+                @Override
+                public void run(SleekCanvasInfo info) {
+                    theSleekCanvas.executeResize();
+                }
+            });
+        }
+    }
+
     @Override
     public void drawView(Sleek view, Canvas canvas, SleekCanvasInfo info) {
         // Override this to do your drawing, alternatively pass a ISleekDrawView to the setSleekDrawView() method

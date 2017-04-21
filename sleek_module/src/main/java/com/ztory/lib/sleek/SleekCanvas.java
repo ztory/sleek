@@ -709,6 +709,42 @@ public class SleekCanvas extends RelativeLayout {
         loadPaddingEqualToSize = theLoadPaddingEqualToSize;
     }
 
+    /**
+     * Calls sleekScroller.onSleekCanvasSizeChanged and Sleek.onSleekCanvasResize for all
+     * Sleek instances added to this SleekCanvas.
+     * Will also reload scroll edges and load/unload Sleek instances if sleekScroller.isAutoLoading.
+     */
+    public void executeResize() {
+
+        sleekScroller.onSleekCanvasSizeChanged(drawInfo);
+
+        drawInfo.scrollerScaleX = sleekScroller.getScaleX();
+        drawInfo.scrollerScaleY = sleekScroller.getScaleY();
+        drawInfo.scrollerPosLeft = sleekScroller.getPosLeft();
+        drawInfo.scrollerPosTop = sleekScroller.getPosTop();
+
+        for (Sleek iterDraw : drawItemList) {
+            iterDraw.onSleekCanvasResize(drawInfo);
+        }
+
+        for (Sleek iterDraw : drawFixedItemList) {
+            iterDraw.onSleekCanvasResize(drawInfo);
+        }
+
+        if (sleekScroller.isAutoLoading()) {
+
+            reloadScrollEdges();
+
+            //Reload drawInfo values since reloadScrollEdges() could have affected them
+            drawInfo.scrollerScaleX = sleekScroller.getScaleX();
+            drawInfo.scrollerScaleY = sleekScroller.getScaleY();
+            drawInfo.scrollerPosLeft = sleekScroller.getPosLeft();
+            drawInfo.scrollerPosTop = sleekScroller.getPosTop();
+
+            loadAndUnloadSleekLists(true);
+        }
+    }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -722,40 +758,14 @@ public class SleekCanvas extends RelativeLayout {
             drawInfo.width = w;
             drawInfo.height = h;
 
-            resetCanvasInfoStateTimestamp();
-
-            sleekScroller.onSleekCanvasSizeChanged(drawInfo);
-
-            drawInfo.scrollerScaleX = sleekScroller.getScaleX();
-            drawInfo.scrollerScaleY = sleekScroller.getScaleY();
-            drawInfo.scrollerPosLeft = sleekScroller.getPosLeft();
-            drawInfo.scrollerPosTop = sleekScroller.getPosTop();
-
-            for (Sleek iterDraw : drawItemList) {
-                iterDraw.onSleekCanvasResize(drawInfo);
-            }
-
-            for (Sleek iterDraw : drawFixedItemList) {
-                iterDraw.onSleekCanvasResize(drawInfo);
-            }
-
             if (loadPaddingEqualToSize) {
                 widthLoadPadding = w;
                 heightLoadPadding = h;
             }
 
-            if (sleekScroller.isAutoLoading()) {
+            resetCanvasInfoStateTimestamp();
 
-                reloadScrollEdges();
-
-                //Reload drawInfo values since reloadScrollEdges() could have affected them
-                drawInfo.scrollerScaleX = sleekScroller.getScaleX();
-                drawInfo.scrollerScaleY = sleekScroller.getScaleY();
-                drawInfo.scrollerPosLeft = sleekScroller.getPosLeft();
-                drawInfo.scrollerPosTop = sleekScroller.getPosTop();
-
-                loadAndUnloadSleekLists(true);
-            }
+            executeResize();
         }
     }
 

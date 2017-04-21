@@ -1422,6 +1422,8 @@ public class TestSleekUI {
                 public void sleekCallback(SleekBaseImage sleekBaseImage) {
 
                     //TODO THIS IS BLOATED FUNCTIONALITY! COME UP WITH A SIMPLER WAY OF DOING THIS!!
+                    //TODO Maybe just have a method that sets this interface as the param for...
+                    //TODO setBitmapListener() ?
 
                     finalFeedItem.positionBackgroundImage();
 
@@ -1432,12 +1434,8 @@ public class TestSleekUI {
                         finalFeedItem.getLayout()
                                 .h(SL.H.ABSOLUTE, (int) (feedItemWidth / bitmapRatio), null);
                         //finalFeedItem.requestLayout();
-                        finalFeedItem.getSleekCanvas().onSizeChanged(
-                                finalFeedItem.getSleekCanvas().getWidth(),
-                                finalFeedItem.getSleekCanvas().getHeight(),
-                                finalFeedItem.getSleekCanvas().getWidth(),
-                                finalFeedItem.getSleekCanvas().getHeight()
-                        );
+
+                        finalFeedItem.executeSleekCanvasResize();
                     }
                 }
             });
