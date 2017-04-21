@@ -715,33 +715,34 @@ public class SleekCanvas extends RelativeLayout {
      * Will also reload scroll edges and load/unload Sleek instances if sleekScroller.isAutoLoading.
      */
     public void executeResize() {
+        synchronized (canvasLockObj) {
+            sleekScroller.onSleekCanvasSizeChanged(drawInfo);
 
-        sleekScroller.onSleekCanvasSizeChanged(drawInfo);
-
-        drawInfo.scrollerScaleX = sleekScroller.getScaleX();
-        drawInfo.scrollerScaleY = sleekScroller.getScaleY();
-        drawInfo.scrollerPosLeft = sleekScroller.getPosLeft();
-        drawInfo.scrollerPosTop = sleekScroller.getPosTop();
-
-        for (Sleek iterDraw : drawItemList) {
-            iterDraw.onSleekCanvasResize(drawInfo);
-        }
-
-        for (Sleek iterDraw : drawFixedItemList) {
-            iterDraw.onSleekCanvasResize(drawInfo);
-        }
-
-        if (sleekScroller.isAutoLoading()) {
-
-            reloadScrollEdges();
-
-            //Reload drawInfo values since reloadScrollEdges() could have affected them
             drawInfo.scrollerScaleX = sleekScroller.getScaleX();
             drawInfo.scrollerScaleY = sleekScroller.getScaleY();
             drawInfo.scrollerPosLeft = sleekScroller.getPosLeft();
             drawInfo.scrollerPosTop = sleekScroller.getPosTop();
 
-            loadAndUnloadSleekLists(true);
+            for (Sleek iterDraw : drawItemList) {
+                iterDraw.onSleekCanvasResize(drawInfo);
+            }
+
+            for (Sleek iterDraw : drawFixedItemList) {
+                iterDraw.onSleekCanvasResize(drawInfo);
+            }
+
+            if (sleekScroller.isAutoLoading()) {
+
+                reloadScrollEdges();
+
+                //Reload drawInfo values since reloadScrollEdges() could have affected them
+                drawInfo.scrollerScaleX = sleekScroller.getScaleX();
+                drawInfo.scrollerScaleY = sleekScroller.getScaleY();
+                drawInfo.scrollerPosLeft = sleekScroller.getPosLeft();
+                drawInfo.scrollerPosTop = sleekScroller.getPosTop();
+
+                loadAndUnloadSleekLists(true);
+            }
         }
     }
 

@@ -6,6 +6,22 @@ package com.ztory.lib.sleek.util;
  */
 public class Calc {
 
+    public static int divideToInt(float dividend, float divisor) {
+        return (int) (dividend / divisor);
+    }
+
+    public static float divide(float dividend, float divisor) {
+        return dividend / divisor;
+    }
+
+    public static int multiplyToInt(float factorOne, float factorTwo) {
+        return (int) (factorOne * factorTwo);
+    }
+
+    public static float multiply(float factorOne, float factorTwo) {
+        return factorOne * factorTwo;
+    }
+
     public static float distance(
             float pointOneX,
             float pointOneY,

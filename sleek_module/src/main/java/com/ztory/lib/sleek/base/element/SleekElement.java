@@ -23,6 +23,7 @@ import com.ztory.lib.sleek.base.image.SleekBaseImage;
 import com.ztory.lib.sleek.base.text.SleekViewText;
 import com.ztory.lib.sleek.contract.ISleekCallback;
 import com.ztory.lib.sleek.contract.ISleekData;
+import com.ztory.lib.sleek.util.Calc;
 import com.ztory.lib.sleek.util.UtilResources;
 
 import java.io.File;
@@ -332,17 +333,17 @@ public class SleekElement extends SleekBaseComposite {
                 When the image and container have different dimensions, the empty
                 areas (either top/bottom of left/right) are filled with the background-color.
                  */
-                float elementRatio = (float) sleekW / (float) sleekH;
-                float bitmapRatio = (float) backgroundWidth / (float) backgroundHeight;
+                float elementRatio = Calc.divide(sleekW, sleekH);
+                float bitmapRatio = Calc.divide(backgroundWidth, backgroundHeight);
                 if (bitmapRatio > elementRatio) {
                     backgroundWidth = sleekW;
-                    backgroundHeight = (int) (sleekW / bitmapRatio);
-                    backgroundY = (int) ((sleekH - backgroundHeight) / 2.0f);
+                    backgroundHeight = Calc.divideToInt(sleekW, bitmapRatio);
+                    backgroundY = Calc.divideToInt(sleekH - backgroundHeight, 2.0f);
                 }
                 else {
                     backgroundHeight = sleekH;
-                    backgroundWidth = (int) (sleekH * bitmapRatio);
-                    backgroundX = (int) ((sleekW - backgroundWidth) / 2.0f);
+                    backgroundWidth = Calc.multiplyToInt(sleekH, bitmapRatio);
+                    backgroundX = Calc.divideToInt(sleekW - backgroundWidth, 2.0f);
                 }
             }
             else if (elementBackgroundSize.equals(CSS.Value.COVER)) {
@@ -357,24 +358,24 @@ public class SleekElement extends SleekBaseComposite {
                 final int bitmapW = elementBackgroundImage.getBitmap().getWidth();
                 final int bitmapH = elementBackgroundImage.getBitmap().getHeight();
                 float bitmapScale;
-                float elementRatio = (float) sleekW / (float) sleekH;
-                float bitmapRatio = (float) backgroundWidth / (float) backgroundHeight;
+                float elementRatio = Calc.divide(sleekW, sleekH);
+                float bitmapRatio = Calc.divide(backgroundWidth, backgroundHeight);
                 if (bitmapRatio > elementRatio) {
-                    bitmapScale = (float) sleekH / (float) bitmapH;
+                    bitmapScale = Calc.divide(sleekH, bitmapH);
                     //backgroundHeight = sleekH;
-                    backgroundWidth = (int) (sleekH * bitmapRatio);
-                    backgroundX = (int) ((sleekW - backgroundWidth) / 2.0f);
+                    backgroundWidth = Calc.multiplyToInt(sleekH, bitmapRatio);
+                    backgroundX = Calc.divideToInt(sleekW - backgroundWidth, 2.0f);
                 }
                 else {
-                    bitmapScale = (float) sleekW / (float) bitmapW;
+                    bitmapScale = Calc.divide(sleekW, bitmapW);
                     //backgroundWidth = sleekW;
-                    backgroundHeight = (int) (sleekW / bitmapRatio);
-                    backgroundY = (int) ((sleekH - backgroundHeight) / 2.0f);
+                    backgroundHeight = Calc.divideToInt(sleekW, bitmapRatio);
+                    backgroundY = Calc.divideToInt(sleekH - backgroundHeight, 2.0f);
                 }
 
-                int sourceTop = (int) ((backgroundY / bitmapScale) * -1.0f);
+                int sourceTop = Calc.multiplyToInt(Calc.divide(backgroundY, bitmapScale), -1.0f);
                 int sourceBottom = bitmapH - sourceTop;
-                int sourceLeft = (int) ((backgroundX / bitmapScale) * -1.0f);
+                int sourceLeft = Calc.multiplyToInt(Calc.divide(backgroundX, bitmapScale), -1.0f);
                 int sourceRight = bitmapW - sourceLeft;
                 elementBackgroundImage.getSourceRect().set(
                         sourceLeft,
