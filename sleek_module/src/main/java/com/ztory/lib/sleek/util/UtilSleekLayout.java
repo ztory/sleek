@@ -30,7 +30,7 @@ public class UtilSleekLayout {
             float containerX,
             int containerWidth
             ) {
-        return UtilSleekMath.roundFloat(containerX + ((containerWidth - drawItemWidth) / 2.0f));
+        return Calc.roundFloat(containerX + ((containerWidth - drawItemWidth) / 2.0f));
     }
 
     public static float getAlignCenterVert(
@@ -38,7 +38,7 @@ public class UtilSleekLayout {
             float containerY,
             int containerHeight
             ) {
-        return UtilSleekMath.roundFloat(containerY + ((containerHeight - drawItemHeight) / 2.0f));
+        return Calc.roundFloat(containerY + ((containerHeight - drawItemHeight) / 2.0f));
     }
 
     public static void alignCenter(
@@ -49,8 +49,8 @@ public class UtilSleekLayout {
             int containerHeight
             ) {
         drawItem.setSleekBounds(
-                UtilSleekMath.roundFloat(containerX + ((containerWidth - drawItem.getSleekW()) / 2.0f)),
-                UtilSleekMath.roundFloat(containerY + ((containerHeight - drawItem.getSleekH()) / 2.0f)),
+                Calc.roundFloat(containerX + ((containerWidth - drawItem.getSleekW()) / 2.0f)),
+                Calc.roundFloat(containerY + ((containerHeight - drawItem.getSleekH()) / 2.0f)),
                 drawItem.getSleekW(),
                 drawItem.getSleekH()
                 );

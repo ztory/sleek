@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import com.ztory.lib.sleek.base.SleekBase;
 import com.ztory.lib.sleek.contract.ISleekAnimRun;
 import com.ztory.lib.sleek.contract.ISleekAnimView;
-import com.ztory.lib.sleek.util.UtilSleekMath;
+import com.ztory.lib.sleek.util.Calc;
 import com.ztory.lib.sleek.util.UtilSleekTouch;
 
 import java.util.ArrayList;
@@ -677,14 +677,14 @@ public class SleekCanvas extends RelativeLayout {
         if (!sleekScroller.isScaled()) {
             return -sleekScroller.getPosLeft();
         }
-        return UtilSleekMath.roundFloat(-sleekScroller.getPosLeft() / sleekScroller.getScaleX());
+        return Calc.roundFloat(-sleekScroller.getPosLeft() / sleekScroller.getScaleX());
     }
 
     protected float getScaledScrollerPosTop() {
         if (!sleekScroller.isScaled()) {
             return -sleekScroller.getPosTop();
         }
-        return UtilSleekMath.roundFloat(-sleekScroller.getPosTop() / sleekScroller.getScaleY());
+        return Calc.roundFloat(-sleekScroller.getPosTop() / sleekScroller.getScaleY());
     }
 
     protected int getScaledWidthLoadPadding() {
@@ -828,8 +828,8 @@ public class SleekCanvas extends RelativeLayout {
             );
 
             canvas.translate(
-                    UtilSleekMath.roundFloat(drawInfo.scrollerPosLeft / drawInfo.scrollerScaleX),
-                    UtilSleekMath.roundFloat(drawInfo.scrollerPosTop / drawInfo.scrollerScaleY)
+                    Calc.roundFloat(drawInfo.scrollerPosLeft / drawInfo.scrollerScaleX),
+                    Calc.roundFloat(drawInfo.scrollerPosTop / drawInfo.scrollerScaleY)
             );
         }
         else {
