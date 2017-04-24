@@ -23,6 +23,8 @@ import com.ztory.lib.sleek.base.image.SleekBaseImage;
 import com.ztory.lib.sleek.base.text.SleekViewText;
 import com.ztory.lib.sleek.contract.ISleekCallback;
 import com.ztory.lib.sleek.contract.ISleekData;
+import com.ztory.lib.sleek.layout.IComputeInt;
+import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.util.Calc;
 import com.ztory.lib.sleek.util.UtilResources;
 
@@ -476,6 +478,60 @@ public class SleekElement extends SleekBaseComposite {
 
     public SleekBaseImage getBackgroundImage() {
         return elementBackgroundImage;
+    }
+
+    public void wrapBackgroundImageSize(
+            final boolean wrapWidth,
+            final boolean wrapHeight,
+            final boolean executeSleekCanvasResize
+    ) {
+        getBackgroundImage().setBitmapListener(new ISleekCallback<SleekBaseImage>() {
+            @Override
+            public void sleekCallback(SleekBaseImage sleekBaseImage) {
+
+                if (sleekBaseImage.getBitmap() != null) {
+                    final int bitmapWidth = sleekBaseImage.getBitmap().getWidth();
+                    final int bitmapHeight = sleekBaseImage.getBitmap().getHeight();
+                    final float bitmapRatio = Calc.divide(bitmapWidth, bitmapHeight);
+                    if (wrapWidth && wrapHeight) {
+                        SleekElement.this.getLayout()
+                                .w(SL.W.ABSOLUTE, bitmapWidth, null)
+                                .h(SL.H.ABSOLUTE, bitmapHeight, null);
+                    }
+                    else if (wrapWidth) {
+                        SleekElement.this.getLayout().w(SL.W.COMPUTE, 0, null, 0, new IComputeInt() {
+                            @Override
+                            public int compute(SleekCanvasInfo info) {
+                                int computedH = SleekElement.this.getLayout().computeSizeH(
+                                        SleekElement.this,
+                                        info
+                                );
+                                return Calc.multiplyToInt(computedH, bitmapRatio);
+                            }
+                        });
+                    }
+                    else if (wrapHeight) {
+                        SleekElement.this.getLayout().h(SL.H.COMPUTE, 0, null, 0, new IComputeInt() {
+                            @Override
+                            public int compute(SleekCanvasInfo info) {
+                                int computedW = SleekElement.this.getLayout().computeSizeW(
+                                        SleekElement.this,
+                                        info
+                                );
+                                return Calc.divideToInt(computedW, bitmapRatio);
+                            }
+                        });
+                    }
+
+                    if (executeSleekCanvasResize) {
+                        SleekElement.this.executeSleekCanvasResize();
+                    }
+                    else {
+                        SleekElement.this.requestLayout();
+                    }
+                }
+            }
+        });
     }
 
     public CSSblock getCSS() {

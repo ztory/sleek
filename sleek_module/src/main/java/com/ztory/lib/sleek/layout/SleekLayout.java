@@ -506,7 +506,7 @@ public class SleekLayout {
         return calcSizeH;
     }
 
-    private float computePosX(Sleek layView, SleekCanvasInfo info) {
+    public float computePosX(Sleek layView, SleekCanvasInfo info) {
 
         if (mLayX == null) {
             calcPosX = layView.getSleekX();

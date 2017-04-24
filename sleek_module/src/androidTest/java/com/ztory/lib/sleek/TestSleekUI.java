@@ -11,8 +11,6 @@ import com.ztory.lib.sleek.animation.SAVtransXYWH;
 import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.base.element.SleekElement;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
-import com.ztory.lib.sleek.base.image.SleekBaseImage;
-import com.ztory.lib.sleek.contract.ISleekCallback;
 import com.ztory.lib.sleek.contract.ISleekDrawView;
 import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.mapd.Mapd;
@@ -1417,28 +1415,7 @@ public class TestSleekUI {
             }
 
             sleekFeedItem.createBackgroundImage();
-            sleekFeedItem.getBackgroundImage().setBitmapListener(new ISleekCallback<SleekBaseImage>() {
-                @Override
-                public void sleekCallback(SleekBaseImage sleekBaseImage) {
-
-                    //TODO THIS IS BLOATED FUNCTIONALITY! COME UP WITH A SIMPLER WAY OF DOING THIS!!
-                    //TODO Maybe just have a method that sets this interface as the param for...
-                    //TODO setBitmapListener() ?
-
-                    finalFeedItem.positionBackgroundImage();
-
-                    if (sleekBaseImage.getBitmap() != null) {
-                        float bitmapRatio =
-                                (float) sleekBaseImage.getBitmap().getWidth()
-                                / (float) sleekBaseImage.getBitmap().getHeight();
-                        finalFeedItem.getLayout()
-                                .h(SL.H.ABSOLUTE, (int) (feedItemWidth / bitmapRatio), null);
-                        //finalFeedItem.requestLayout();
-
-                        finalFeedItem.executeSleekCanvasResize();
-                    }
-                }
-            });
+            sleekFeedItem.wrapBackgroundImageSize(false, true, true);
 
             sleekCanvas.addSleek(sleekFeedItem);
 
