@@ -1,9 +1,7 @@
-package com.ztory.lib.sleek.base.element.image;
+package com.ztory.lib.sleek.util;
 
 import android.os.Build;
 import android.util.Log;
-
-import com.ztory.lib.sleek.util.UtilPx;
 
 import java.io.Closeable;
 import java.io.File;
@@ -27,29 +25,29 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by jonruna on 2017-04-19.
  */
-public class ImageUtil {
+public class UtilDownload {
 
     public static final Executor
-            EXECUTOR = createExecutor(ImageUtil.class.getName() + "_EXECUTOR", 8);
+            EXECUTOR = createExecutor(UtilDownload.class.getName() + "_EXECUTOR", 8);
 
     private static ConcurrentHashMap<String, Boolean>
             sActiveDownloads = new ConcurrentHashMap<>(10, 0.75f, 2);
 
-    public static boolean fetchFromUrlDownloading(String urlString) {
+    public static boolean isDownloadingUrl(String urlString) {
         return sActiveDownloads.get(urlString) != null;
     }
 
-    public static void waitForFetchFromUrlToFinish(String urlString, long maxWaitTimeMs) {
+    public static void waitForDownloadToFinish(String urlString, long maxWaitTimeMs) {
         long startTime = System.currentTimeMillis();
-        while (fetchFromUrlDownloading(urlString)) {
+        while (isDownloadingUrl(urlString)) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            Log.d("ImageUtil",
-                    "ImageUtil" +
+            Log.d("UtilDownload",
+                    "UtilDownload" +
                     " | Waited: " + (System.currentTimeMillis() - startTime)
             );
 
@@ -60,7 +58,7 @@ public class ImageUtil {
         }
     }
 
-    public static File fetchFromUrl(String urlString) {
+    public static File downloadUrl(String urlString) {
 
         boolean success = false;
 
@@ -200,7 +198,7 @@ public class ImageUtil {
         return success;
     }
 
-    private static void closeSafe(Closeable closeable) {
+    public static void closeSafe(Closeable closeable) {
         if (closeable != null) {
             try {
                 closeable.close();

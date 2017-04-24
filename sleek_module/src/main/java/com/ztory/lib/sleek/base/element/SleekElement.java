@@ -18,7 +18,7 @@ import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.base.element.css.CSS;
 import com.ztory.lib.sleek.base.element.css.CSSblock;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
-import com.ztory.lib.sleek.base.element.image.ImageUtil;
+import com.ztory.lib.sleek.util.UtilDownload;
 import com.ztory.lib.sleek.base.image.SleekBaseImage;
 import com.ztory.lib.sleek.base.text.SleekViewText;
 import com.ztory.lib.sleek.contract.ISleekCallback;
@@ -431,15 +431,15 @@ public class SleekElement extends SleekBaseComposite {
         else {
             elementBackgroundImage.setBitmapFetcher(
                     mSlkCanvas.getHandler(),
-                    ImageUtil.EXECUTOR,
+                    UtilDownload.EXECUTOR,
                     new ISleekData<Bitmap>() {
                         @Override
                         public Bitmap getData(Sleek sleek) {
 
-                            // If active download for url then wait max 15 sec for it to finish
-                            ImageUtil.waitForFetchFromUrlToFinish(elementBackgroundImageUrl, 15000);
+                            // If active download for url, then wait max 15 sec for it to finish
+                            UtilDownload.waitForDownloadToFinish(elementBackgroundImageUrl, 15000);
 
-                            File bmFile = ImageUtil.fetchFromUrl(elementBackgroundImageUrl);
+                            File bmFile = UtilDownload.downloadUrl(elementBackgroundImageUrl);
                             Bitmap bm = null;
 
                             if (bmFile != null) {
