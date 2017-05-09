@@ -435,13 +435,8 @@ public class SleekElement extends SleekBaseComposite {
                     new ISleekData<Bitmap>() {
                         @Override
                         public Bitmap getData(Sleek sleek) {
-
-                            // If active download for url, then wait max 15 sec for it to finish
-                            UtilDownload.waitForDownloadToFinish(elementBackgroundImageUrl, 15000);
-
                             File bmFile = UtilDownload.downloadUrl(elementBackgroundImageUrl);
                             Bitmap bm = null;
-
                             if (bmFile != null) {
                                 try {
                                     bm = BitmapFactory.decodeStream(new FileInputStream(bmFile));
@@ -449,7 +444,6 @@ public class SleekElement extends SleekBaseComposite {
                                     e.printStackTrace();
                                 }
                             }
-
                             return bm;
                         }
                     }

@@ -14,7 +14,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -27,14 +29,75 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class UtilDownload {
 
+    //TODO BUILD UNIT TEST TO VERIFY THAT FUNCTIONALITY IN THIS CLASS IS WORKING AS EXPECTED !!!!
+
+    public interface FileDownload {
+        void downloadProgress(float percent);
+        void downloadFinished(File file);
+    }
+
+    public static final FileDownload EMPTY_DL_LISTENER = new FileDownload() {
+        @Override
+        public void downloadProgress(float percent) {
+            //DO NOTHING
+        }
+        @Override
+        public void downloadFinished(File file) {
+            //DO NOTHING
+        }
+    };
+
     public static final Executor
             EXECUTOR = createExecutor(UtilDownload.class.getName() + "_EXECUTOR", 8);
 
-    private static ConcurrentHashMap<String, Boolean>
-            sActiveDownloads = new ConcurrentHashMap<>(10, 0.75f, 2);
+    private static final HashMap<String, List<FileDownload>> sActiveDownloads = new HashMap<>(40);
+
+    /**
+     * Add a FileDownload instance to have its progress and finished methods called when download
+     * of the urlString progresses or finishes.
+     * @param urlString url or download
+     * @param fileDownload FileDownload implementation that will listen on download
+     * @return true if there was already an active download for urlString
+     */
+    private static boolean addDownloadListener(String urlString, FileDownload fileDownload) {
+        synchronized (sActiveDownloads) {
+            List<FileDownload> downloadList = sActiveDownloads.get(urlString);
+            final boolean downloadAlreadyStarted = downloadList != null;
+            if (!downloadAlreadyStarted) {
+                downloadList = new ArrayList<>(2);
+                sActiveDownloads.put(urlString, downloadList);
+            }
+            downloadList.add(fileDownload);
+            return downloadAlreadyStarted;
+        }
+    }
+
+    private static void notifyDownloadListeners(String urlString, float percent) {
+        synchronized (sActiveDownloads) {
+            List<FileDownload> downloadList = sActiveDownloads.get(urlString);
+            if (downloadList != null) {
+                for (FileDownload iterFileDownload : downloadList) {
+                    iterFileDownload.downloadProgress(percent);
+                }
+            }
+        }
+    }
+
+    private static void completeDownloadListeners(String urlString, File file) {
+        synchronized (sActiveDownloads) {
+            List<FileDownload> downloadList = sActiveDownloads.remove(urlString);
+            if (downloadList != null) {
+                for (FileDownload iterFileDownload : downloadList) {
+                    iterFileDownload.downloadFinished(file);
+                }
+            }
+        }
+    }
 
     public static boolean isDownloadingUrl(String urlString) {
-        return sActiveDownloads.get(urlString) != null;
+        synchronized (sActiveDownloads) {
+            return sActiveDownloads.get(urlString) != null;
+        }
     }
 
     public static void waitForDownloadToFinish(String urlString, long maxWaitTimeMs) {
@@ -59,6 +122,18 @@ public class UtilDownload {
     }
 
     public static File downloadUrl(String urlString) {
+        return downloadUrl(
+                urlString,
+                300000,// 5 min
+                EMPTY_DL_LISTENER
+        );
+    }
+
+    public static File downloadUrl(
+            String urlString,
+            long synchronousWaitTimeMs,
+            FileDownload fileDownload
+    ) {
 
         boolean success = false;
 
@@ -75,10 +150,15 @@ public class UtilDownload {
 
             // Early return if file has already been downloaded
             if (downloadFile.exists() && downloadFile.length() > 0) {
+                fileDownload.downloadFinished(downloadFile);
                 return downloadFile;
             }
 
-            sActiveDownloads.put(urlString, true);
+            boolean downloadAlreadyStarted = addDownloadListener(urlString, fileDownload);
+            if (downloadAlreadyStarted) {
+                waitForDownloadToFinish(urlString, synchronousWaitTimeMs);
+                return downloadFile;
+            }
 
             URL url = new URL(urlString);
             URLConnection cn = url.openConnection();
@@ -122,7 +202,7 @@ public class UtilDownload {
                     percentProgress = 1.0f;
                 }
 
-                // If progress-listeners are added then then can listen to percentProgress here.
+                notifyDownloadListeners(urlString, percentProgress);
 
                 int numread = urlInputStream.read(buf);
                 if (numread <= 0) {
@@ -158,12 +238,12 @@ public class UtilDownload {
             }
         }
 
-        sActiveDownloads.remove(urlString);
-
         if (success) {
+            completeDownloadListeners(urlString, downloadFile);
             return downloadFile;
         }
         else {
+            completeDownloadListeners(urlString, null);
             return null;
         }
     }
