@@ -128,6 +128,14 @@ public class UtilDownload {
         );
     }
 
+    /**
+     * Download a url and save it to a File.
+     * @param urlString url to download
+     * @param customFileName if non-null then this String will be the filename in the Cache-dir
+     * @param synchronousWaitTimeMs wait time in milliseconds for already started downloads
+     * @param fileDownload listener interface that will be called with File on succes and null on failure
+     * @return a File instance that represents the downloaded file, will be null on failure.
+     */
     public static File downloadUrl(
             String urlString,
             String customFileName,
@@ -164,10 +172,17 @@ public class UtilDownload {
 
             boolean downloadAlreadyStarted = addDownloadListener(urlString, fileDownload);
             if (downloadAlreadyStarted) {
+
                 if (synchronousWaitTimeMs > 0) {
                     waitForDownloadToFinish(urlString, synchronousWaitTimeMs);
                 }
-                return downloadFile;
+
+                if (downloadFile.exists() && downloadFile.length() > 0) {
+                    return downloadFile;
+                }
+                else {
+                    return null;
+                }
             }
 
             URL url = new URL(urlString);
