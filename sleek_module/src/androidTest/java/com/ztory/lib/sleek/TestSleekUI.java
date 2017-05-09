@@ -14,6 +14,7 @@ import com.ztory.lib.sleek.base.element.css.CSSblockBase;
 import com.ztory.lib.sleek.contract.ISleekDrawView;
 import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.mapd.Mapd;
+import com.ztory.lib.sleek.util.UtilDownload;
 import com.ztory.lib.sleek.util.UtilPx;
 
 import org.junit.AfterClass;
@@ -22,9 +23,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.File;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
@@ -1468,6 +1472,52 @@ public class TestSleekUI {
         });
 
         activityPauseLatch.await();
+    }
+
+    @Test
+    public void testUtilDownload() throws Exception {
+        final String imageUrl = "http://www.publicdomainpictures.net/pictures/30000/velka/evening-landscape-13530956185Aw.jpg";
+        final String customFileName = "TestSleekUI_image1.jpg";
+        final CountDownLatch downloadLatch = new CountDownLatch(2);
+
+        // Start download without waiting synchronously
+        UtilDownload.downloadUrl(
+                imageUrl,
+                customFileName,
+                0,// wait 0 seconds
+                new UtilDownload.FileDownload() {
+                    @Override
+                    public void downloadProgress(float percent) {
+
+                    }
+                    @Override
+                    public void downloadFinished(File file) {
+                        downloadLatch.countDown();
+                    }
+                }
+        );
+
+        // Register second listener, and wait 15 sec for download and reference to existing File.
+        final File imageFile = UtilDownload.downloadUrl(
+                imageUrl,
+                customFileName,
+                15000,
+                new UtilDownload.FileDownload() {
+                    @Override
+                    public void downloadProgress(float percent) {
+
+                    }
+                    @Override
+                    public void downloadFinished(File file) {
+                        downloadLatch.countDown();
+                    }
+                }
+        );
+
+        downloadLatch.await(20000, TimeUnit.MILLISECONDS);
+        assertNotNull(imageFile);
+        assertTrue(imageFile.getAbsolutePath().contains(customFileName));
+        assertTrue(imageFile.delete());
     }
 
     @Test

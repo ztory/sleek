@@ -29,8 +29,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class UtilDownload {
 
-    //TODO BUILD UNIT TEST TO VERIFY THAT FUNCTIONALITY IN THIS CLASS IS WORKING AS EXPECTED !!!!
-
     public interface FileDownload {
         void downloadProgress(float percent);
         void downloadFinished(File file);
@@ -124,6 +122,7 @@ public class UtilDownload {
     public static File downloadUrl(String urlString) {
         return downloadUrl(
                 urlString,
+                null,
                 300000,// 5 min
                 EMPTY_DL_LISTENER
         );
@@ -131,6 +130,7 @@ public class UtilDownload {
 
     public static File downloadUrl(
             String urlString,
+            String customFileName,
             long synchronousWaitTimeMs,
             FileDownload fileDownload
     ) {
@@ -138,14 +138,22 @@ public class UtilDownload {
         boolean success = false;
 
         File downloadFile = null;
-
         InputStream urlInputStream = null;
         File tempDownloadFile = null;
         FileOutputStream tempFileOutputStream = null;
         try {
+
+            final String downloadFileName;
+            if (customFileName != null) {
+                downloadFileName = customFileName;
+            }
+            else {
+                downloadFileName = fileNameFromUrl(urlString);
+            }
+
             downloadFile = new File(
                     UtilPx.getDefaultContext().getCacheDir(),
-                    fileNameFromUrl(urlString)
+                    downloadFileName
             );
 
             // Early return if file has already been downloaded
@@ -156,7 +164,9 @@ public class UtilDownload {
 
             boolean downloadAlreadyStarted = addDownloadListener(urlString, fileDownload);
             if (downloadAlreadyStarted) {
-                waitForDownloadToFinish(urlString, synchronousWaitTimeMs);
+                if (synchronousWaitTimeMs > 0) {
+                    waitForDownloadToFinish(urlString, synchronousWaitTimeMs);
+                }
                 return downloadFile;
             }
 
@@ -183,7 +193,7 @@ public class UtilDownload {
             tempDownloadFile = new File(
                     UtilPx.getDefaultContext().getCacheDir(),
                     System.currentTimeMillis() +
-                    fileNameFromUrl(urlString)
+                    downloadFileName
             );
 
             tempFileOutputStream = new FileOutputStream(tempDownloadFile);
