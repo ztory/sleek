@@ -1478,13 +1478,13 @@ public class TestSleekUI {
     public void testUtilDownload() throws Exception {
         final String imageUrl = "http://www.publicdomainpictures.net/pictures/30000/velka/evening-landscape-13530956185Aw.jpg";
         final String customFileName = "TestSleekUI_image1.jpg";
-        final CountDownLatch downloadLatch = new CountDownLatch(2);
+        final CountDownLatch downloadLatch = new CountDownLatch(4);
 
-        // Start download without waiting synchronously
+        // Attempt download on bg-thread
         UtilDownload.downloadUrl(
                 imageUrl,
                 customFileName,
-                0,// wait 0 seconds
+                UtilDownload.EXECUTOR,
                 new UtilDownload.FileDownload() {
                     @Override
                     public void downloadProgress(float percent) {
@@ -1497,7 +1497,41 @@ public class TestSleekUI {
                 }
         );
 
-        // Register second listener, and wait 15 sec for download and reference to existing File.
+        // Attempt download on bg-thread
+        UtilDownload.downloadUrl(
+                imageUrl,
+                customFileName,
+                UtilDownload.EXECUTOR,
+                new UtilDownload.FileDownload() {
+                    @Override
+                    public void downloadProgress(float percent) {
+
+                    }
+                    @Override
+                    public void downloadFinished(File file) {
+                        downloadLatch.countDown();
+                    }
+                }
+        );
+
+        // Attempt download on bg-thread
+        UtilDownload.downloadUrl(
+                imageUrl,
+                customFileName,
+                UtilDownload.EXECUTOR,
+                new UtilDownload.FileDownload() {
+                    @Override
+                    public void downloadProgress(float percent) {
+
+                    }
+                    @Override
+                    public void downloadFinished(File file) {
+                        downloadLatch.countDown();
+                    }
+                }
+        );
+
+        // Attempt download and wait 15 sec for reference to existing downloaded File.
         final File imageFile = UtilDownload.downloadUrl(
                 imageUrl,
                 customFileName,

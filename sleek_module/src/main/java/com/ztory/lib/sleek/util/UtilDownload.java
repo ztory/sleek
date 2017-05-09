@@ -128,6 +128,20 @@ public class UtilDownload {
         );
     }
 
+    public static void downloadUrl(
+            final String urlString,
+            final String customFileName,
+            Executor executor,
+            final FileDownload fileDownload
+    ) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                downloadUrl(urlString, customFileName, 0, fileDownload);
+            }
+        });
+    }
+
     /**
      * Download a url and save it to a File.
      * @param urlString url to download
