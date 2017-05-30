@@ -241,6 +241,34 @@ public class TestSleekUI {
                     "    vertical-align: top;\n" +
                     "    padding: 12px;\n" +
                     "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
+                    "}",
+            CSS_BORDER_1 =
+                    "{\n" +
+                    "    background: #33E776;\n" +
+                    "    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/4/4e/McCarthyBeachStatePark.jpg\");\n" +
+                    "    background-size: contain;\n" +
+                    "    border-radius: 8px;\n" +
+                    "    color: #993333;\n" +
+                    "    font-size: 20px;\n" +
+                    "    line-height: 24px;\n" +
+                    "    text-align: left;\n" +
+                    "    vertical-align: top;\n" +
+                    "    padding: 12px;\n" +
+                    "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
+                    "}",
+            CSS_BORDER_2 =
+                "{\n" +
+                    "    background: #33E776;\n" +
+                    "    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");\n" +
+                    "    background-size: cover;\n" +
+                    "    border-radius: 8px;\n" +
+                    "    color: #333399;\n" +
+                    "    font-size: 20px;\n" +
+                    "    line-height: 24px;\n" +
+                    "    text-align: left;\n" +
+                    "    vertical-align: top;\n" +
+                    "    padding: 12px;\n" +
+                    "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
                     "}";
 
     @Rule
@@ -1427,224 +1455,352 @@ public class TestSleekUI {
         }
     }
 
-    private static final void loadUIcompleteAppUIexample1(final SleekCanvas sleekCanvas) {
-        //TODO Build a simple complete App UI to test and demonstrate how easy Sleek is to use.
-    }
+  private static final void loadUIbackgroundCoverWithBorder(final SleekCanvas sleekCanvas) {
 
-    @Test
-    public void testGeneralUI() throws Exception {
+    sleekCanvas.setBackgroundColor(0xffe8e8e8);
 
-//        Log.d("TestSleekUI",
-//                "TestSleekUI" +
-//                " | activity: " + mActivityRule.getActivity()
-//        );
+    UtilTestSleekUI.addUIframeRate(sleekCanvas);
 
-        if (mActivityRule.getActivity() == null) {
-            throw new IllegalStateException("mActivityRule.getActivity() == null");
-        }
+    int feedItemTopMargin = UtilPx.getPixels(200);
+    final int feedItemWidth = UtilPx.getPixels(360);
+    final int feedItemHeight = UtilPx.getPixels(360);
 
-        UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+    SleekElement sleekFeedItem, lastSleekFeedItem = null;
+    String feedItemString;
+    for (int i = 1; i <= 24; i++) {
 
-        UtilTestSleekUI.setSleekActivitySleekCanvasScrollerY(mActivityRule.getActivity());
-        //UtilTestSleekUI.setSleekActivitySleekCanvasScrollerXY(mActivityRule.getActivity());
+      sleekFeedItem = new SleekElement(
+          SleekParam.DEFAULT_TOUCHABLE.newPriority(sleekCanvas.getDrawPrioNext())
+      );
 
-        //loadUIscrollXYareas(mActivityRule.getActivity().getSleekCanvas());
-        //loadUIscrollXYbasicSleekElements(mActivityRule.getActivity().getSleekCanvas());
-        //loadUIensureRuntimeAddedViewsGetLoaded(mActivityRule.getActivity().getSleekCanvas());
-        //loadUIruntimeDelayAddViews(mActivityRule.getActivity().getSleekCanvas());
-        //loadUIverticalTextCentering(mActivityRule.getActivity().getSleekCanvas());
-        //loadUIscrollYcompleteFeedUItransXYWH(mActivityRule.getActivity().getSleekCanvas());
-        //loadUIscrollYcompleteFeedUIfade(mActivityRule.getActivity().getSleekCanvas());
-        //loadUItextElementsWithPadding(mActivityRule.getActivity().getSleekCanvas());
-        //loadUItextElementsWrappedWithPadding(mActivityRule.getActivity().getSleekCanvas());
-        //loadUIelementsWithBackgroundImage(mActivityRule.getActivity().getSleekCanvas());
-        //loadUIelementsWithBackgroundImageContainCover(mActivityRule.getActivity().getSleekCanvas());
-        //loadUIelementsWithBackgroundImageCoverOnly(mActivityRule.getActivity().getSleekCanvas());
-        loadUIbackgroundImageResizeElement(mActivityRule.getActivity().getSleekCanvas());
-
-        final CountDownLatch activityPauseLatch = new CountDownLatch(1);
-
-        mActivityRule.getActivity().setPauseListener(new Runnable() {
+      final SleekElement finalFeedItem = sleekFeedItem;
+      finalFeedItem.getTouchHandler().setClickAction(
+          new Runnable() {
+            long touchTs = 0;
             @Override
             public void run() {
-                activityPauseLatch.countDown();
+              if (System.currentTimeMillis() - touchTs < 2000) {
+                return;
+              }
+              touchTs = finalFeedItem.getTouchHandler().getLastTouchDown();
+
+              finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                  finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - (feedItemWidth / 2.0f),
+                  finalFeedItem.getSleekY(), finalFeedItem.getSleekY(),
+                  finalFeedItem.getSleekW(), finalFeedItem.getSleekW() + feedItemWidth,
+                  finalFeedItem.getSleekH(), finalFeedItem.getSleekH(),
+                  500,
+                  new ISleekDrawView() {
+                    @Override
+                    public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+
+                      finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                          finalFeedItem.getSleekX(), finalFeedItem.getSleekX() + (feedItemWidth / 2.0f),
+                          finalFeedItem.getSleekY(), finalFeedItem.getSleekY(),
+                          finalFeedItem.getSleekW(), finalFeedItem.getSleekW() - feedItemWidth,
+                          finalFeedItem.getSleekH(), finalFeedItem.getSleekH(),
+                          500,
+                          new ISleekDrawView() {
+                            @Override
+                            public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+                              finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                                  finalFeedItem.getSleekX(), finalFeedItem.getSleekX(),
+                                  finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - (feedItemHeight / 2.0f),
+                                  finalFeedItem.getSleekW(), finalFeedItem.getSleekW(),
+                                  finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + feedItemHeight,
+                                  500,
+                                  new ISleekDrawView() {
+                                    @Override
+                                    public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+                                      finalFeedItem.setSleekAnimView(new SAVtransXYWH(
+                                          finalFeedItem.getSleekX(), finalFeedItem.getSleekX(),
+                                          finalFeedItem.getSleekY(), finalFeedItem.getSleekY() + (feedItemHeight / 2.0f),
+                                          finalFeedItem.getSleekW(), finalFeedItem.getSleekW(),
+                                          finalFeedItem.getSleekH(), finalFeedItem.getSleekH() - feedItemHeight,
+                                          500,
+                                          ISleekDrawView.NO_DRAW
+                                      ));
+                                    }
+                                  }
+                              ));
+                            }
+                          }
+                      ));
+                    }
+                  }
+              ));
             }
-        });
+          },
+          new Runnable() {
+            @Override
+            public void run() {
+              //DO NOTHING
+            }
+          },
+          new Runnable() {
+            @Override
+            public void run() {
+              //DO NOTHING
+            }
+          }
+      );
 
-        activityPauseLatch.await();
+      if (i % 4 == 0) {
+        feedItemString = FEED_ITEM_STRING_1;
+      }
+      else if (i % 3 == 0) {
+        feedItemString = FEED_ITEM_STRING_2;
+      }
+      else if (i % 2 == 0) {
+        feedItemString = FEED_ITEM_STRING_3;
+      }
+      else {
+        feedItemString = FEED_ITEM_STRING_4;
+      }
+      sleekFeedItem.setElementString(feedItemString);
+
+      if (i % 2 == 0) {
+        sleekFeedItem.addCSSblock(new CSSblockBase(CSS_BORDER_1));
+      }
+      else {
+        sleekFeedItem.addCSSblock(new CSSblockBase(CSS_BORDER_2));
+      }
+
+      sleekFeedItem.getLayout()
+          .x(SL.X.POS_CENTER, 0, null)
+          .y(SL.Y.ABSOLUTE, feedItemTopMargin, null)
+          .w(SL.W.ABSOLUTE, feedItemWidth, null)
+          .h(SL.H.ABSOLUTE, feedItemHeight, null);
+      if (lastSleekFeedItem != null) {
+        sleekFeedItem.getLayout().y(SL.Y.SOUTH_OF, feedItemTopMargin, lastSleekFeedItem);
+      }
+      else {
+        sleekFeedItem.getLayout().y(SL.Y.ABSOLUTE, feedItemTopMargin, null);
+      }
+
+      sleekFeedItem.createBackgroundImage();
+      sleekFeedItem.wrapBackgroundImageSize(false, true, true);
+
+      sleekCanvas.addSleek(sleekFeedItem);
+
+      lastSleekFeedItem = sleekFeedItem;
+    }
+  }
+
+  private static final void loadUIcompleteAppUIexample1(final SleekCanvas sleekCanvas) {
+      //TODO Build a simple complete App UI to test and demonstrate how easy Sleek is to use.
+  }
+
+  @Test
+  public void testGeneralUI() throws Exception {
+
+    if (mActivityRule.getActivity() == null) {
+        throw new IllegalStateException("mActivityRule.getActivity() == null");
     }
 
-    @Test
-    public void testUtilDownload() throws Exception {
-        final String imageUrl = "http://www.publicdomainpictures.net/pictures/30000/velka/evening-landscape-13530956185Aw.jpg";
-        final String customFileName = "TestSleekUI_image1.jpg";
-        final CountDownLatch downloadLatch = new CountDownLatch(4);
+    UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 
-        // Attempt download on bg-thread
-        UtilDownload.downloadUrl(
-                imageUrl,
-                customFileName,
-                UtilDownload.EXECUTOR,
-                new UtilDownload.FileDownload() {
-                    @Override
-                    public void downloadProgress(float percent) {
+    UtilTestSleekUI.setSleekActivitySleekCanvasScrollerY(mActivityRule.getActivity());
+    //UtilTestSleekUI.setSleekActivitySleekCanvasScrollerXY(mActivityRule.getActivity());
 
-                    }
-                    @Override
-                    public void downloadFinished(File file) {
-                        downloadLatch.countDown();
-                    }
-                }
-        );
+    //loadUIscrollXYareas(mActivityRule.getActivity().getSleekCanvas());
+    //loadUIscrollXYbasicSleekElements(mActivityRule.getActivity().getSleekCanvas());
+    //loadUIensureRuntimeAddedViewsGetLoaded(mActivityRule.getActivity().getSleekCanvas());
+    //loadUIruntimeDelayAddViews(mActivityRule.getActivity().getSleekCanvas());
+    //loadUIverticalTextCentering(mActivityRule.getActivity().getSleekCanvas());
+    //loadUIscrollYcompleteFeedUItransXYWH(mActivityRule.getActivity().getSleekCanvas());
+    //loadUIscrollYcompleteFeedUIfade(mActivityRule.getActivity().getSleekCanvas());
+    //loadUItextElementsWithPadding(mActivityRule.getActivity().getSleekCanvas());
+    //loadUItextElementsWrappedWithPadding(mActivityRule.getActivity().getSleekCanvas());
+    //loadUIelementsWithBackgroundImage(mActivityRule.getActivity().getSleekCanvas());
+    //loadUIelementsWithBackgroundImageContainCover(mActivityRule.getActivity().getSleekCanvas());
+    //loadUIelementsWithBackgroundImageCoverOnly(mActivityRule.getActivity().getSleekCanvas());
+    //loadUIbackgroundImageResizeElement(mActivityRule.getActivity().getSleekCanvas());
+    loadUIbackgroundCoverWithBorder(mActivityRule.getActivity().getSleekCanvas());
 
-        // Attempt download on bg-thread
-        UtilDownload.downloadUrl(
-                imageUrl,
-                customFileName,
-                UtilDownload.EXECUTOR,
-                new UtilDownload.FileDownload() {
-                    @Override
-                    public void downloadProgress(float percent) {
+    final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 
-                    }
-                    @Override
-                    public void downloadFinished(File file) {
-                        downloadLatch.countDown();
-                    }
-                }
-        );
+    mActivityRule.getActivity().setPauseListener(new Runnable() {
+        @Override
+        public void run() {
+            activityPauseLatch.countDown();
+        }
+    });
 
-        // Attempt download on bg-thread
-        UtilDownload.downloadUrl(
-                imageUrl,
-                customFileName,
-                UtilDownload.EXECUTOR,
-                new UtilDownload.FileDownload() {
-                    @Override
-                    public void downloadProgress(float percent) {
+    activityPauseLatch.await();
+  }
 
-                    }
-                    @Override
-                    public void downloadFinished(File file) {
-                        downloadLatch.countDown();
-                    }
-                }
-        );
+  @Test
+  public void testUtilDownload() throws Exception {
+    final String imageUrl = "http://www.publicdomainpictures.net/pictures/30000/velka/evening-landscape-13530956185Aw.jpg";
+    final String customFileName = "TestSleekUI_image1.jpg";
+    final CountDownLatch downloadLatch = new CountDownLatch(4);
 
-        // Attempt download and wait 15 sec for reference to existing downloaded File.
-        final File imageFile = UtilDownload.downloadUrl(
-                imageUrl,
-                customFileName,
-                15000,
-                new UtilDownload.FileDownload() {
-                    @Override
-                    public void downloadProgress(float percent) {
+    // Attempt download on bg-thread
+    UtilDownload.downloadUrl(
+        imageUrl,
+        customFileName,
+        UtilDownload.EXECUTOR,
+        new UtilDownload.FileDownload() {
+            @Override
+            public void downloadProgress(float percent) {
 
-                    }
-                    @Override
-                    public void downloadFinished(File file) {
-                        downloadLatch.countDown();
-                    }
-                }
-        );
+            }
+            @Override
+            public void downloadFinished(File file) {
+                downloadLatch.countDown();
+            }
+        }
+    );
 
-        downloadLatch.await(20000, TimeUnit.MILLISECONDS);
-        assertNotNull(imageFile);
-        assertTrue(imageFile.getAbsolutePath().contains(customFileName));
-        assertTrue(imageFile.delete());
-    }
+    // Attempt download on bg-thread
+    UtilDownload.downloadUrl(
+        imageUrl,
+        customFileName,
+        UtilDownload.EXECUTOR,
+        new UtilDownload.FileDownload() {
+            @Override
+            public void downloadProgress(float percent) {
 
-    @Test
-    public void testCSSblock2() {
+            }
+            @Override
+            public void downloadFinished(File file) {
+                downloadLatch.countDown();
+            }
+        }
+    );
 
-        UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+    // Attempt download on bg-thread
+    UtilDownload.downloadUrl(
+        imageUrl,
+        customFileName,
+        UtilDownload.EXECUTOR,
+        new UtilDownload.FileDownload() {
+            @Override
+            public void downloadProgress(float percent) {
 
-        CSSblockBase cssBlock = new CSSblockBase(CSS_STRING_2);
-        assertEquals(0x9933E776, cssBlock.getBackgroundColor().intValue());
-        assertEquals("#33E77699", Mapd.get(cssBlock, "background", String.class));
-        assertEquals(UtilPx.getPixels(8), cssBlock.getBorderRadius().intValue());
-        assertEquals(0xff4860E3, cssBlock.getColor().intValue());
-        assertEquals(UtilPx.getPixels(16), cssBlock.getFontSize().intValue());
-        assertEquals(UtilPx.getPixels(30), cssBlock.getLineHeight().intValue());
-        assertEquals("center", cssBlock.getTextAlign());
-        assertEquals("bottom", cssBlock.getVerticalAlign());
-    }
+            }
+            @Override
+            public void downloadFinished(File file) {
+                downloadLatch.countDown();
+            }
+        }
+    );
 
-    @Test
-    public void testCSSblock4() {
+    // Attempt download and wait 15 sec for reference to existing downloaded File.
+    final File imageFile = UtilDownload.downloadUrl(
+        imageUrl,
+        customFileName,
+        15000,
+        new UtilDownload.FileDownload() {
+            @Override
+            public void downloadProgress(float percent) {
 
-        UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+            }
+            @Override
+            public void downloadFinished(File file) {
+                downloadLatch.countDown();
+            }
+        }
+    );
 
-        CSSblockBase cssBlock = new CSSblockBase(CSS_STRING_4);
-        assertEquals(Color.argb(255, 255, 0, 0), cssBlock.getBackgroundColor().intValue());
-        assertEquals(Color.argb(127, 0, 255, 0), cssBlock.getBoxShadowColor().intValue());
-        assertEquals(Color.argb((int) (255 * 0.7), 0, 0, 255), cssBlock.getColor().intValue());
-    }
+    downloadLatch.await(20000, TimeUnit.MILLISECONDS);
+    assertNotNull(imageFile);
+    assertTrue(imageFile.getAbsolutePath().contains(customFileName));
+    assertTrue(imageFile.delete());
+  }
 
-    @Test
-    public void testCSSfeedItemPadding() {
+  @Test
+  public void testCSSblock2() {
 
-        UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+    UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 
-        CSSblockBase cssBlock;
-        //padding: 5px 10px 15px 20px;
-        cssBlock = new CSSblockBase(CSS_PADDING_X4);
-        assertEquals(UtilPx.getPixels(5), cssBlock.getPadding().top);
-        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().right);
-        assertEquals(UtilPx.getPixels(15), cssBlock.getPadding().bottom);
-        assertEquals(UtilPx.getPixels(20), cssBlock.getPadding().left);
+    CSSblockBase cssBlock = new CSSblockBase(CSS_STRING_2);
+    assertEquals(0x9933E776, cssBlock.getBackgroundColor().intValue());
+    assertEquals("#33E77699", Mapd.get(cssBlock, "background", String.class));
+    assertEquals(UtilPx.getPixels(8), cssBlock.getBorderRadius().intValue());
+    assertEquals(0xff4860E3, cssBlock.getColor().intValue());
+    assertEquals(UtilPx.getPixels(16), cssBlock.getFontSize().intValue());
+    assertEquals(UtilPx.getPixels(30), cssBlock.getLineHeight().intValue());
+    assertEquals("center", cssBlock.getTextAlign());
+    assertEquals("bottom", cssBlock.getVerticalAlign());
+  }
 
-        //padding: 10px 5px 20px;
-        cssBlock = new CSSblockBase(CSS_PADDING_X3);
-        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().top);
-        assertEquals(UtilPx.getPixels(5), cssBlock.getPadding().right);
-        assertEquals(UtilPx.getPixels(20), cssBlock.getPadding().bottom);
-        assertEquals(UtilPx.getPixels(5), cssBlock.getPadding().left);
+  @Test
+  public void testCSSblock4() {
 
-        //padding: 10px 20px;
-        cssBlock = new CSSblockBase(CSS_PADDING_X2);
-        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().top);
-        assertEquals(UtilPx.getPixels(20), cssBlock.getPadding().right);
-        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().bottom);
-        assertEquals(UtilPx.getPixels(20), cssBlock.getPadding().left);
+    UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 
-        //padding: 10px;
-        cssBlock = new CSSblockBase(CSS_PADDING_X1);
-        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().top);
-        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().right);
-        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().bottom);
-        assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().left);
-    }
+    CSSblockBase cssBlock = new CSSblockBase(CSS_STRING_4);
+    assertEquals(Color.argb(255, 255, 0, 0), cssBlock.getBackgroundColor().intValue());
+    assertEquals(Color.argb(127, 0, 255, 0), cssBlock.getBoxShadowColor().intValue());
+    assertEquals(Color.argb((int) (255 * 0.7), 0, 0, 255), cssBlock.getColor().intValue());
+  }
 
-    @Test
-    public void testCSSbackgroundImageUrl() {
+  @Test
+  public void testCSSfeedItemPadding() {
 
-        UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+    UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 
-        CSSblockBase cssBlock = new CSSblockBase(CSS_FEED_ITEM_IMAGE);
-        assertEquals(
-                "https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg",
-                cssBlock.getBackgroundImage()
-        );
-    }
+    CSSblockBase cssBlock;
+    //padding: 5px 10px 15px 20px;
+    cssBlock = new CSSblockBase(CSS_PADDING_X4);
+    assertEquals(UtilPx.getPixels(5), cssBlock.getPadding().top);
+    assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().right);
+    assertEquals(UtilPx.getPixels(15), cssBlock.getPadding().bottom);
+    assertEquals(UtilPx.getPixels(20), cssBlock.getPadding().left);
 
-    @Test
-    public void testCSSbackgroundImageLocal() {
+    //padding: 10px 5px 20px;
+    cssBlock = new CSSblockBase(CSS_PADDING_X3);
+    assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().top);
+    assertEquals(UtilPx.getPixels(5), cssBlock.getPadding().right);
+    assertEquals(UtilPx.getPixels(20), cssBlock.getPadding().bottom);
+    assertEquals(UtilPx.getPixels(5), cssBlock.getPadding().left);
 
-        UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+    //padding: 10px 20px;
+    cssBlock = new CSSblockBase(CSS_PADDING_X2);
+    assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().top);
+    assertEquals(UtilPx.getPixels(20), cssBlock.getPadding().right);
+    assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().bottom);
+    assertEquals(UtilPx.getPixels(20), cssBlock.getPadding().left);
 
-        CSSblockBase cssBlock = new CSSblockBase(CSS_FEED_ITEM_IMAGE_LOCAL);
-        assertEquals(
-                "sym_def_app_icon",
-                cssBlock.getBackgroundImage()
-        );
+    //padding: 10px;
+    cssBlock = new CSSblockBase(CSS_PADDING_X1);
+    assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().top);
+    assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().right);
+    assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().bottom);
+    assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().left);
+  }
 
-        int resId = UtilPx.getDefaultContext().getResources().getIdentifier(
-                cssBlock.getBackgroundImage(),
-                "drawable",
-                "android"
-        );
-        assertTrue(resId > 0);
-    }
+  @Test
+  public void testCSSbackgroundImageUrl() {
+
+    UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+
+    CSSblockBase cssBlock = new CSSblockBase(CSS_FEED_ITEM_IMAGE);
+    assertEquals(
+            "https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg",
+            cssBlock.getBackgroundImage()
+    );
+  }
+
+  @Test
+  public void testCSSbackgroundImageLocal() {
+
+    UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+
+    CSSblockBase cssBlock = new CSSblockBase(CSS_FEED_ITEM_IMAGE_LOCAL);
+    assertEquals(
+            "sym_def_app_icon",
+            cssBlock.getBackgroundImage()
+    );
+
+    int resId = UtilPx.getDefaultContext().getResources().getIdentifier(
+            cssBlock.getBackgroundImage(),
+            "drawable",
+            "android"
+    );
+    assertTrue(resId > 0);
+  }
 
 }
