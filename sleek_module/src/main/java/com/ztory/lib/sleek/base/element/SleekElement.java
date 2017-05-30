@@ -311,10 +311,12 @@ public class SleekElement extends SleekBaseComposite {
         //NOTE: Background logic for "cover" and "contain" is calculated as if this CSS was set:
         //      background-position: center center;
 
+        final int bitmapW = elementBackgroundImage.getBitmap().getWidth();
+        final int bitmapH = elementBackgroundImage.getBitmap().getHeight();
         int backgroundX = 0;
         int backgroundY = 0;
-        int backgroundWidth = elementBackgroundImage.getBitmap().getWidth();
-        int backgroundHeight = elementBackgroundImage.getBitmap().getHeight();
+        int backgroundWidth = bitmapW;
+        int backgroundHeight = bitmapH;
 
         // Reset source rect
         elementBackgroundImage.getSourceRect().set(
@@ -357,8 +359,6 @@ public class SleekElement extends SleekBaseComposite {
                 width or height of the container. When the image and container have
                 different dimensions, the image is clipped either left/right or top/bottom.
                  */
-                final int bitmapW = elementBackgroundImage.getBitmap().getWidth();
-                final int bitmapH = elementBackgroundImage.getBitmap().getHeight();
                 float bitmapScale;
                 float elementRatio = Calc.divide(sleekW, sleekH);
                 float bitmapRatio = Calc.divide(backgroundWidth, backgroundHeight);
