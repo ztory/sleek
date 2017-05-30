@@ -9,25 +9,28 @@ import java.util.Map;
  */
 public interface CSSblock extends Map<String, String> {
 
-    long getModifiedTimestamp();
+  long getModifiedTimestamp();
 
-    Integer getBackgroundColor();
-    String getBackgroundImage();
-    String getBackgroundSize();
+  Integer getBackgroundColor();
+  String getBackgroundImage();
+  String getBackgroundSize();
 
-    Integer getColor();
-    Integer getBorderRadius();
-    Integer getFontSize();
-    Integer getLineHeight();
-    String getTextAlign();
-    String getVerticalAlign();
+  Integer getColor();
+  Integer getBorderRadius();
+  Integer getFontSize();
+  Integer getLineHeight();
+  String getTextAlign();
+  String getVerticalAlign();
 
-    /* offset-x | offset-y | blur-radius | color */
-    //box-shadow: 10px 5px 5px black;
-    Integer getBoxShadowBlurRadius();
-    Integer getBoxShadowColor();
-    Integer getBoxShadowOffsetX();
-    Integer getBoxShadowOffsetY();
+  /* offset-x | offset-y | blur-radius | color */
+  //box-shadow: 10px 5px 5px black;
+  Integer getBoxShadowBlurRadius();
+  Integer getBoxShadowColor();
+  Integer getBoxShadowOffsetX();
+  Integer getBoxShadowOffsetY();
 
-    Rect getPadding();
+  Rect getPadding();
+
+  Rect getBorderWidth();
+  Integer getBorderColor();
 }

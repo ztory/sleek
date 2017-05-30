@@ -255,6 +255,7 @@ public class TestSleekUI {
                     "    vertical-align: top;\n" +
                     "    padding: 12px;\n" +
                     "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
+                    "    border: 1px solid #ff0000;\n" +
                     "}",
             CSS_BORDER_2 =
                 "{\n" +
@@ -269,6 +270,7 @@ public class TestSleekUI {
                     "    vertical-align: top;\n" +
                     "    padding: 12px;\n" +
                     "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
+                    "    border: 1px solid #0000ff;\n" +
                     "}";
 
     @Rule
