@@ -270,7 +270,7 @@ public class TestSleekUI {
                     "    vertical-align: top;\n" +
                     "    padding: 12px;\n" +
                     "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
-                    "    border: 1px solid #0000ff;\n" +
+                    "    border: 2px solid #0000ff;\n" +
                     "}";
 
     @Rule
@@ -1710,6 +1710,28 @@ public class TestSleekUI {
     assertNotNull(imageFile);
     assertTrue(imageFile.getAbsolutePath().contains(customFileName));
     assertTrue(imageFile.delete());
+  }
+
+  @Test
+  public void testCSSborder() {
+
+    UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+
+    CSSblockBase cssBlock1 = new CSSblockBase(CSS_BORDER_1);
+    assertNotNull(cssBlock1.getBorderWidth());
+    assertEquals(UtilPx.getPixels(1), cssBlock1.getBorderWidth().top);
+    assertEquals(UtilPx.getPixels(1), cssBlock1.getBorderWidth().right);
+    assertEquals(UtilPx.getPixels(1), cssBlock1.getBorderWidth().bottom);
+    assertEquals(UtilPx.getPixels(1), cssBlock1.getBorderWidth().left);
+    assertEquals(0xffff0000, cssBlock1.getBorderColor().intValue());
+
+    CSSblockBase cssBlock2 = new CSSblockBase(CSS_BORDER_2);
+    assertNotNull(cssBlock2.getBorderWidth());
+    assertEquals(UtilPx.getPixels(2), cssBlock2.getBorderWidth().top);
+    assertEquals(UtilPx.getPixels(2), cssBlock2.getBorderWidth().right);
+    assertEquals(UtilPx.getPixels(2), cssBlock2.getBorderWidth().bottom);
+    assertEquals(UtilPx.getPixels(2), cssBlock2.getBorderWidth().left);
+    assertEquals(0xff0000ff, cssBlock2.getBorderColor().intValue());
   }
 
   @Test

@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * NOTE:
+ * Styling and layout in SleekElement is calculated as if box-sizing: border-box; is set in CSS.
  * Created by jonruna on 2017-04-07.
  */
 public class SleekElement extends SleekBaseComposite {

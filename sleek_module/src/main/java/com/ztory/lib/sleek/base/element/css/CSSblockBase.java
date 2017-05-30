@@ -386,13 +386,56 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
     return null;
   }
 
+  /**
+   * Supported syntax:
+   * border: 1px solid #0000ff;
+   * @return a Rect with the border-width value, or null if no border-width is set.
+   */
   @Override public Rect getBorderWidth() {
-    //TODO IMPLEMENTATION
+    String borderString = Mapd.get(this, CSS.Property.BORDER, String.class);
+    if (borderString != null) {
+      try {
+        String[] paddingParams = borderString.split(" ");
+        if (paddingParams.length != 3) {
+          return null;
+        }
+
+        // Strip "px" suffix
+        String borderSizeString = paddingParams[0].substring(0, paddingParams[0].length() - 2);
+        int borderSize = UtilPx.getPixels(Integer.parseInt(borderSizeString));
+
+        return new Rect(
+            borderSize,//left,
+            borderSize,//top,
+            borderSize,//right,
+            borderSize//bottom
+        );
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
     return null;
   }
 
+  /**
+   * Supported syntax:
+   * border: 1px solid #0000ff;
+   * @return a color or null if no border-color is set.
+   */
   @Override public Integer getBorderColor() {
-    //TODO IMPLEMENTATION
+    String borderString = Mapd.get(this, CSS.Property.BORDER, String.class);
+    if (borderString != null) {
+      try {
+        String[] paddingParams = borderString.split(" ");
+        if (paddingParams.length != 3) {
+          return null;
+        }
+
+        return getColorFromString(paddingParams[2]);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
     return null;
   }
 
