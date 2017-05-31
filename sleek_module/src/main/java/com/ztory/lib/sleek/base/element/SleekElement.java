@@ -167,7 +167,7 @@ public class SleekElement extends SleekBaseComposite {
     elementBackground.getPaint().setAntiAlias(elementBorderRadius > 0);
     elementBackground.setRounded(elementBorderRadius);
     elementBorder.getPaint().setAntiAlias(elementBorderRadius > 0);
-    elementBorder.setRounded(elementBorderRadius - (int) (elementBorderWidth.left / 2.0f));
+    elementBorder.setRounded(elementBorderRadius - (elementBorderWidth.left / 2.0f));
 
     Integer boxShadowBlurRadius = elementCSS.getBoxShadowBlurRadius();
     if (boxShadowBlurRadius != null && boxShadowBlurRadius > 0) {
