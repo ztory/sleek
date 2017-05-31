@@ -271,6 +271,21 @@ public class TestSleekUI {
                     "    padding: 12px;\n" +
                     "    box-shadow: 0px 0px 8px rgba(255,0,0,0.6);\n" +
                     "    border: 2px solid #0000ff;\n" +
+                    "}",
+            CSS_BORDER_3 =
+                "{\n" +
+                    "    background: #ff0000;\n" +
+                    //"    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");\n" +
+                    "    background-size: cover;\n" +
+                    "    border-radius: 12px;\n" +
+                    "    color: #f8f8f8;\n" +
+                    "    font-size: 20px;\n" +
+                    "    line-height: 24px;\n" +
+                    "    text-align: left;\n" +
+                    "    vertical-align: top;\n" +
+                    "    padding: 12px;\n" +
+                    //"    box-shadow: 0px 0px 8px rgba(255,0,255,0.6);\n" +
+                    "    border: 6px solid #fff;\n" +
                     "}";
 
     @Rule
@@ -1561,7 +1576,10 @@ public class TestSleekUI {
       }
       sleekFeedItem.setElementString(feedItemString);
 
-      if (i % 2 == 0) {
+      if (i % 3 == 0) {
+        sleekFeedItem.addCSSblock(new CSSblockBase(CSS_BORDER_3));
+      }
+      else if (i % 2 == 0) {
         sleekFeedItem.addCSSblock(new CSSblockBase(CSS_BORDER_1));
       }
       else {

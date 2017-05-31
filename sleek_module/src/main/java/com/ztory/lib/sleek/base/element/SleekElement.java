@@ -610,13 +610,22 @@ public class SleekElement extends SleekBaseComposite {
     }
 
     super.setSleekBounds(x, y, elementWidth, elementHeight);
-    elementBackground.setSleekBounds(0, 0, elementWidth, elementHeight);
+
     elementBorder.setSleekBounds(
         elementBorderWidth.left / 2.0f,
         elementBorderWidth.top / 2.0f,
         elementWidth - elementBorderWidth.left,
         elementHeight - elementBorderWidth.top
     );
+    //SOLVES BG-EDGE-BLEED-THROUGH by decreasing elementBackground size when CSS-border is set
+    elementBackground.setSleekBounds(
+        elementBorder.getSleekX(),
+        elementBorder.getSleekY(),
+        elementBorder.getSleekW(),
+        elementBorder.getSleekH()
+    );
+    //elementBackground.setSleekBounds(0, 0, elementWidth, elementHeight);
+
 
     if (loaded && addedToParent) {
 
