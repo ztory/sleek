@@ -245,7 +245,7 @@ public class TestSleekUI {
             CSS_BORDER_1 =
                     "{\n" +
                     "    background: #33E776;\n" +
-                    //"    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/4/4e/McCarthyBeachStatePark.jpg\");\n" +
+                    "    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/4/4e/McCarthyBeachStatePark.jpg\");\n" +
                     "    background-size: contain;\n" +
                     "    border-radius: 20px;\n" +
                     "    color: #993333;\n" +
@@ -255,12 +255,12 @@ public class TestSleekUI {
                     "    vertical-align: top;\n" +
                     "    padding: 12px;\n" +
                     "    box-shadow: 0px 0px 8px rgba(0,0,255,0.6);\n" +
-                    "    border: 4px solid #ff0000;\n" +
+                    "    border: 4px solid #ffff00;\n" +
                     "}",
             CSS_BORDER_2 =
                 "{\n" +
                     "    background: #33E776;\n" +
-                    "    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");\n" +
+                    //"    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");\n" +
                     "    background-size: cover;\n" +
                     "    border-radius: 8px;\n" +
                     "    color: #333399;\n" +
@@ -269,8 +269,8 @@ public class TestSleekUI {
                     "    text-align: left;\n" +
                     "    vertical-align: top;\n" +
                     "    padding: 12px;\n" +
-                    "    box-shadow: 0px 0px 8px rgba(255,0,0,0.6);\n" +
-                    "    border: 2px solid #0000ff;\n" +
+                    "    box-shadow: 0px 0px 24px rgba(132,91,185,0.6);\n" +
+                    "    border: 2px solid #ff0000;\n" +
                     "}",
             CSS_BORDER_3 =
                 "{\n" +
@@ -1741,7 +1741,7 @@ public class TestSleekUI {
     assertEquals(UtilPx.getPixels(4), cssBlock1.getBorderWidth().right);
     assertEquals(UtilPx.getPixels(4), cssBlock1.getBorderWidth().bottom);
     assertEquals(UtilPx.getPixels(4), cssBlock1.getBorderWidth().left);
-    assertEquals(0xffff0000, cssBlock1.getBorderColor().intValue());
+    assertEquals(0xffffff00, cssBlock1.getBorderColor().intValue());
 
     CSSblockBase cssBlock2 = new CSSblockBase(CSS_BORDER_2);
     assertNotNull(cssBlock2.getBorderWidth());
@@ -1749,7 +1749,7 @@ public class TestSleekUI {
     assertEquals(UtilPx.getPixels(2), cssBlock2.getBorderWidth().right);
     assertEquals(UtilPx.getPixels(2), cssBlock2.getBorderWidth().bottom);
     assertEquals(UtilPx.getPixels(2), cssBlock2.getBorderWidth().left);
-    assertEquals(0xff0000ff, cssBlock2.getBorderColor().intValue());
+    assertEquals(0xffff0000, cssBlock2.getBorderColor().intValue());
   }
 
   @Test

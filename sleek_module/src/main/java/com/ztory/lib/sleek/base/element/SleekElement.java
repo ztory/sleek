@@ -33,7 +33,10 @@ import java.util.List;
 
 /**
  * NOTE:
- * Styling and layout in SleekElement is calculated as if box-sizing: border-box; is set in CSS.
+ * Styling and layout in SleekElement is calculated as if CSS is set to:
+ * box-sizing: border-box;
+ * background-repeat: no-repeat;
+ * background-position: center;
  * Created by jonruna on 2017-04-07.
  */
 public class SleekElement extends SleekBaseComposite {
@@ -167,7 +170,7 @@ public class SleekElement extends SleekBaseComposite {
     elementBackground.getPaint().setAntiAlias(elementBorderRadius > 0);
     elementBackground.setRounded(elementBorderRadius);
     elementBorder.getPaint().setAntiAlias(elementBorderRadius > 0);
-    elementBorder.setRounded(elementBorderRadius - (elementBorderWidth.left / 2.0f));
+    elementBorder.setRounded(elementBorderRadius);
 
     Integer boxShadowBlurRadius = elementCSS.getBoxShadowBlurRadius();
     if (boxShadowBlurRadius != null && boxShadowBlurRadius > 0) {
@@ -408,17 +411,13 @@ public class SleekElement extends SleekBaseComposite {
     if (backgroundX > elementBorderRadius || backgroundY > elementBorderRadius) {
       elementBackgroundImage.setRoundedRadius(0);
     } else {
-      elementBackgroundImage.setRoundedRadius(elementBorderRadius - elementBorderWidth.top);
-      //elementBackgroundImage.setRoundedRadius((int) (elementBorderRadius / 2.0f) + 1);
-      //elementBackgroundImage.setRoundedRadius(elementBorderRadius - (int) (elementBorderRadius / 2.0f));
-      //elementBackgroundImage.setRoundedRadius(
-      //    elementBorderRadius
-      //    - (int) (elementBorderWidth.top / 2.0f)
-      //    //- elementBorderWidth.top
-      //    //- elementBorderWidth.bottom
-      //    //- elementBorderWidth.left
-      //    //- elementBorderWidth.right
-      //);
+      if (elementBorderColor == SleekColorArea.COLOR_TRANSPARENT) {
+        elementBackgroundImage.setRoundedRadius(elementBorderRadius);
+      } else if (elementBorderRadius > elementBorderWidth.top) {
+        elementBackgroundImage.setRoundedRadius(elementBorderRadius - elementBorderWidth.top);
+      } else {
+        elementBackgroundImage.setRoundedRadius(0);
+      }
     }
 
     elementBackgroundImage.setSleekBounds(
