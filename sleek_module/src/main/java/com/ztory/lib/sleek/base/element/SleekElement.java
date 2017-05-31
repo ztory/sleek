@@ -545,6 +545,17 @@ public class SleekElement extends SleekBaseComposite {
     canvas.translate(sleekX, sleekY);
 
     if (!drawShadowBitmap(canvas, info)) {
+      if (
+          elementBorderColor != SleekColorArea.COLOR_TRANSPARENT
+          && elementBackgroundImage != null
+          && elementBackgroundImage.isBitmapLoaded()
+          ) {
+        // This prevents bg-color from bleeding through on elementBackgroundImage's Bitmap corners
+        elementBackground.getPaint().setColor(elementBorderColor);
+      }
+      else if (elementBackground.getPaint().getColor() != elementBackgroundColor) {
+        elementBackground.getPaint().setColor(elementBackgroundColor);
+      }
       elementBackground.onSleekDraw(canvas, info);
     }
 

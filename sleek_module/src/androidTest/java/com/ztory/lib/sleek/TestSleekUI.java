@@ -275,7 +275,7 @@ public class TestSleekUI {
             CSS_BORDER_3 =
                 "{\n" +
                     "    background: #ff0000;\n" +
-                    //"    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");\n" +
+                    "    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");\n" +
                     "    background-size: cover;\n" +
                     "    border-radius: 12px;\n" +
                     "    color: #f8f8f8;\n" +
