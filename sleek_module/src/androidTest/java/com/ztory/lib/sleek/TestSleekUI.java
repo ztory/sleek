@@ -245,9 +245,9 @@ public class TestSleekUI {
             CSS_BORDER_1 =
                     "{\n" +
                     "    background: #33E776;\n" +
-                    "    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/4/4e/McCarthyBeachStatePark.jpg\");\n" +
+                    //"    background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/4/4e/McCarthyBeachStatePark.jpg\");\n" +
                     "    background-size: contain;\n" +
-                    "    border-radius: 8px;\n" +
+                    "    border-radius: 20px;\n" +
                     "    color: #993333;\n" +
                     "    font-size: 20px;\n" +
                     "    line-height: 24px;\n" +

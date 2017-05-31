@@ -733,13 +733,15 @@ public class SleekElement extends SleekBaseComposite {
     //TODO ... bg-alpha and its shadow-alpha ????
     //TODO NEED TO add interface that is called HasAlpha and has getAlpha and setAlpha methods.
 
-    canvas.drawRect(
-        elementBorderRadius,
-        elementBorderRadius,
-        sleekW - elementBorderRadius,
-        sleekH - elementBorderRadius,
-        elementShadowBitmapPaint
-    );
+    if (elementBorderColor == SleekColorArea.COLOR_TRANSPARENT) {
+      canvas.drawRect(
+          elementBorderRadius,
+          elementBorderRadius,
+          sleekW - elementBorderRadius,
+          sleekH - elementBorderRadius,
+          elementShadowBitmapPaint
+      );
+    }
 
         /*
         // LOW PRIO since why would we want alpha bg-elements with shadow?
@@ -803,6 +805,20 @@ public class SleekElement extends SleekBaseComposite {
         elementBorderRadius,
         elementShadowBitmapPaint
     );
+
+    if (elementBorderColor != SleekColorArea.COLOR_TRANSPARENT) {
+      canvas.drawRoundRect(
+          new RectF(
+              elementBorderWidth.left,
+              elementBorderWidth.top,
+              sleekW - elementBorderWidth.right,
+              sleekH - elementBorderWidth.bottom
+          ),
+          elementBorderRadius - elementBorderWidth.left,
+          elementBorderRadius - elementBorderWidth.top,
+          elementShadowBitmapPaint
+      );
+    }
 
     //DEBUG Draw regular background for position reference
     //        elementBackground.getPaint().setColor(0x99ffffff);
