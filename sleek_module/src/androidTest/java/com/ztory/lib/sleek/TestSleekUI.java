@@ -254,8 +254,8 @@ public class TestSleekUI {
                     "    text-align: left;\n" +
                     "    vertical-align: top;\n" +
                     "    padding: 12px;\n" +
-                    "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
-                    "    border: 1px solid #ff0000;\n" +
+                    "    box-shadow: 0px 0px 8px rgba(0,0,255,0.6);\n" +
+                    "    border: 4px solid #ff0000;\n" +
                     "}",
             CSS_BORDER_2 =
                 "{\n" +
@@ -269,7 +269,7 @@ public class TestSleekUI {
                     "    text-align: left;\n" +
                     "    vertical-align: top;\n" +
                     "    padding: 12px;\n" +
-                    "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n" +
+                    "    box-shadow: 0px 0px 8px rgba(255,0,0,0.6);\n" +
                     "    border: 2px solid #0000ff;\n" +
                     "}";
 
@@ -1719,10 +1719,10 @@ public class TestSleekUI {
 
     CSSblockBase cssBlock1 = new CSSblockBase(CSS_BORDER_1);
     assertNotNull(cssBlock1.getBorderWidth());
-    assertEquals(UtilPx.getPixels(1), cssBlock1.getBorderWidth().top);
-    assertEquals(UtilPx.getPixels(1), cssBlock1.getBorderWidth().right);
-    assertEquals(UtilPx.getPixels(1), cssBlock1.getBorderWidth().bottom);
-    assertEquals(UtilPx.getPixels(1), cssBlock1.getBorderWidth().left);
+    assertEquals(UtilPx.getPixels(4), cssBlock1.getBorderWidth().top);
+    assertEquals(UtilPx.getPixels(4), cssBlock1.getBorderWidth().right);
+    assertEquals(UtilPx.getPixels(4), cssBlock1.getBorderWidth().bottom);
+    assertEquals(UtilPx.getPixels(4), cssBlock1.getBorderWidth().left);
     assertEquals(0xffff0000, cssBlock1.getBorderColor().intValue());
 
     CSSblockBase cssBlock2 = new CSSblockBase(CSS_BORDER_2);

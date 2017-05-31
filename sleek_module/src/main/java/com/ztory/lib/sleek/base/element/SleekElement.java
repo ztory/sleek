@@ -53,12 +53,19 @@ public class SleekElement extends SleekBaseComposite {
       SleekColorArea.ANTI_ALIASED_FALSE,
       SleekParam.DEFAULT_TOUCHABLE
   );
+  protected final SleekColorArea elementBorder = new SleekColorArea(
+      SleekColorArea.COLOR_TRANSPARENT,
+      SleekColorArea.ANTI_ALIASED_FALSE,
+      SleekParam.DEFAULT_TOUCHABLE
+  );
   protected SleekViewText elementText = null;
 
   protected Paint elementShadowBitmapPaint;
   protected final List<Bitmap> elementShadowBitmapList = new ArrayList<>();
 
   protected int elementBackgroundColor = SleekColorArea.COLOR_TRANSPARENT;
+  protected int elementBorderColor = SleekColorArea.COLOR_TRANSPARENT;
+  protected final Rect elementBorderWidth = new Rect();
   protected int elementBorderRadius = 0;
   protected float elementShadowRadius = 0;
   protected float elementShadowOffsetX = 0;
@@ -128,15 +135,39 @@ public class SleekElement extends SleekBaseComposite {
     Integer backgroundColor = elementCSS.getBackgroundColor();
     if (backgroundColor != null) {
       elementBackgroundColor = backgroundColor;
-      elementBackground.getPaint().setColor(backgroundColor);
+    } else {
+      elementBackgroundColor = SleekColorArea.COLOR_TRANSPARENT;
+    }
+    elementBackground.getPaint().setColor(elementBackgroundColor);
+
+    Integer borderColor = elementCSS.getBorderColor();
+    if (borderColor != null) {
+      elementBorderColor = borderColor;
+    } else {
+      elementBorderColor = SleekColorArea.COLOR_TRANSPARENT;
+    }
+    elementBorder.getPaint().setColor(elementBorderColor);
+
+    Rect borderWidth = elementCSS.getBorderWidth();
+    if (borderWidth != null) {
+      elementBorderWidth.set(borderWidth);
+      elementBorder.getPaint().setStyle(Paint.Style.STROKE);
+      elementBorder.getPaint().setStrokeWidth(elementBorderWidth.left);
+      //elementBorder.getPaint().setAlpha(120);
+    } else {
+      elementBorderWidth.set(0, 0, 0, 0);
     }
 
     Integer borderRadius = elementCSS.getBorderRadius();
     if (borderRadius != null) {
       elementBorderRadius = borderRadius;
-      elementBackground.getPaint().setAntiAlias(true);
-      elementBackground.setRounded(borderRadius);
+    } else {
+      elementBorderRadius = 0;
     }
+    elementBackground.getPaint().setAntiAlias(elementBorderRadius > 0);
+    elementBackground.setRounded(elementBorderRadius);
+    elementBorder.getPaint().setAntiAlias(elementBorderRadius > 0);
+    elementBorder.setRounded(elementBorderRadius - (int) (elementBorderWidth.left / 2.0f));
 
     Integer boxShadowBlurRadius = elementCSS.getBoxShadowBlurRadius();
     if (boxShadowBlurRadius != null && boxShadowBlurRadius > 0) {
@@ -211,13 +242,11 @@ public class SleekElement extends SleekBaseComposite {
     String oldElementBackgroundImageUrl = elementBackgroundImageUrl;
     elementBackgroundImageUrl = elementCSS.getBackgroundImage();
     if (elementBackgroundImageUrl != null) {
-
       createBackgroundImage();
-
       if (!elementBackgroundImageUrl.equals(oldElementBackgroundImageUrl)) {
-        localElementBackgroundImageUrl = !elementBackgroundImageUrl.startsWith("https://")
+        localElementBackgroundImageUrl =
+            !elementBackgroundImageUrl.startsWith("https://")
             && !elementBackgroundImageUrl.startsWith("http://");
-
         reloadBackgroundImage();
       }
     } else if (elementBackgroundImage != null) {
@@ -379,11 +408,24 @@ public class SleekElement extends SleekBaseComposite {
     if (backgroundX > elementBorderRadius || backgroundY > elementBorderRadius) {
       elementBackgroundImage.setRoundedRadius(0);
     } else {
-      elementBackgroundImage.setRoundedRadius(elementBorderRadius);
+      elementBackgroundImage.setRoundedRadius(elementBorderRadius - elementBorderWidth.top);
+      //elementBackgroundImage.setRoundedRadius((int) (elementBorderRadius / 2.0f) + 1);
+      //elementBackgroundImage.setRoundedRadius(elementBorderRadius - (int) (elementBorderRadius / 2.0f));
+      //elementBackgroundImage.setRoundedRadius(
+      //    elementBorderRadius
+      //    - (int) (elementBorderWidth.top / 2.0f)
+      //    //- elementBorderWidth.top
+      //    //- elementBorderWidth.bottom
+      //    //- elementBorderWidth.left
+      //    //- elementBorderWidth.right
+      //);
     }
 
     elementBackgroundImage.setSleekBounds(
-        backgroundX, backgroundY, backgroundWidth, backgroundHeight
+        backgroundX + elementBorderWidth.left,
+        backgroundY + elementBorderWidth.top,
+        backgroundWidth - elementBorderWidth.left - elementBorderWidth.right,
+        backgroundHeight - elementBorderWidth.top - elementBorderWidth.bottom
     );
   }
 
@@ -490,6 +532,13 @@ public class SleekElement extends SleekBaseComposite {
     return elementCSS;
   }
 
+  public void drawBorder(Canvas canvas, SleekCanvasInfo info) {
+    if (elementBorderColor == SleekColorArea.COLOR_TRANSPARENT) {
+      return;
+    }
+    elementBorder.onSleekDraw(canvas, info);
+  }
+
   @Override public void drawView(Sleek view, Canvas canvas, SleekCanvasInfo info) {
 
     canvas.save();
@@ -502,6 +551,8 @@ public class SleekElement extends SleekBaseComposite {
     if (elementBackgroundImage != null) {
       elementBackgroundImage.onSleekDraw(canvas, info);
     }
+
+    drawBorder(canvas, info);
 
     if (elementText != null) {
       elementText.onSleekDraw(canvas, info);
@@ -552,6 +603,12 @@ public class SleekElement extends SleekBaseComposite {
 
     super.setSleekBounds(x, y, elementWidth, elementHeight);
     elementBackground.setSleekBounds(0, 0, elementWidth, elementHeight);
+    elementBorder.setSleekBounds(
+        elementBorderWidth.left / 2.0f,
+        elementBorderWidth.top / 2.0f,
+        elementWidth - elementBorderWidth.left,
+        elementHeight - elementBorderWidth.top
+    );
 
     if (loaded && addedToParent) {
 
