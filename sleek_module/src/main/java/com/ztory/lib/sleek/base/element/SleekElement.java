@@ -831,7 +831,11 @@ public class SleekElement extends SleekBaseComposite {
     Paint paint = new Paint();
     paint.setAntiAlias(true);
     paint.setStyle(Paint.Style.FILL);
-    paint.setColor(elementBackgroundColor);
+    if (elementBorderColor != SleekColorArea.COLOR_TRANSPARENT) {
+      paint.setColor(elementBorderColor);
+    } else {
+      paint.setColor(elementBackgroundColor);
+    }
     paint.setShadowLayer(
         elementShadowRadius,
         elementShadowOffsetX,

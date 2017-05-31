@@ -284,7 +284,7 @@ public class TestSleekUI {
                     "    text-align: left;\n" +
                     "    vertical-align: top;\n" +
                     "    padding: 12px;\n" +
-                    //"    box-shadow: 0px 0px 8px rgba(255,0,255,0.6);\n" +
+                    "    box-shadow: 0px 0px 10px rgba(0,0,255,0.8);\n" +
                     "    border: 6px solid #fff;\n" +
                     "}";
 
