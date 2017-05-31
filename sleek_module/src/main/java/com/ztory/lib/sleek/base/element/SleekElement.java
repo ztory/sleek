@@ -574,13 +574,18 @@ public class SleekElement extends SleekBaseComposite {
     if (elementText != null) {
       if (paddingRect != null) {
         elementText.setSleekBounds(
-            paddingRect.left,
-            paddingRect.top,
-            w - paddingRect.left - paddingRect.right,
-            h - paddingRect.top - paddingRect.bottom
+            paddingRect.left + elementBorderWidth.left,
+            paddingRect.top + elementBorderWidth.top,
+            w - paddingRect.left - paddingRect.right - elementBorderWidth.left - elementBorderWidth.right,
+            h - paddingRect.top - paddingRect.bottom - elementBorderWidth.top - elementBorderWidth.bottom
         );
       } else {
-        elementText.setSleekBounds(0, 0, w, h);
+        elementText.setSleekBounds(
+            elementBorderWidth.left,
+            elementBorderWidth.top,
+            w - elementBorderWidth.left - elementBorderWidth.right,
+            h - elementBorderWidth.top - elementBorderWidth.bottom
+        );
       }
     }
 
@@ -591,6 +596,9 @@ public class SleekElement extends SleekBaseComposite {
 
       int paddingTopBottom = paddingRect != null ? paddingRect.top + paddingRect.bottom : 0;
       int paddingLeftRight = paddingRect != null ? paddingRect.left + paddingRect.right : 0;
+
+      paddingTopBottom = paddingTopBottom + elementBorderWidth.top + elementBorderWidth.bottom;
+      paddingLeftRight = paddingLeftRight + elementBorderWidth.left + elementBorderWidth.right;
 
       if (wrapTextWidth) {//wrap only width
         elementWidth = elementText.getSleekW() + paddingLeftRight;
