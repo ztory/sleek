@@ -1,5 +1,9 @@
 package com.ztory.lib.sleek;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.support.test.filters.LargeTest;
@@ -26,11 +30,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-
-@RunWith(AndroidJUnit4.class) @LargeTest public class TestSleekUI {
+@RunWith(AndroidJUnit4.class)
+@LargeTest
+public class TestSleekUI {
 
     /*
 {
@@ -46,9 +48,8 @@ import static junit.framework.Assert.assertTrue;
 }
     */
 
-  private static final String
-      FEED_ITEM_STRING_1 =
-          "Now that there is the Tec-9, a crappy spray gun from South Miami. This gun is advertised as the most popular gun in American crime. Do you believe that shit? It actually says that in the little book that comes with it: the most popular gun in American crime. Like they're actually proud of that shit.",
+  private static final String FEED_ITEM_STRING_1 =
+      "Now that there is the Tec-9, a crappy spray gun from South Miami. This gun is advertised as the most popular gun in American crime. Do you believe that shit? It actually says that in the little book that comes with it: the most popular gun in American crime. Like they're actually proud of that shit.",
       FEED_ITEM_STRING_2 =
           "Well, the way they make shows is, they make one show. That show's called a pilot. Then they show that show to the people who make shows, and on the strength of that one show they decide if they're going to make more shows. Some pilots get picked and become television programs. Some don't, become nothing. She starred in one of the ones that became nothing.",
       FEED_ITEM_STRING_3 =
@@ -56,8 +57,7 @@ import static junit.framework.Assert.assertTrue;
       FEED_ITEM_STRING_4 =
           "Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting outside on a mechanical helicopter that shakes when you put quarters in it? No? Well, that's what you see at a toy store. And you must think you're in a toy store, because you're here shopping for an infant named Jeb.";
 
-  private static final String
-      CSS_STRING_1 = "{\n"
+  private static final String CSS_STRING_1 = "{\n"
       + "    background: #999;\n"
       + "    border-radius: 22px;\n"
       + "    box-shadow: 1px 2px 4px rgba(255, 0, 0, 1.0);\n"
@@ -113,7 +113,8 @@ import static junit.framework.Assert.assertTrue;
       + "    line-height: 30px;\n"
       + "    text-align: center;\n"
       + "    vertical-align: bottom;\n"
-      + "    box-shadow: 0px 1px 2px #FFA03899;\n"//offset-x | offset-y | blur-radius | color
+      + "    box-shadow: 0px 1px 2px #FFA03899;\n"
+      //offset-x | offset-y | blur-radius | color
       + "}", CSS_FEED_ITEM_DEBUG = "{\n"
       + "    background: #fdfdfd;\n"
       + "    border-radius: 3px;\n"
@@ -123,20 +124,22 @@ import static junit.framework.Assert.assertTrue;
       + "    text-align: left;\n"
       + "    vertical-align: top;\n"
       + "    box-shadow: 0px 1px 2px rgba(0,0,0,0.2);\n"
-      + "}", CSS_PADDING_X4 = "{\n" + "    padding: 5px 10px 15px 20px;\n"// top | right | bottom | left
-      + "}", CSS_PADDING_X3 = "{\n" + "    padding: 10px 5px 20px;\n" + "}",// top | left+right | bottom
+      + "}", CSS_PADDING_X4 =
+      "{\n" + "    padding: 5px 10px 15px 20px;\n"// top | right | bottom | left
+          + "}", CSS_PADDING_X3 =
+      "{\n" + "    padding: 10px 5px 20px;\n" + "}",// top | left+right | bottom
       CSS_PADDING_X2 = "{\n" + "    padding: 10px 20px;\n" + "}",// top+bottom | left+right
       CSS_PADDING_X1 = "{\n" + "    padding: 10px;\n" + "}",// top+right+bottom+left
       CSS_FEED_ITEM_PADDING = "{\n"
-      + "    background: #fdfdfd;\n"
-      + "    border-radius: 2px;\n"
-      + "    color: #121212;\n"
-      + "    font-size: 20px;\n"
-      + "    line-height: 24px;\n"
-      + "    text-align: left;\n"
-      + "    vertical-align: top;\n"
-      + "    padding: 5px 10px 15px 20px;\n"
-      + "}", CSS_FEED_ITEM_PADDING_BOX_SHADOW = "{\n"
+          + "    background: #fdfdfd;\n"
+          + "    border-radius: 2px;\n"
+          + "    color: #121212;\n"
+          + "    font-size: 20px;\n"
+          + "    line-height: 24px;\n"
+          + "    text-align: left;\n"
+          + "    vertical-align: top;\n"
+          + "    padding: 5px 10px 15px 20px;\n"
+          + "}", CSS_FEED_ITEM_PADDING_BOX_SHADOW = "{\n"
       + "    background: #fdfdfd;\n"
       + "    border-radius: 2px;\n"
       + "    color: #121212;\n"
@@ -257,14 +260,17 @@ import static junit.framework.Assert.assertTrue;
       + "    border: 1px solid #FFC638;\n"
       + "}";
 
-  @Rule public ActivityTestRule<SleekActivity> mActivityRule =
+  @Rule
+  public ActivityTestRule<SleekActivity> mActivityRule =
       new ActivityTestRule<>(SleekActivity.class, true, true);
 
-  @BeforeClass public static void setUpBeforeClass() throws Exception {
+  @BeforeClass
+  public static void setUpBeforeClass() throws Exception {
 
   }
 
-  @AfterClass public static void tearDownAfterClass() throws Exception {
+  @AfterClass
+  public static void tearDownAfterClass() throws Exception {
 
   }
 
@@ -283,34 +289,71 @@ import static junit.framework.Assert.assertTrue;
 
   private static final void loadUIscrollXYbasicSleekElements(SleekCanvas sleekCanvas) {
     UtilTestSleekUI.addUIframeRate(sleekCanvas);
-    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas, null, new CSSblockBase(CSS_STRING_1), 0.1f,
-        0.1f, 160, 160);
     UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas,
-        "Hej!\nDetta är en ny rad.\nOch en till rad?!\n+1\n+2", new CSSblockBase(CSS_STRING_2),
-        0.8f, 0.1f, 600, UtilPx.getPixels(sleekCanvas.getContext(), 150));
-    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas, "Uno\nDos\nTres\nQuattro\nCinco",
-        new CSSblockBase(CSS_STRING_3), 0.15f, 0.4f, 600,
-        UtilPx.getPixels(sleekCanvas.getContext(), 150));
-    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas, "Boom Box", new CSSblockBase(CSS_STRING_4),
-        0.15f, 0.25f, UtilPx.getPixels(sleekCanvas.getContext(), 80),
-        UtilPx.getPixels(sleekCanvas.getContext(), 80));
-    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas, "Hola\nmuchacho\nhallå\nvill du LATTJO?!",
-        new CSSblockBase(CSS_STRING_2), 0.2f, 0.95f, 600,
-        UtilPx.getPixels(sleekCanvas.getContext(), 150));
+        null,
+        new CSSblockBase(CSS_STRING_1),
+        0.1f,
+        0.1f,
+        160,
+        160
+    );
+    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas,
+        "Hej!\nDetta är en ny rad.\nOch en till rad?!\n+1\n+2",
+        new CSSblockBase(CSS_STRING_2),
+        0.8f,
+        0.1f,
+        600,
+        UtilPx.getPixels(sleekCanvas.getContext(), 150)
+    );
+    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas,
+        "Uno\nDos\nTres\nQuattro\nCinco",
+        new CSSblockBase(CSS_STRING_3),
+        0.15f,
+        0.4f,
+        600,
+        UtilPx.getPixels(sleekCanvas.getContext(), 150)
+    );
+    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas,
+        "Boom Box",
+        new CSSblockBase(CSS_STRING_4),
+        0.15f,
+        0.25f,
+        UtilPx.getPixels(sleekCanvas.getContext(), 80),
+        UtilPx.getPixels(sleekCanvas.getContext(), 80)
+    );
+    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas,
+        "Hola\nmuchacho\nhallå\nvill du LATTJO?!",
+        new CSSblockBase(CSS_STRING_2),
+        0.2f,
+        0.95f,
+        600,
+        UtilPx.getPixels(sleekCanvas.getContext(), 150)
+    );
     UtilTestSleekUI.addUIcolorAreaDraggable(sleekCanvas);
     UtilTestSleekUI.reloadUI(sleekCanvas);
   }
 
   private static final void loadUIensureRuntimeAddedViewsGetLoaded(final SleekCanvas sleekCanvas) {
     UtilTestSleekUI.addUIframeRate(sleekCanvas);
-    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas, "Offscreen #1\nHej!\nDetta är en text!",
-        new CSSblockBase(CSS_STRING_2), 0.95f, 0.1f, 600,
-        UtilPx.getPixels(sleekCanvas.getContext(), 150));
     UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas,
-        "Offscreen #2\nHola muchacho hallå vill du LATTJO?!", new CSSblockBase(CSS_STRING_2), 0.2f,
-        0.95f, 600, UtilPx.getPixels(sleekCanvas.getContext(), 150));
-    SleekElement sleekElement = new SleekElement(
-        SleekParam.DEFAULT_TOUCHABLE.newPriority(SleekCanvas.STICKY_TOUCH_PRIO + 10));
+        "Offscreen #1\nHej!\nDetta är en text!",
+        new CSSblockBase(CSS_STRING_2),
+        0.95f,
+        0.1f,
+        600,
+        UtilPx.getPixels(sleekCanvas.getContext(), 150)
+    );
+    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas,
+        "Offscreen #2\nHola muchacho hallå vill du LATTJO?!",
+        new CSSblockBase(CSS_STRING_2),
+        0.2f,
+        0.95f,
+        600,
+        UtilPx.getPixels(sleekCanvas.getContext(), 150)
+    );
+    SleekElement sleekElement =
+        new SleekElement(SleekParam.DEFAULT_TOUCHABLE.newPriority(SleekCanvas.STICKY_TOUCH_PRIO
+            + 10));
     sleekElement.setElementString("Corner Box");
     sleekElement.addCSSblock(new CSSblockBase(CSS_STRING_2));
     sleekElement.getLayout()
@@ -322,17 +365,23 @@ import static junit.framework.Assert.assertTrue;
     UtilTestSleekUI.addUIcolorAreaDraggable(sleekCanvas);
 
     Runnable delayAddedView = new Runnable() {
-      @Override public void run() {
+      @Override
+      public void run() {
         UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas,
             "Offscreen #3 (runtime)\nHola muchacho hallå vill du LATTJO?!",
-            new CSSblockBase(CSS_STRING_2), 0.95f, 0.95f, 600,
-            UtilPx.getPixels(sleekCanvas.getContext(), 150));
+            new CSSblockBase(CSS_STRING_2),
+            0.95f,
+            0.95f,
+            600,
+            UtilPx.getPixels(sleekCanvas.getContext(), 150)
+        );
       }
     };
     sleekCanvas.getHandler().postDelayed(delayAddedView, 2000);
 
-    final SleekElement sleekElementAddRemove = new SleekElement(
-        SleekParam.DEFAULT_TOUCHABLE.newPriority(SleekCanvas.STICKY_TOUCH_PRIO + 10));
+    final SleekElement sleekElementAddRemove =
+        new SleekElement(SleekParam.DEFAULT_TOUCHABLE.newPriority(SleekCanvas.STICKY_TOUCH_PRIO
+            + 10));
     sleekElementAddRemove.setElementString("Add Remove Box");
     sleekElementAddRemove.addCSSblock(new CSSblockBase(CSS_STRING_3));
     sleekElementAddRemove.getLayout()
@@ -341,11 +390,13 @@ import static junit.framework.Assert.assertTrue;
         .w(SL.W.ABSOLUTE, 200, null)
         .h(SL.H.ABSOLUTE, 200, null);
     Runnable delayAddedView2 = new Runnable() {
-      @Override public void run() {
+      @Override
+      public void run() {
         sleekCanvas.addSleek(sleekElementAddRemove);
 
         Runnable delayAddedView3 = new Runnable() {
-          @Override public void run() {
+          @Override
+          public void run() {
             // Scroll bounds and position are refreshed in removeSleek() now as well.
             sleekCanvas.removeSleek(sleekElementAddRemove);
           }
@@ -362,10 +413,16 @@ import static junit.framework.Assert.assertTrue;
     for (int i = 0; i < 10; i++) {
       final int finalIndex = i;
       Runnable delayAddedView = new Runnable() {
-        @Override public void run() {
-          UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas, "ÅÄÖ Runtime Square #" + finalIndex,
-              new CSSblockBase(CSS_STRING_5), 0.55f + (finalIndex / 5.0f),
-              0.55f + (finalIndex / 5.0f), boxWidth, boxHeight);
+        @Override
+        public void run() {
+          UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas,
+              "ÅÄÖ Runtime Square #" + finalIndex,
+              new CSSblockBase(CSS_STRING_5),
+              0.55f + (finalIndex / 5.0f),
+              0.55f + (finalIndex / 5.0f),
+              boxWidth,
+              boxHeight
+          );
         }
       };
       sleekCanvas.getHandler().postDelayed(delayAddedView, 1000 * i);
@@ -378,24 +435,54 @@ import static junit.framework.Assert.assertTrue;
     final int boxHeight = UtilPx.getPixels(sleekCanvas.getContext(), 200);
 
     UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas,
-        "Detta är ett ÅÄÖ test komplett med åäö och yjq!", new CSSblockBase(CSS_STRING_5), 0.1f,
-        0.1f, boxWidth, boxHeight);
+        "Detta är ett ÅÄÖ test komplett med åäö och yjq!",
+        new CSSblockBase(CSS_STRING_5),
+        0.1f,
+        0.1f,
+        boxWidth,
+        boxHeight
+    );
     UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas,
-        "Detta är ett ÅÄÖ test komplett med åäö och yjq!", new CSSblockBase(CSS_STRING_6), 0.1f,
-        0.35f, boxWidth, boxHeight);
+        "Detta är ett ÅÄÖ test komplett med åäö och yjq!",
+        new CSSblockBase(CSS_STRING_6),
+        0.1f,
+        0.35f,
+        boxWidth,
+        boxHeight
+    );
     UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas,
-        "Detta är ett ÅÄÖ test komplett med åäö och yjq!", new CSSblockBase(CSS_STRING_7), 0.1f,
-        0.6f, boxWidth, boxHeight);
+        "Detta är ett ÅÄÖ test komplett med åäö och yjq!",
+        new CSSblockBase(CSS_STRING_7),
+        0.1f,
+        0.6f,
+        boxWidth,
+        boxHeight
+    );
 
-    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas, "Lynx ÅÄÖ yjq Labs",
-        new CSSblockBase(CSS_STRING_5), 0.5f, 0.1f, boxWidth,
-        UtilPx.getPixels(sleekCanvas.getContext(), 40));
-    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas, "Lynx ÅÄÖ yjq Labs",
-        new CSSblockBase(CSS_STRING_6), 0.5f, 0.35f, boxWidth,
-        UtilPx.getPixels(sleekCanvas.getContext(), 40));
-    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas, "Lynx ÅÄÖ yjq Labs",
-        new CSSblockBase(CSS_STRING_7), 0.5f, 0.6f, boxWidth,
-        UtilPx.getPixels(sleekCanvas.getContext(), 40));
+    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas,
+        "Lynx ÅÄÖ yjq Labs",
+        new CSSblockBase(CSS_STRING_5),
+        0.5f,
+        0.1f,
+        boxWidth,
+        UtilPx.getPixels(sleekCanvas.getContext(), 40)
+    );
+    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas,
+        "Lynx ÅÄÖ yjq Labs",
+        new CSSblockBase(CSS_STRING_6),
+        0.5f,
+        0.35f,
+        boxWidth,
+        UtilPx.getPixels(sleekCanvas.getContext(), 40)
+    );
+    UtilTestSleekUI.addUIbasicSleekElement(sleekCanvas,
+        "Lynx ÅÄÖ yjq Labs",
+        new CSSblockBase(CSS_STRING_7),
+        0.5f,
+        0.6f,
+        boxWidth,
+        UtilPx.getPixels(sleekCanvas.getContext(), 40)
+    );
   }
 
   private static final void loadUIscrollYcompleteFeedUItransXYWH(final SleekCanvas sleekCanvas) {
@@ -419,37 +506,55 @@ import static junit.framework.Assert.assertTrue;
       finalFeedItem.getTouchHandler().setClickAction(new Runnable() {
         long touchTs = 0;
 
-        @Override public void run() {
+        @Override
+        public void run() {
           if (System.currentTimeMillis() - touchTs < 2000) {
             return;
           }
           touchTs = finalFeedItem.getTouchHandler().getLastTouchDown();
 
-          finalFeedItem.setSleekAnimView(
-              new SAVtransXYWH(finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - 100,
-                  finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - 100,
-                  finalFeedItem.getSleekW(), finalFeedItem.getSleekW() + 200,
-                  finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + 200, 500,
-                  new ISleekDrawView() {
-                    @Override
-                    public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+          finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+              finalFeedItem.getSleekX() - 100,
+              finalFeedItem.getSleekY(),
+              finalFeedItem.getSleekY() - 100,
+              finalFeedItem.getSleekW(),
+              finalFeedItem.getSleekW() + 200,
+              finalFeedItem.getSleekH(),
+              finalFeedItem.getSleekH() + 200,
+              500,
+              new ISleekDrawView() {
+                @Override
+                public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
 
-                      finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-                          finalFeedItem.getSleekX() + 300, finalFeedItem.getSleekY(),
-                          finalFeedItem.getSleekY() + 300, finalFeedItem.getSleekW(),
-                          finalFeedItem.getSleekW() - 600, finalFeedItem.getSleekH(),
-                          finalFeedItem.getSleekH() - 600, 1000, new ISleekDrawView() {
+                  finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                      finalFeedItem.getSleekX() + 300,
+                      finalFeedItem.getSleekY(),
+                      finalFeedItem.getSleekY() + 300,
+                      finalFeedItem.getSleekW(),
+                      finalFeedItem.getSleekW() - 600,
+                      finalFeedItem.getSleekH(),
+                      finalFeedItem.getSleekH() - 600,
+                      1000,
+                      new ISleekDrawView() {
                         @Override
                         public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
                           finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-                              finalFeedItem.getSleekX() - 200, finalFeedItem.getSleekY(),
-                              finalFeedItem.getSleekY() - 200, finalFeedItem.getSleekW(),
-                              finalFeedItem.getSleekW() + 400, finalFeedItem.getSleekH(),
-                              finalFeedItem.getSleekH() + 400, 500, ISleekDrawView.NO_DRAW));
+                              finalFeedItem.getSleekX() - 200,
+                              finalFeedItem.getSleekY(),
+                              finalFeedItem.getSleekY() - 200,
+                              finalFeedItem.getSleekW(),
+                              finalFeedItem.getSleekW() + 400,
+                              finalFeedItem.getSleekH(),
+                              finalFeedItem.getSleekH() + 400,
+                              500,
+                              ISleekDrawView.NO_DRAW
+                          ));
                         }
-                      }));
-                    }
-                  }));
+                      }
+                  ));
+                }
+              }
+          ));
 
           //                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
           //                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() + 160,
@@ -461,7 +566,8 @@ import static junit.framework.Assert.assertTrue;
           //                            ));
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //                            finalFeedItem.setSleekAnimView(new SAVtransXYWH(
           //                                    finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - 160,
           //                                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - 160,
@@ -472,7 +578,8 @@ import static junit.framework.Assert.assertTrue;
           //                            ));
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //                            finalFeedItem.parentRemove(true);
           //                            sleekCanvas.getHandler().postDelayed(new Runnable() {
           //                                @Override
@@ -530,27 +637,42 @@ import static junit.framework.Assert.assertTrue;
 
       final SleekElement finalFeedItem = sleekFeedItem;
       finalFeedItem.getTouchHandler().setClickAction(new Runnable() {
-        @Override public void run() {
-          finalFeedItem.setSleekAnimView(
-              new SAVfade(finalFeedItem.getBgPaint().getAlpha(), 0, 500, finalFeedItem.getBgPaint(),
-                  ISleekDrawView.NO_DRAW));
+        @Override
+        public void run() {
+          finalFeedItem.setSleekAnimView(new SAVfade(finalFeedItem.getBgPaint().getAlpha(),
+              0,
+              500,
+              finalFeedItem.getBgPaint(),
+              ISleekDrawView.NO_DRAW
+          ));
           finalFeedItem.getText()
-              .setSleekAnimView(
-                  new SAVfade(finalFeedItem.getText().getTextPaint().getAlpha(), 0, 500,
-                      finalFeedItem.getText().getTextPaint(), ISleekDrawView.NO_DRAW));
+              .setSleekAnimView(new SAVfade(finalFeedItem.getText().getTextPaint().getAlpha(),
+                  0,
+                  500,
+                  finalFeedItem.getText().getTextPaint(),
+                  ISleekDrawView.NO_DRAW
+              ));
         }
       }, new Runnable() {
-        @Override public void run() {
-          finalFeedItem.setSleekAnimView(
-              new SAVfade(finalFeedItem.getBgPaint().getAlpha(), 255, 300,
-                  finalFeedItem.getBgPaint(), ISleekDrawView.NO_DRAW));
+        @Override
+        public void run() {
+          finalFeedItem.setSleekAnimView(new SAVfade(finalFeedItem.getBgPaint().getAlpha(),
+              255,
+              300,
+              finalFeedItem.getBgPaint(),
+              ISleekDrawView.NO_DRAW
+          ));
           finalFeedItem.getText()
-              .setSleekAnimView(
-                  new SAVfade(finalFeedItem.getText().getTextPaint().getAlpha(), 255, 300,
-                      finalFeedItem.getText().getTextPaint(), ISleekDrawView.NO_DRAW));
+              .setSleekAnimView(new SAVfade(finalFeedItem.getText().getTextPaint().getAlpha(),
+                  255,
+                  300,
+                  finalFeedItem.getText().getTextPaint(),
+                  ISleekDrawView.NO_DRAW
+              ));
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //                            finalFeedItem.parentRemove(true);
           //                            sleekCanvas.getHandler().postDelayed(new Runnable() {
           //                                @Override
@@ -610,44 +732,64 @@ import static junit.framework.Assert.assertTrue;
       finalFeedItem.getTouchHandler().setClickAction(new Runnable() {
         long touchTs = 0;
 
-        @Override public void run() {
+        @Override
+        public void run() {
           if (System.currentTimeMillis() - touchTs < 2000) {
             return;
           }
           touchTs = finalFeedItem.getTouchHandler().getLastTouchDown();
 
-          finalFeedItem.setSleekAnimView(
-              new SAVtransXYWH(finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - 100,
-                  finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - 100,
-                  finalFeedItem.getSleekW(), finalFeedItem.getSleekW() + 200,
-                  finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + 200, 500,
-                  new ISleekDrawView() {
-                    @Override
-                    public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+          finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+              finalFeedItem.getSleekX() - 100,
+              finalFeedItem.getSleekY(),
+              finalFeedItem.getSleekY() - 100,
+              finalFeedItem.getSleekW(),
+              finalFeedItem.getSleekW() + 200,
+              finalFeedItem.getSleekH(),
+              finalFeedItem.getSleekH() + 200,
+              500,
+              new ISleekDrawView() {
+                @Override
+                public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
 
-                      finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-                          finalFeedItem.getSleekX() + 300, finalFeedItem.getSleekY(),
-                          finalFeedItem.getSleekY() + 300, finalFeedItem.getSleekW(),
-                          finalFeedItem.getSleekW() - 600, finalFeedItem.getSleekH(),
-                          finalFeedItem.getSleekH() - 600, 1000, new ISleekDrawView() {
+                  finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                      finalFeedItem.getSleekX() + 300,
+                      finalFeedItem.getSleekY(),
+                      finalFeedItem.getSleekY() + 300,
+                      finalFeedItem.getSleekW(),
+                      finalFeedItem.getSleekW() - 600,
+                      finalFeedItem.getSleekH(),
+                      finalFeedItem.getSleekH() - 600,
+                      1000,
+                      new ISleekDrawView() {
                         @Override
                         public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
                           finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-                              finalFeedItem.getSleekX() - 200, finalFeedItem.getSleekY(),
-                              finalFeedItem.getSleekY() - 200, finalFeedItem.getSleekW(),
-                              finalFeedItem.getSleekW() + 400, finalFeedItem.getSleekH(),
-                              finalFeedItem.getSleekH() + 400, 500, ISleekDrawView.NO_DRAW));
+                              finalFeedItem.getSleekX() - 200,
+                              finalFeedItem.getSleekY(),
+                              finalFeedItem.getSleekY() - 200,
+                              finalFeedItem.getSleekW(),
+                              finalFeedItem.getSleekW() + 400,
+                              finalFeedItem.getSleekH(),
+                              finalFeedItem.getSleekH() + 400,
+                              500,
+                              ISleekDrawView.NO_DRAW
+                          ));
                         }
-                      }));
-                    }
-                  }));
+                      }
+                  ));
+                }
+              }
+          ));
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       });
@@ -701,7 +843,8 @@ import static junit.framework.Assert.assertTrue;
       finalFeedItem.getTouchHandler().setClickAction(new Runnable() {
         long touchTs = 0;
 
-        @Override public void run() {
+        @Override
+        public void run() {
           if (System.currentTimeMillis() - touchTs < 1000) {
             return;
           }
@@ -711,25 +854,41 @@ import static junit.framework.Assert.assertTrue;
           final float startY = finalFeedItem.getSleekY();
           final int startW = finalFeedItem.getSleekW();
           final int startH = finalFeedItem.getSleekH();
-          finalFeedItem.setSleekAnimView(
-              new SAVtransXYWH(startX, startX - feedItemHorizontalMargin, startY,
-                  startY - feedItemTopMargin, startW,
-                  startW + feedItemHorizontalMargin + feedItemHorizontalMargin, startH,
-                  startH + feedItemTopMargin + feedItemTopMargin, 500, new ISleekDrawView() {
-                @Override public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
-                  finalFeedItem.setSleekAnimView(
-                      new SAVtransXYWH(finalFeedItem.getSleekX(), startX, finalFeedItem.getSleekY(),
-                          startY, finalFeedItem.getSleekW(), startW, finalFeedItem.getSleekH(),
-                          startH, 500, ISleekDrawView.NO_DRAW));
+          finalFeedItem.setSleekAnimView(new SAVtransXYWH(startX,
+              startX - feedItemHorizontalMargin,
+              startY,
+              startY - feedItemTopMargin,
+              startW,
+              startW + feedItemHorizontalMargin + feedItemHorizontalMargin,
+              startH,
+              startH + feedItemTopMargin + feedItemTopMargin,
+              500,
+              new ISleekDrawView() {
+                @Override
+                public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+                  finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                      startX,
+                      finalFeedItem.getSleekY(),
+                      startY,
+                      finalFeedItem.getSleekW(),
+                      startW,
+                      finalFeedItem.getSleekH(),
+                      startH,
+                      500,
+                      ISleekDrawView.NO_DRAW
+                  ));
                 }
-              }));
+              }
+          ));
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       });
@@ -791,44 +950,64 @@ import static junit.framework.Assert.assertTrue;
       finalFeedItem.getTouchHandler().setClickAction(new Runnable() {
         long touchTs = 0;
 
-        @Override public void run() {
+        @Override
+        public void run() {
           if (System.currentTimeMillis() - touchTs < 2000) {
             return;
           }
           touchTs = finalFeedItem.getTouchHandler().getLastTouchDown();
 
-          finalFeedItem.setSleekAnimView(
-              new SAVtransXYWH(finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - 100,
-                  finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - 100,
-                  finalFeedItem.getSleekW(), finalFeedItem.getSleekW() + 200,
-                  finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + 200, 500,
-                  new ISleekDrawView() {
-                    @Override
-                    public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+          finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+              finalFeedItem.getSleekX() - 100,
+              finalFeedItem.getSleekY(),
+              finalFeedItem.getSleekY() - 100,
+              finalFeedItem.getSleekW(),
+              finalFeedItem.getSleekW() + 200,
+              finalFeedItem.getSleekH(),
+              finalFeedItem.getSleekH() + 200,
+              500,
+              new ISleekDrawView() {
+                @Override
+                public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
 
-                      finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-                          finalFeedItem.getSleekX() + 300, finalFeedItem.getSleekY(),
-                          finalFeedItem.getSleekY() + 300, finalFeedItem.getSleekW(),
-                          finalFeedItem.getSleekW() - 600, finalFeedItem.getSleekH(),
-                          finalFeedItem.getSleekH() - 600, 1000, new ISleekDrawView() {
+                  finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                      finalFeedItem.getSleekX() + 300,
+                      finalFeedItem.getSleekY(),
+                      finalFeedItem.getSleekY() + 300,
+                      finalFeedItem.getSleekW(),
+                      finalFeedItem.getSleekW() - 600,
+                      finalFeedItem.getSleekH(),
+                      finalFeedItem.getSleekH() - 600,
+                      1000,
+                      new ISleekDrawView() {
                         @Override
                         public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
                           finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-                              finalFeedItem.getSleekX() - 200, finalFeedItem.getSleekY(),
-                              finalFeedItem.getSleekY() - 200, finalFeedItem.getSleekW(),
-                              finalFeedItem.getSleekW() + 400, finalFeedItem.getSleekH(),
-                              finalFeedItem.getSleekH() + 400, 500, ISleekDrawView.NO_DRAW));
+                              finalFeedItem.getSleekX() - 200,
+                              finalFeedItem.getSleekY(),
+                              finalFeedItem.getSleekY() - 200,
+                              finalFeedItem.getSleekW(),
+                              finalFeedItem.getSleekW() + 400,
+                              finalFeedItem.getSleekH(),
+                              finalFeedItem.getSleekH() + 400,
+                              500,
+                              ISleekDrawView.NO_DRAW
+                          ));
                         }
-                      }));
-                    }
-                  }));
+                      }
+                  ));
+                }
+              }
+          ));
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       });
@@ -862,7 +1041,8 @@ import static junit.framework.Assert.assertTrue;
   }
 
   private static final void loadUIelementsWithBackgroundImageContainCover(
-      final SleekCanvas sleekCanvas) {
+      final SleekCanvas sleekCanvas
+  ) {
 
     sleekCanvas.setBackgroundColor(0xffe8e8e8);
 
@@ -883,44 +1063,64 @@ import static junit.framework.Assert.assertTrue;
       finalFeedItem.getTouchHandler().setClickAction(new Runnable() {
         long touchTs = 0;
 
-        @Override public void run() {
+        @Override
+        public void run() {
           if (System.currentTimeMillis() - touchTs < 2000) {
             return;
           }
           touchTs = finalFeedItem.getTouchHandler().getLastTouchDown();
 
-          finalFeedItem.setSleekAnimView(
-              new SAVtransXYWH(finalFeedItem.getSleekX(), finalFeedItem.getSleekX() - 100,
-                  finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - 100,
-                  finalFeedItem.getSleekW(), finalFeedItem.getSleekW() + 200,
-                  finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + 200, 500,
-                  new ISleekDrawView() {
-                    @Override
-                    public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+          finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+              finalFeedItem.getSleekX() - 100,
+              finalFeedItem.getSleekY(),
+              finalFeedItem.getSleekY() - 100,
+              finalFeedItem.getSleekW(),
+              finalFeedItem.getSleekW() + 200,
+              finalFeedItem.getSleekH(),
+              finalFeedItem.getSleekH() + 200,
+              500,
+              new ISleekDrawView() {
+                @Override
+                public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
 
-                      finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-                          finalFeedItem.getSleekX() + 300, finalFeedItem.getSleekY(),
-                          finalFeedItem.getSleekY() + 300, finalFeedItem.getSleekW(),
-                          finalFeedItem.getSleekW() - 600, finalFeedItem.getSleekH(),
-                          finalFeedItem.getSleekH() - 600, 1000, new ISleekDrawView() {
+                  finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                      finalFeedItem.getSleekX() + 300,
+                      finalFeedItem.getSleekY(),
+                      finalFeedItem.getSleekY() + 300,
+                      finalFeedItem.getSleekW(),
+                      finalFeedItem.getSleekW() - 600,
+                      finalFeedItem.getSleekH(),
+                      finalFeedItem.getSleekH() - 600,
+                      1000,
+                      new ISleekDrawView() {
                         @Override
                         public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
                           finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-                              finalFeedItem.getSleekX() - 200, finalFeedItem.getSleekY(),
-                              finalFeedItem.getSleekY() - 200, finalFeedItem.getSleekW(),
-                              finalFeedItem.getSleekW() + 400, finalFeedItem.getSleekH(),
-                              finalFeedItem.getSleekH() + 400, 500, ISleekDrawView.NO_DRAW));
+                              finalFeedItem.getSleekX() - 200,
+                              finalFeedItem.getSleekY(),
+                              finalFeedItem.getSleekY() - 200,
+                              finalFeedItem.getSleekW(),
+                              finalFeedItem.getSleekW() + 400,
+                              finalFeedItem.getSleekH(),
+                              finalFeedItem.getSleekH() + 400,
+                              500,
+                              ISleekDrawView.NO_DRAW
+                          ));
                         }
-                      }));
-                    }
-                  }));
+                      }
+                  ));
+                }
+              }
+          ));
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       });
@@ -959,7 +1159,8 @@ import static junit.framework.Assert.assertTrue;
   }
 
   private static final void loadUIelementsWithBackgroundImageCoverOnly(
-      final SleekCanvas sleekCanvas) {
+      final SleekCanvas sleekCanvas
+  ) {
 
     sleekCanvas.setBackgroundColor(0xffe8e8e8);
 
@@ -980,55 +1181,84 @@ import static junit.framework.Assert.assertTrue;
       finalFeedItem.getTouchHandler().setClickAction(new Runnable() {
         long touchTs = 0;
 
-        @Override public void run() {
+        @Override
+        public void run() {
           if (System.currentTimeMillis() - touchTs < 2000) {
             return;
           }
           touchTs = finalFeedItem.getTouchHandler().getLastTouchDown();
 
           finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-              finalFeedItem.getSleekX() - (feedItemWidth / 2.0f), finalFeedItem.getSleekY(),
-              finalFeedItem.getSleekY(), finalFeedItem.getSleekW(),
-              finalFeedItem.getSleekW() + feedItemWidth, finalFeedItem.getSleekH(),
-              finalFeedItem.getSleekH(), 500, new ISleekDrawView() {
-            @Override public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+              finalFeedItem.getSleekX() - (feedItemWidth / 2.0f),
+              finalFeedItem.getSleekY(),
+              finalFeedItem.getSleekY(),
+              finalFeedItem.getSleekW(),
+              finalFeedItem.getSleekW() + feedItemWidth,
+              finalFeedItem.getSleekH(),
+              finalFeedItem.getSleekH(),
+              500,
+              new ISleekDrawView() {
+                @Override
+                public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
 
-              finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-                  finalFeedItem.getSleekX() + (feedItemWidth / 2.0f), finalFeedItem.getSleekY(),
-                  finalFeedItem.getSleekY(), finalFeedItem.getSleekW(),
-                  finalFeedItem.getSleekW() - feedItemWidth, finalFeedItem.getSleekH(),
-                  finalFeedItem.getSleekH(), 500, new ISleekDrawView() {
-                @Override public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
-                  finalFeedItem.setSleekAnimView(
-                      new SAVtransXYWH(finalFeedItem.getSleekX(), finalFeedItem.getSleekX(),
-                          finalFeedItem.getSleekY(),
-                          finalFeedItem.getSleekY() - (feedItemHeight / 2.0f),
-                          finalFeedItem.getSleekW(), finalFeedItem.getSleekW(),
-                          finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + feedItemHeight,
-                          500, new ISleekDrawView() {
+                  finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                      finalFeedItem.getSleekX() + (feedItemWidth / 2.0f),
+                      finalFeedItem.getSleekY(),
+                      finalFeedItem.getSleekY(),
+                      finalFeedItem.getSleekW(),
+                      finalFeedItem.getSleekW() - feedItemWidth,
+                      finalFeedItem.getSleekH(),
+                      finalFeedItem.getSleekH(),
+                      500,
+                      new ISleekDrawView() {
                         @Override
                         public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
-                          finalFeedItem.setSleekAnimView(
-                              new SAVtransXYWH(finalFeedItem.getSleekX(), finalFeedItem.getSleekX(),
-                                  finalFeedItem.getSleekY(),
-                                  finalFeedItem.getSleekY() + (feedItemHeight / 2.0f),
-                                  finalFeedItem.getSleekW(), finalFeedItem.getSleekW(),
-                                  finalFeedItem.getSleekH(),
-                                  finalFeedItem.getSleekH() - feedItemHeight, 500,
-                                  ISleekDrawView.NO_DRAW));
+                          finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                              finalFeedItem.getSleekX(),
+                              finalFeedItem.getSleekY(),
+                              finalFeedItem.getSleekY() - (feedItemHeight / 2.0f),
+                              finalFeedItem.getSleekW(),
+                              finalFeedItem.getSleekW(),
+                              finalFeedItem.getSleekH(),
+                              finalFeedItem.getSleekH() + feedItemHeight,
+                              500,
+                              new ISleekDrawView() {
+                                @Override
+                                public void drawView(
+                                    Sleek sleek,
+                                    Canvas canvas,
+                                    SleekCanvasInfo info
+                                ) {
+                                  finalFeedItem
+                                      .setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                                          finalFeedItem.getSleekX(),
+                                          finalFeedItem.getSleekY(),
+                                          finalFeedItem.getSleekY() + (feedItemHeight / 2.0f),
+                                          finalFeedItem.getSleekW(),
+                                          finalFeedItem.getSleekW(),
+                                          finalFeedItem.getSleekH(),
+                                          finalFeedItem.getSleekH() - feedItemHeight,
+                                          500,
+                                          ISleekDrawView.NO_DRAW
+                                      ));
+                                }
+                              }
+                          ));
                         }
-                      }));
+                      }
+                  ));
                 }
-              }));
-            }
-          }));
+              }
+          ));
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       });
@@ -1087,55 +1317,84 @@ import static junit.framework.Assert.assertTrue;
       finalFeedItem.getTouchHandler().setClickAction(new Runnable() {
         long touchTs = 0;
 
-        @Override public void run() {
+        @Override
+        public void run() {
           if (System.currentTimeMillis() - touchTs < 2000) {
             return;
           }
           touchTs = finalFeedItem.getTouchHandler().getLastTouchDown();
 
           finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-              finalFeedItem.getSleekX() - (feedItemWidth / 2.0f), finalFeedItem.getSleekY(),
-              finalFeedItem.getSleekY(), finalFeedItem.getSleekW(),
-              finalFeedItem.getSleekW() + feedItemWidth, finalFeedItem.getSleekH(),
-              finalFeedItem.getSleekH(), 500, new ISleekDrawView() {
-            @Override public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+              finalFeedItem.getSleekX() - (feedItemWidth / 2.0f),
+              finalFeedItem.getSleekY(),
+              finalFeedItem.getSleekY(),
+              finalFeedItem.getSleekW(),
+              finalFeedItem.getSleekW() + feedItemWidth,
+              finalFeedItem.getSleekH(),
+              finalFeedItem.getSleekH(),
+              500,
+              new ISleekDrawView() {
+                @Override
+                public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
 
-              finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-                  finalFeedItem.getSleekX() + (feedItemWidth / 2.0f), finalFeedItem.getSleekY(),
-                  finalFeedItem.getSleekY(), finalFeedItem.getSleekW(),
-                  finalFeedItem.getSleekW() - feedItemWidth, finalFeedItem.getSleekH(),
-                  finalFeedItem.getSleekH(), 500, new ISleekDrawView() {
-                @Override public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
-                  finalFeedItem.setSleekAnimView(
-                      new SAVtransXYWH(finalFeedItem.getSleekX(), finalFeedItem.getSleekX(),
-                          finalFeedItem.getSleekY(),
-                          finalFeedItem.getSleekY() - (feedItemHeight / 2.0f),
-                          finalFeedItem.getSleekW(), finalFeedItem.getSleekW(),
-                          finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + feedItemHeight,
-                          500, new ISleekDrawView() {
+                  finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                      finalFeedItem.getSleekX() + (feedItemWidth / 2.0f),
+                      finalFeedItem.getSleekY(),
+                      finalFeedItem.getSleekY(),
+                      finalFeedItem.getSleekW(),
+                      finalFeedItem.getSleekW() - feedItemWidth,
+                      finalFeedItem.getSleekH(),
+                      finalFeedItem.getSleekH(),
+                      500,
+                      new ISleekDrawView() {
                         @Override
                         public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
-                          finalFeedItem.setSleekAnimView(
-                              new SAVtransXYWH(finalFeedItem.getSleekX(), finalFeedItem.getSleekX(),
-                                  finalFeedItem.getSleekY(),
-                                  finalFeedItem.getSleekY() + (feedItemHeight / 2.0f),
-                                  finalFeedItem.getSleekW(), finalFeedItem.getSleekW(),
-                                  finalFeedItem.getSleekH(),
-                                  finalFeedItem.getSleekH() - feedItemHeight, 500,
-                                  ISleekDrawView.NO_DRAW));
+                          finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                              finalFeedItem.getSleekX(),
+                              finalFeedItem.getSleekY(),
+                              finalFeedItem.getSleekY() - (feedItemHeight / 2.0f),
+                              finalFeedItem.getSleekW(),
+                              finalFeedItem.getSleekW(),
+                              finalFeedItem.getSleekH(),
+                              finalFeedItem.getSleekH() + feedItemHeight,
+                              500,
+                              new ISleekDrawView() {
+                                @Override
+                                public void drawView(
+                                    Sleek sleek,
+                                    Canvas canvas,
+                                    SleekCanvasInfo info
+                                ) {
+                                  finalFeedItem
+                                      .setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                                          finalFeedItem.getSleekX(),
+                                          finalFeedItem.getSleekY(),
+                                          finalFeedItem.getSleekY() + (feedItemHeight / 2.0f),
+                                          finalFeedItem.getSleekW(),
+                                          finalFeedItem.getSleekW(),
+                                          finalFeedItem.getSleekH(),
+                                          finalFeedItem.getSleekH() - feedItemHeight,
+                                          500,
+                                          ISleekDrawView.NO_DRAW
+                                      ));
+                                }
+                              }
+                          ));
                         }
-                      }));
+                      }
+                  ));
                 }
-              }));
-            }
-          }));
+              }
+          ));
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       });
@@ -1198,55 +1457,84 @@ import static junit.framework.Assert.assertTrue;
       finalFeedItem.getTouchHandler().setClickAction(new Runnable() {
         long touchTs = 0;
 
-        @Override public void run() {
+        @Override
+        public void run() {
           if (System.currentTimeMillis() - touchTs < 2000) {
             return;
           }
           touchTs = finalFeedItem.getTouchHandler().getLastTouchDown();
 
           finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-              finalFeedItem.getSleekX() - (feedItemWidth / 2.0f), finalFeedItem.getSleekY(),
-              finalFeedItem.getSleekY(), finalFeedItem.getSleekW(),
-              finalFeedItem.getSleekW() + feedItemWidth, finalFeedItem.getSleekH(),
-              finalFeedItem.getSleekH(), 500, new ISleekDrawView() {
-            @Override public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+              finalFeedItem.getSleekX() - (feedItemWidth / 2.0f),
+              finalFeedItem.getSleekY(),
+              finalFeedItem.getSleekY(),
+              finalFeedItem.getSleekW(),
+              finalFeedItem.getSleekW() + feedItemWidth,
+              finalFeedItem.getSleekH(),
+              finalFeedItem.getSleekH(),
+              500,
+              new ISleekDrawView() {
+                @Override
+                public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
 
-              finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-                  finalFeedItem.getSleekX() + (feedItemWidth / 2.0f), finalFeedItem.getSleekY(),
-                  finalFeedItem.getSleekY(), finalFeedItem.getSleekW(),
-                  finalFeedItem.getSleekW() - feedItemWidth, finalFeedItem.getSleekH(),
-                  finalFeedItem.getSleekH(), 500, new ISleekDrawView() {
-                @Override public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
-                  finalFeedItem.setSleekAnimView(
-                      new SAVtransXYWH(finalFeedItem.getSleekX(), finalFeedItem.getSleekX(),
-                          finalFeedItem.getSleekY(),
-                          finalFeedItem.getSleekY() - (feedItemHeight / 2.0f),
-                          finalFeedItem.getSleekW(), finalFeedItem.getSleekW(),
-                          finalFeedItem.getSleekH(), finalFeedItem.getSleekH() + feedItemHeight,
-                          500, new ISleekDrawView() {
+                  finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                      finalFeedItem.getSleekX() + (feedItemWidth / 2.0f),
+                      finalFeedItem.getSleekY(),
+                      finalFeedItem.getSleekY(),
+                      finalFeedItem.getSleekW(),
+                      finalFeedItem.getSleekW() - feedItemWidth,
+                      finalFeedItem.getSleekH(),
+                      finalFeedItem.getSleekH(),
+                      500,
+                      new ISleekDrawView() {
                         @Override
                         public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
-                          finalFeedItem.setSleekAnimView(
-                              new SAVtransXYWH(finalFeedItem.getSleekX(), finalFeedItem.getSleekX(),
-                                  finalFeedItem.getSleekY(),
-                                  finalFeedItem.getSleekY() + (feedItemHeight / 2.0f),
-                                  finalFeedItem.getSleekW(), finalFeedItem.getSleekW(),
-                                  finalFeedItem.getSleekH(),
-                                  finalFeedItem.getSleekH() - feedItemHeight, 500,
-                                  ISleekDrawView.NO_DRAW));
+                          finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                              finalFeedItem.getSleekX(),
+                              finalFeedItem.getSleekY(),
+                              finalFeedItem.getSleekY() - (feedItemHeight / 2.0f),
+                              finalFeedItem.getSleekW(),
+                              finalFeedItem.getSleekW(),
+                              finalFeedItem.getSleekH(),
+                              finalFeedItem.getSleekH() + feedItemHeight,
+                              500,
+                              new ISleekDrawView() {
+                                @Override
+                                public void drawView(
+                                    Sleek sleek,
+                                    Canvas canvas,
+                                    SleekCanvasInfo info
+                                ) {
+                                  finalFeedItem
+                                      .setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                                          finalFeedItem.getSleekX(),
+                                          finalFeedItem.getSleekY(),
+                                          finalFeedItem.getSleekY() + (feedItemHeight / 2.0f),
+                                          finalFeedItem.getSleekW(),
+                                          finalFeedItem.getSleekW(),
+                                          finalFeedItem.getSleekH(),
+                                          finalFeedItem.getSleekH() - feedItemHeight,
+                                          500,
+                                          ISleekDrawView.NO_DRAW
+                                      ));
+                                }
+                              }
+                          ));
                         }
-                      }));
+                      }
+                  ));
                 }
-              }));
-            }
-          }));
+              }
+          ));
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       });
@@ -1290,48 +1578,80 @@ import static junit.framework.Assert.assertTrue;
     }
   }
 
-  private static void setSimpleBoundAnimation(final SleekBase finalFeedItem,
-      final int feedItemWidth, final int feedItemHeight) {
+  private static void setSimpleBoundAnimation(
+      final SleekBase finalFeedItem, final int feedItemWidth, final int feedItemHeight
+  ) {
     finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-        finalFeedItem.getSleekX() - (feedItemWidth / 2.0f), finalFeedItem.getSleekY(),
-        finalFeedItem.getSleekY(), finalFeedItem.getSleekW(),
-        finalFeedItem.getSleekW() + feedItemWidth, finalFeedItem.getSleekH(),
-        finalFeedItem.getSleekH(), 500, new ISleekDrawView() {
-      @Override public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+        finalFeedItem.getSleekX() - (feedItemWidth / 2.0f),
+        finalFeedItem.getSleekY(),
+        finalFeedItem.getSleekY(),
+        finalFeedItem.getSleekW(),
+        finalFeedItem.getSleekW() + feedItemWidth,
+        finalFeedItem.getSleekH(),
+        finalFeedItem.getSleekH(),
+        500,
+        new ISleekDrawView() {
+          @Override
+          public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
 
-        finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
-            finalFeedItem.getSleekX() + (feedItemWidth / 2.0f), finalFeedItem.getSleekY(),
-            finalFeedItem.getSleekY(), finalFeedItem.getSleekW(),
-            finalFeedItem.getSleekW() - feedItemWidth, finalFeedItem.getSleekH(),
-            finalFeedItem.getSleekH(), 500, new ISleekDrawView() {
-          @Override public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
-            finalFeedItem.setSleekAnimView(
-                new SAVtransXYWH(finalFeedItem.getSleekX(), finalFeedItem.getSleekX(),
-                    finalFeedItem.getSleekY(), finalFeedItem.getSleekY() - (feedItemHeight / 2.0f),
-                    finalFeedItem.getSleekW(), finalFeedItem.getSleekW(), finalFeedItem.getSleekH(),
-                    finalFeedItem.getSleekH() + feedItemHeight, 500, new ISleekDrawView() {
-                  @Override public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
-                    finalFeedItem.setSleekAnimView(
-                        new SAVtransXYWH(finalFeedItem.getSleekX(), finalFeedItem.getSleekX(),
-                            finalFeedItem.getSleekY(),
-                            finalFeedItem.getSleekY() + (feedItemHeight / 2.0f),
-                            finalFeedItem.getSleekW(), finalFeedItem.getSleekW(),
-                            finalFeedItem.getSleekH(), finalFeedItem.getSleekH() - feedItemHeight,
-                            500, ISleekDrawView.NO_DRAW));
+            finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                finalFeedItem.getSleekX() + (feedItemWidth / 2.0f),
+                finalFeedItem.getSleekY(),
+                finalFeedItem.getSleekY(),
+                finalFeedItem.getSleekW(),
+                finalFeedItem.getSleekW() - feedItemWidth,
+                finalFeedItem.getSleekH(),
+                finalFeedItem.getSleekH(),
+                500,
+                new ISleekDrawView() {
+                  @Override
+                  public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+                    finalFeedItem.setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                        finalFeedItem.getSleekX(),
+                        finalFeedItem.getSleekY(),
+                        finalFeedItem.getSleekY() - (feedItemHeight / 2.0f),
+                        finalFeedItem.getSleekW(),
+                        finalFeedItem.getSleekW(),
+                        finalFeedItem.getSleekH(),
+                        finalFeedItem.getSleekH() + feedItemHeight,
+                        500,
+                        new ISleekDrawView() {
+                          @Override
+                          public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+                            finalFeedItem
+                                .setSleekAnimView(new SAVtransXYWH(finalFeedItem.getSleekX(),
+                                    finalFeedItem.getSleekX(),
+                                    finalFeedItem.getSleekY(),
+                                    finalFeedItem.getSleekY() + (feedItemHeight / 2.0f),
+                                    finalFeedItem.getSleekW(),
+                                    finalFeedItem.getSleekW(),
+                                    finalFeedItem.getSleekH(),
+                                    finalFeedItem.getSleekH() - feedItemHeight,
+                                    500,
+                                    ISleekDrawView.NO_DRAW
+                                ));
+                          }
+                        }
+                    ));
                   }
-                }));
+                }
+            ));
           }
-        }));
-      }
-    }));
+        }
+    ));
   }
 
-  private static final void loadUIwithCSSblocks(final SleekCanvas sleekCanvas,
-      final CSSblock cssBlock1, final CSSblock cssBlock2, final CSSblock cssBlock3,
-      final CSSblock cssBlock4) {
+  private static final void loadUIwithCSSblocks(
+      final SleekCanvas sleekCanvas,
+      final CSSblock cssBlock1,
+      final CSSblock cssBlock2,
+      final CSSblock cssBlock3,
+      final CSSblock cssBlock4
+  ) {
 
     sleekCanvas.getHandler().post(new Runnable() {
-      @Override public void run() {
+      @Override
+      public void run() {
         sleekCanvas.setBackgroundColor(0xffe8e8e8);
       }
     });
@@ -1351,7 +1671,8 @@ import static junit.framework.Assert.assertTrue;
       finalFeedItem.getTouchHandler().setClickAction(new Runnable() {
         long touchTs = 0;
 
-        @Override public void run() {
+        @Override
+        public void run() {
           if (System.currentTimeMillis() - touchTs < 2000) {
             return;
           }
@@ -1359,11 +1680,13 @@ import static junit.framework.Assert.assertTrue;
           setSimpleBoundAnimation(finalFeedItem, feedItemWidth, feedItemHeight);
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       }, new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
           //DO NOTHING
         }
       });
@@ -1411,7 +1734,8 @@ import static junit.framework.Assert.assertTrue;
     //TODO Build a simple complete App UI to test and demonstrate how easy Sleek is to use.
   }
 
-  @Test public void testGeneralUI() throws Exception {
+  @Test
+  public void testGeneralUI() throws Exception {
 
     if (mActivityRule.getActivity() == null) {
       throw new IllegalStateException("mActivityRule.getActivity() == null");
@@ -1437,13 +1761,17 @@ import static junit.framework.Assert.assertTrue;
     //loadUIbackgroundImageResizeElement(mActivityRule.getActivity().getSleekCanvas());
     //loadUIbackgroundCoverWithBorder(mActivityRule.getActivity().getSleekCanvas());
     loadUIwithCSSblocks(mActivityRule.getActivity().getSleekCanvas(),
-        new CSSblockBase(CSS_BORDER_1), new CSSblockBase(CSS_BORDER_2),
-        new CSSblockBase(CSS_BORDER_3), new CSSblockBase(CSS_BORDER_4));
+        new CSSblockBase(CSS_BORDER_1),
+        new CSSblockBase(CSS_BORDER_2),
+        new CSSblockBase(CSS_BORDER_3),
+        new CSSblockBase(CSS_BORDER_4)
+    );
 
     final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 
     mActivityRule.getActivity().setPauseListener(new Runnable() {
-      @Override public void run() {
+      @Override
+      public void run() {
         activityPauseLatch.countDown();
       }
     });
@@ -1451,56 +1779,74 @@ import static junit.framework.Assert.assertTrue;
     activityPauseLatch.await();
   }
 
-  @Test public void testUtilDownload() throws Exception {
+  @Test
+  public void testUtilDownload() throws Exception {
     final String imageUrl =
         "http://www.publicdomainpictures.net/pictures/30000/velka/evening-landscape-13530956185Aw.jpg";
     final String customFileName = "TestSleekUI_image1.jpg";
     final CountDownLatch downloadLatch = new CountDownLatch(4);
 
     // Attempt download on bg-thread
-    UtilDownload.downloadUrl(imageUrl, customFileName, UtilDownload.EXECUTOR,
+    UtilDownload.downloadUrl(imageUrl,
+        customFileName,
+        UtilDownload.EXECUTOR,
         new UtilDownload.FileDownload() {
-          @Override public void downloadProgress(float percent) {
+          @Override
+          public void downloadProgress(float percent) {
 
           }
 
-          @Override public void downloadFinished(File file) {
+          @Override
+          public void downloadFinished(File file) {
             downloadLatch.countDown();
           }
-        });
+        }
+    );
 
     // Attempt download on bg-thread
-    UtilDownload.downloadUrl(imageUrl, customFileName, UtilDownload.EXECUTOR,
+    UtilDownload.downloadUrl(imageUrl,
+        customFileName,
+        UtilDownload.EXECUTOR,
         new UtilDownload.FileDownload() {
-          @Override public void downloadProgress(float percent) {
+          @Override
+          public void downloadProgress(float percent) {
 
           }
 
-          @Override public void downloadFinished(File file) {
+          @Override
+          public void downloadFinished(File file) {
             downloadLatch.countDown();
           }
-        });
+        }
+    );
 
     // Attempt download on bg-thread
-    UtilDownload.downloadUrl(imageUrl, customFileName, UtilDownload.EXECUTOR,
+    UtilDownload.downloadUrl(imageUrl,
+        customFileName,
+        UtilDownload.EXECUTOR,
         new UtilDownload.FileDownload() {
-          @Override public void downloadProgress(float percent) {
+          @Override
+          public void downloadProgress(float percent) {
 
           }
 
-          @Override public void downloadFinished(File file) {
+          @Override
+          public void downloadFinished(File file) {
             downloadLatch.countDown();
           }
-        });
+        }
+    );
 
     // Attempt download and wait 15 sec for reference to existing downloaded File.
     final File imageFile =
         UtilDownload.downloadUrl(imageUrl, customFileName, 15000, new UtilDownload.FileDownload() {
-          @Override public void downloadProgress(float percent) {
+          @Override
+          public void downloadProgress(float percent) {
 
           }
 
-          @Override public void downloadFinished(File file) {
+          @Override
+          public void downloadFinished(File file) {
             downloadLatch.countDown();
           }
         });
@@ -1511,7 +1857,8 @@ import static junit.framework.Assert.assertTrue;
     assertTrue(imageFile.delete());
   }
 
-  @Test public void testCSSborder() {
+  @Test
+  public void testCSSborder() {
 
     UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 
@@ -1532,7 +1879,8 @@ import static junit.framework.Assert.assertTrue;
     assertEquals(0xffff0000, cssBlock2.getBorderColor().intValue());
   }
 
-  @Test public void testCSSblock2() {
+  @Test
+  public void testCSSblock2() {
 
     UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 
@@ -1547,7 +1895,8 @@ import static junit.framework.Assert.assertTrue;
     assertEquals("bottom", cssBlock.getVerticalAlign());
   }
 
-  @Test public void testCSSblock4() {
+  @Test
+  public void testCSSblock4() {
 
     UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 
@@ -1557,7 +1906,8 @@ import static junit.framework.Assert.assertTrue;
     assertEquals(Color.argb((int) (255 * 0.7), 0, 0, 255), cssBlock.getColor().intValue());
   }
 
-  @Test public void testCSSfeedItemPadding() {
+  @Test
+  public void testCSSfeedItemPadding() {
 
     UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 
@@ -1591,17 +1941,20 @@ import static junit.framework.Assert.assertTrue;
     assertEquals(UtilPx.getPixels(10), cssBlock.getPadding().left);
   }
 
-  @Test public void testCSSbackgroundImageUrl() {
+  @Test
+  public void testCSSbackgroundImageUrl() {
 
     UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 
     CSSblockBase cssBlock = new CSSblockBase(CSS_FEED_ITEM_IMAGE);
     assertEquals(
         "https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg",
-        cssBlock.getBackgroundImage());
+        cssBlock.getBackgroundImage()
+    );
   }
 
-  @Test public void testCSSbackgroundImageLocal() {
+  @Test
+  public void testCSSbackgroundImageLocal() {
 
     UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 

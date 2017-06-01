@@ -46,7 +46,8 @@ public class UtilTestSleekUI {
   public static void setSleekActivitySleekCanvasScrollerXY(final SleekActivity sleekActivity) {
     final CountDownLatch waitForSleekCanvasLatch = new CountDownLatch(1);
     Runnable runnable = new Runnable() {
-      @Override public void run() {
+      @Override
+      public void run() {
         SleekCanvas sleekCanvas = new SleekCanvas(sleekActivity);
         sleekCanvas.setBackgroundColor(0xffffffff);
         //sleekCanvas.setSleekScroller(new SleekScrollerBase(true));
@@ -70,7 +71,8 @@ public class UtilTestSleekUI {
   public static void setSleekActivitySleekCanvasScrollerY(final SleekActivity sleekActivity) {
     final CountDownLatch waitForSleekCanvasLatch = new CountDownLatch(1);
     Runnable runnable = new Runnable() {
-      @Override public void run() {
+      @Override
+      public void run() {
         SleekCanvas sleekCanvas = new SleekCanvas(sleekActivity);
         sleekCanvas.setBackgroundColor(0xffffffff);
         //sleekCanvas.setSleekScroller(new SleekScrollerBase(true));
@@ -144,7 +146,8 @@ public class UtilTestSleekUI {
     int pixelsFromDip = UtilPx.getPixels(sleekCanvas.getContext(), 8);// 8 DIP converted to pixels
     sleekColorArea.setRounded(pixelsFromDip);
     final Runnable animateToOffColor = new Runnable() {
-      @Override public void run() {
+      @Override
+      public void run() {
         sleekColorArea.setSleekAnimView(new SAVpercent(300,
             false,
             System.currentTimeMillis(),
@@ -163,7 +166,8 @@ public class UtilTestSleekUI {
         .setTouchPointerDownRun(SleekTouchHandler.TOUCH_RUN_RETURN_TRUE);
     sleekColorArea.getTouchHandler().setTouchPointerUpRun(SleekTouchHandler.TOUCH_RUN_RETURN_TRUE);
     sleekColorArea.getTouchHandler().setTouchDownRun(new ISleekTouchRun() {
-      @Override public int onTouch(
+      @Override
+      public int onTouch(
           Sleek view, SleekTouchHandler handler, MotionEvent event, SleekCanvasInfo info
       ) {
         startDragPosX.set((int) sleekColorArea.getSleekX());
@@ -181,7 +185,8 @@ public class UtilTestSleekUI {
       }
     });
     sleekColorArea.getTouchHandler().setTouchUpRun(new ISleekTouchRun() {
-      @Override public int onTouch(
+      @Override
+      public int onTouch(
           Sleek view, SleekTouchHandler handler, MotionEvent event, SleekCanvasInfo info
       ) {
         animateToOffColor.run();
@@ -189,7 +194,8 @@ public class UtilTestSleekUI {
       }
     });
     sleekColorArea.getTouchHandler().setTouchCancelRun(new ISleekTouchRun() {
-      @Override public int onTouch(
+      @Override
+      public int onTouch(
           Sleek view, SleekTouchHandler handler, MotionEvent event, SleekCanvasInfo info
       ) {
         animateToOffColor.run();
@@ -197,7 +203,8 @@ public class UtilTestSleekUI {
       }
     });
     sleekColorArea.getTouchHandler().setTouchMoveRun(new ISleekTouchRun() {
-      @Override public int onTouch(
+      @Override
+      public int onTouch(
           Sleek view, SleekTouchHandler handler, MotionEvent event, SleekCanvasInfo info
       ) {
         sleekColorArea.setSleekBounds(startDragPosX.get() + (event.getX()
@@ -225,15 +232,18 @@ public class UtilTestSleekUI {
     int pixelsFromDip = UtilPx.getPixels(sleekCanvas.getContext(), 8);// 8 DIP converted to pixels
     sleekColorArea.setRounded(pixelsFromDip);
     sleekColorArea.getTouchHandler().setClickAction(new Runnable() {
-      @Override public void run() {
+      @Override
+      public void run() {
         sleekColorArea.setColor(COLOR_SLEEK_YELLOW);
       }
     }, new Runnable() {
-      @Override public void run() {
+      @Override
+      public void run() {
         sleekColorArea.setColor(COLOR_SLEEK_GREEN);
       }
     }, new Runnable() {
-      @Override public void run() {
+      @Override
+      public void run() {
         float randomGoalX = sleekColorArea.getSleekX();
         randomGoalX = randomGoalX - 200 + (float) (400 * Math.random());
         float randomGoalY = sleekColorArea.getSleekY();
@@ -244,7 +254,8 @@ public class UtilTestSleekUI {
             randomGoalY,
             300,
             new ISleekDrawView() {
-              @Override public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+              @Override
+              public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
 
                 float correctX = -1.0f, correctY = -1.0f;
 
