@@ -490,6 +490,7 @@ public class SleekElement extends SleekBaseComposite {
       final boolean wrapHeight,
       final boolean executeSleekCanvasResize
   ) {
+    createBackgroundImage();//ensure background image is created if null
     getBackgroundImage().setBitmapListener(new ISleekCallback<SleekBaseImage>() {
       @Override public void sleekCallback(SleekBaseImage sleekBaseImage) {
 
