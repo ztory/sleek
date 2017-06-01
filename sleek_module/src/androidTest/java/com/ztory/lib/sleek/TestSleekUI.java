@@ -1643,6 +1643,10 @@ public class TestSleekUI {
 
   private static final void loadUIwithCSSblocks(
       final SleekCanvas sleekCanvas,
+      final int viewWidthDP,
+      final int viewHeightDP,
+      final boolean enableAnimationOnTouch,
+      final boolean viewWrapImageHeight,
       final CSSblock cssBlock1,
       final CSSblock cssBlock2,
       final CSSblock cssBlock3,
@@ -1658,38 +1662,41 @@ public class TestSleekUI {
 
     UtilTestSleekUI.addUIframeRate(sleekCanvas);
 
-    int feedItemTopMargin = UtilPx.getPixels(200);
-    final int feedItemWidth = UtilPx.getPixels(360);
-    final int feedItemHeight = UtilPx.getPixels(360);
+    int feedItemTopMargin = UtilPx.getPixels((int) (viewHeightDP / 2.0f));
+    final int feedItemWidth = UtilPx.getPixels(viewWidthDP);
+    final int feedItemHeight = UtilPx.getPixels(viewHeightDP);
 
     SleekElement sleekFeedItem, lastSleekFeedItem = null;
     String feedItemString;
-    for (int i = 1; i <= 24; i++) {
-      sleekFeedItem =
-          new SleekElement(SleekParam.DEFAULT_TOUCHABLE.newPriority(sleekCanvas.getDrawPrioNext()));
+    for (int i = 1; i <= 40; i++) {
+      sleekFeedItem = new SleekElement(
+          SleekParam.DEFAULT_TOUCHABLE.newPriority(sleekCanvas.getDrawPrioNext())
+      );
       final SleekElement finalFeedItem = sleekFeedItem;
-      finalFeedItem.getTouchHandler().setClickAction(new Runnable() {
-        long touchTs = 0;
+      if (enableAnimationOnTouch) {
+        finalFeedItem.getTouchHandler().setClickAction(new Runnable() {
+          long touchTs = 0;
 
-        @Override
-        public void run() {
-          if (System.currentTimeMillis() - touchTs < 2000) {
-            return;
+          @Override
+          public void run() {
+            if (System.currentTimeMillis() - touchTs < 2000) {
+              return;
+            }
+            touchTs = finalFeedItem.getTouchHandler().getLastTouchDown();
+            setSimpleBoundAnimation(finalFeedItem, feedItemWidth, feedItemHeight);
           }
-          touchTs = finalFeedItem.getTouchHandler().getLastTouchDown();
-          setSimpleBoundAnimation(finalFeedItem, feedItemWidth, feedItemHeight);
-        }
-      }, new Runnable() {
-        @Override
-        public void run() {
-          //DO NOTHING
-        }
-      }, new Runnable() {
-        @Override
-        public void run() {
-          //DO NOTHING
-        }
-      });
+        }, new Runnable() {
+          @Override
+          public void run() {
+            //DO NOTHING
+          }
+        }, new Runnable() {
+          @Override
+          public void run() {
+            //DO NOTHING
+          }
+        });
+      }
 
       if (i % 4 == 0) {
         feedItemString = FEED_ITEM_STRING_1;
@@ -1723,7 +1730,9 @@ public class TestSleekUI {
         sleekFeedItem.getLayout().y(SL.Y.ABSOLUTE, feedItemTopMargin, null);
       }
 
-      sleekFeedItem.wrapBackgroundImageSize(false, true, true);
+      if (viewWrapImageHeight) {
+        sleekFeedItem.wrapBackgroundImageSize(false, true, true);
+      }
 
       sleekCanvas.addSleek(sleekFeedItem);
       lastSleekFeedItem = sleekFeedItem;
@@ -1761,6 +1770,10 @@ public class TestSleekUI {
     //loadUIbackgroundImageResizeElement(mActivityRule.getActivity().getSleekCanvas());
     //loadUIbackgroundCoverWithBorder(mActivityRule.getActivity().getSleekCanvas());
     loadUIwithCSSblocks(mActivityRule.getActivity().getSleekCanvas(),
+        200,
+        160,
+        false,// enableAnimationOnTouch
+        false,// viewWrapImageHeight
         new CSSblockBase(CSS_BORDER_1),
         new CSSblockBase(CSS_BORDER_2),
         new CSSblockBase(CSS_BORDER_3),

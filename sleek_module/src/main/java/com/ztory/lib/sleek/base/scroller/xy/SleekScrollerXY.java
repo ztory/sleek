@@ -4,8 +4,9 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
+import android.view.ViewConfiguration;
 import android.widget.OverScroller;
-
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvas;
 import com.ztory.lib.sleek.SleekCanvasInfo;
@@ -29,7 +30,7 @@ public class SleekScrollerXY implements SleekCanvasScroller {
     protected long mFlingTouchDurationThreshold = 400;
     protected float mMoveDistanceThreshold;
     protected int mMoveDistanceThresholdDefaultDIPvalue = 20;
-    protected float mFlingVelocityThreshold;
+    //protected float mFlingVelocityThreshold;
 
     protected int mOverscrollX, mOverscrollY;
 
@@ -71,6 +72,9 @@ public class SleekScrollerXY implements SleekCanvasScroller {
 
     protected OverScroller mScroller;
 
+    protected VelocityTracker mVelocityTracker;
+    protected ViewConfiguration mViewConfiguration;
+
     public SleekScrollerXY() {
         this(true, true);
     }
@@ -99,11 +103,16 @@ public class SleekScrollerXY implements SleekCanvasScroller {
         }
 
         mScroller = new OverScroller(sleekCanvas.getContext());
+        mVelocityTracker = VelocityTracker.obtain();
+        mViewConfiguration = ViewConfiguration.get(sleekCanvas.getContext());
 
-        mFlingVelocityThreshold = UtilPx.getPixels(sleekCanvas.getContext(), 80);
+        //mFlingVelocityThreshold = UtilPx.getPixels(sleekCanvas.getContext(), 80);
 
+        //TODO mViewConfiguration.getScaledOverscrollDistance() returns 0 (zero) on Samsung S7
         mOverscrollX = UtilPx.getPixels(sleekCanvas.getContext(), 28);
         mOverscrollY = UtilPx.getPixels(sleekCanvas.getContext(), 28);
+//        mOverscrollX = mViewConfiguration.getScaledOverscrollDistance();
+//        mOverscrollY = mViewConfiguration.getScaledOverscrollDistance();
 
         mMoveDistanceThreshold = UtilPx.getPixels(
                 sleekCanvas.getContext(),
@@ -415,6 +424,8 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                 mTouchStartPosTop = mPosTop;
                 mTouchStartTS = System.currentTimeMillis();
 
+                mVelocityTracker.addMovement(event);
+
                 break;
 
             case MotionEvent.ACTION_UP:
@@ -441,21 +452,45 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                         long touchDuration = System.currentTimeMillis() - mTouchStartTS;
                         if (touchDuration < mFlingTouchDurationThreshold) {
 
-                            // Calculate velocity based on mTouchStartX and mTouchStartY
-                            float touchDurationSeconds = (touchDuration / 1000.0f);
-                            float eventTravelX = event.getX() - mTouchStartX;
-                            float eventTravelY = event.getY() - mTouchStartY;
-                            float velocityX = blockFlingX ? 0 : eventTravelX / touchDurationSeconds;
-                            float velocityY = blockFlingY ? 0 : eventTravelY / touchDurationSeconds;
+                            mVelocityTracker.computeCurrentVelocity(
+                                1000,
+                                mViewConfiguration.getScaledMaximumFlingVelocity()
+                            );
+
+                            float velocityX = blockFlingX ? 0 : mVelocityTracker.getXVelocity();
+                            float velocityY = blockFlingY ? 0 : mVelocityTracker.getYVelocity();
+                            float minFlingVelocity = mViewConfiguration.getScaledMinimumFlingVelocity();
+
+                            mVelocityTracker.clear();
+
+                            //Log.d("SleekScrollerXY", "SleekScrollerXY | velocityY: " + velocityY);
 
                             if (
-                                    Math.abs(velocityX) > mFlingVelocityThreshold
-                                    || Math.abs(velocityY) > mFlingVelocityThreshold
-                                    ) {
+                                Math.abs(velocityX) > minFlingVelocity
+                                || Math.abs(velocityY) > minFlingVelocity
+                                ) {
                                 executeFling(velocityX, velocityY, info);
                                 setAnimEdgeEffectsAndFling();
                                 didFling = true;
                             }
+
+//                            // Calculate velocity based on mTouchStartX and mTouchStartY
+//                            float touchDurationSeconds = (touchDuration / 1000.0f);
+//                            float eventTravelX = event.getX() - mTouchStartX;
+//                            float eventTravelY = event.getY() - mTouchStartY;
+//                            float velocityX = blockFlingX ? 0 : eventTravelX / touchDurationSeconds;
+//                            float velocityY = blockFlingY ? 0 : eventTravelY / touchDurationSeconds;
+//
+//                            Log.d("SleekScrollerXY", "SleekScrollerXY | velocityY: " + velocityY);
+//
+//                            if (
+//                                    Math.abs(velocityX) > mFlingVelocityThreshold
+//                                    || Math.abs(velocityY) > mFlingVelocityThreshold
+//                                    ) {
+//                                executeFling(velocityX, velocityY, info);
+//                                setAnimEdgeEffectsAndFling();
+//                                didFling = true;
+//                            }
                         }
                     }
 
@@ -483,6 +518,8 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                 break;
 
             case MotionEvent.ACTION_MOVE:
+
+                mVelocityTracker.addMovement(event);
 
                 if (
                         mTouchHasMoved
