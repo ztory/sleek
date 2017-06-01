@@ -43,7 +43,9 @@ public class SleekElement extends SleekBaseComposite {
 
   protected final List<CSSblock> elementCSSlist = new ArrayList<>(4);
 
-  /** If CSS is updated at runtime, be sure to set this to true. */
+  /**
+   * If CSS is updated at runtime, be sure to set this to true.
+   */
   protected boolean elementCSSneedsUpdate = false;
 
   protected final CSSblock elementCSS = new CSSblockBase(12);
@@ -249,7 +251,7 @@ public class SleekElement extends SleekBaseComposite {
       if (!elementBackgroundImageUrl.equals(oldElementBackgroundImageUrl)) {
         localElementBackgroundImageUrl =
             !elementBackgroundImageUrl.startsWith("https://")
-            && !elementBackgroundImageUrl.startsWith("http://");
+                && !elementBackgroundImageUrl.startsWith("http://");
         reloadBackgroundImage();
       }
     } else if (elementBackgroundImage != null) {
@@ -318,7 +320,8 @@ public class SleekElement extends SleekBaseComposite {
     elementBackgroundImage = new SleekBaseImage(elementBorderRadius, SleekParam.DEFAULT);
     elementBackgroundImage.setFadeAnimOnLoad(false);
     elementBackgroundImage.setBitmapListener(new ISleekCallback<SleekBaseImage>() {
-      @Override public void sleekCallback(SleekBaseImage sleekBaseImage) {
+      @Override
+      public void sleekCallback(SleekBaseImage sleekBaseImage) {
         positionBackgroundImage();
       }
     });
@@ -446,7 +449,8 @@ public class SleekElement extends SleekBaseComposite {
     } else {
       elementBackgroundImage.setBitmapFetcher(mSlkCanvas.getHandler(), UtilDownload.EXECUTOR,
           new ISleekData<Bitmap>() {
-            @Override public Bitmap getData(Sleek sleek) {
+            @Override
+            public Bitmap getData(Sleek sleek) {
               File bmFile = UtilDownload.downloadUrl(elementBackgroundImageUrl);
               Bitmap bm = null;
               if (bmFile != null) {
@@ -492,7 +496,8 @@ public class SleekElement extends SleekBaseComposite {
   ) {
     createBackgroundImage();//ensure background image is created if null
     getBackgroundImage().setBitmapListener(new ISleekCallback<SleekBaseImage>() {
-      @Override public void sleekCallback(SleekBaseImage sleekBaseImage) {
+      @Override
+      public void sleekCallback(SleekBaseImage sleekBaseImage) {
 
         if (sleekBaseImage.getBitmap() != null) {
           final int bitmapWidth = sleekBaseImage.getBitmap().getWidth();
@@ -504,14 +509,16 @@ public class SleekElement extends SleekBaseComposite {
                 .h(SL.H.ABSOLUTE, bitmapHeight, null);
           } else if (wrapWidth) {
             SleekElement.this.getLayout().w(SL.W.COMPUTE, 0, null, 0, new IComputeInt() {
-              @Override public int compute(SleekCanvasInfo info) {
+              @Override
+              public int compute(SleekCanvasInfo info) {
                 int computedH = SleekElement.this.getLayout().computeSizeH(SleekElement.this, info);
                 return Calc.multiplyToInt(computedH, bitmapRatio);
               }
             });
           } else if (wrapHeight) {
             SleekElement.this.getLayout().h(SL.H.COMPUTE, 0, null, 0, new IComputeInt() {
-              @Override public int compute(SleekCanvasInfo info) {
+              @Override
+              public int compute(SleekCanvasInfo info) {
                 int computedW = SleekElement.this.getLayout().computeSizeW(SleekElement.this, info);
                 return Calc.divideToInt(computedW, bitmapRatio);
               }
@@ -539,7 +546,8 @@ public class SleekElement extends SleekBaseComposite {
     elementBorder.onSleekDraw(canvas, info);
   }
 
-  @Override public void drawView(Sleek view, Canvas canvas, SleekCanvasInfo info) {
+  @Override
+  public void drawView(Sleek view, Canvas canvas, SleekCanvasInfo info) {
 
     canvas.save();
     canvas.translate(sleekX, sleekY);
@@ -547,13 +555,12 @@ public class SleekElement extends SleekBaseComposite {
     if (!drawShadowBitmap(canvas, info)) {
       if (
           elementBorderColor != SleekColorArea.COLOR_TRANSPARENT
-          && elementBackgroundImage != null
-          && elementBackgroundImage.isBitmapLoaded()
+              && elementBackgroundImage != null
+              && elementBackgroundImage.isBitmapLoaded()
           ) {
         // This prevents bg-color from bleeding through on elementBackgroundImage's Bitmap corners
         elementBackground.getPaint().setColor(elementBorderColor);
-      }
-      else if (elementBackground.getPaint().getColor() != elementBackgroundColor) {
+      } else if (elementBackground.getPaint().getColor() != elementBackgroundColor) {
         elementBackground.getPaint().setColor(elementBackgroundColor);
       }
       elementBackground.onSleekDraw(canvas, info);
@@ -577,7 +584,8 @@ public class SleekElement extends SleekBaseComposite {
     canvas.restore();
   }
 
-  @Override public void setSleekBounds(float x, float y, int w, int h) {
+  @Override
+  public void setSleekBounds(float x, float y, int w, int h) {
 
     final int oldW = sleekW;
     final int oldH = sleekH;
@@ -587,8 +595,10 @@ public class SleekElement extends SleekBaseComposite {
         elementText.setSleekBounds(
             paddingRect.left + elementBorderWidth.left,
             paddingRect.top + elementBorderWidth.top,
-            w - paddingRect.left - paddingRect.right - elementBorderWidth.left - elementBorderWidth.right,
-            h - paddingRect.top - paddingRect.bottom - elementBorderWidth.top - elementBorderWidth.bottom
+            w - paddingRect.left - paddingRect.right - elementBorderWidth.left
+                - elementBorderWidth.right,
+            h - paddingRect.top - paddingRect.bottom - elementBorderWidth.top
+                - elementBorderWidth.bottom
         );
       } else {
         elementText.setSleekBounds(
@@ -637,7 +647,6 @@ public class SleekElement extends SleekBaseComposite {
     );
     //elementBackground.setSleekBounds(0, 0, elementWidth, elementHeight);
 
-
     if (loaded && addedToParent) {
 
       if (elementShadowRadius > 0) {
@@ -668,14 +677,16 @@ public class SleekElement extends SleekBaseComposite {
     }
   }
 
-  @Override public void onSleekCanvasResize(SleekCanvasInfo info) {
+  @Override
+  public void onSleekCanvasResize(SleekCanvasInfo info) {
 
     checkCSS();//checks if changes have been made to CSS properties
 
     super.onSleekCanvasResize(info);
   }
 
-  @Override public void onSleekLoad(SleekCanvasInfo info) {
+  @Override
+  public void onSleekLoad(SleekCanvasInfo info) {
     super.onSleekLoad(info);
     setElementShadowBitmap(generateShadowBitmap());
     if (elementBackgroundImage != null) {
@@ -684,7 +695,8 @@ public class SleekElement extends SleekBaseComposite {
     }
   }
 
-  @Override public void onSleekUnload() {
+  @Override
+  public void onSleekUnload() {
     super.onSleekUnload();
     setElementShadowBitmap(null);
     if (elementBackgroundImage != null) {
@@ -692,7 +704,8 @@ public class SleekElement extends SleekBaseComposite {
     }
   }
 
-  @Override public boolean onSleekTouchEvent(MotionEvent event, SleekCanvasInfo info) {
+  @Override
+  public boolean onSleekTouchEvent(MotionEvent event, SleekCanvasInfo info) {
 
     if (touchHandler.onSleekTouchEvent(event, info)) {
       return true;
