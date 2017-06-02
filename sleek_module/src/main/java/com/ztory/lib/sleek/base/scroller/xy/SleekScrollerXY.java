@@ -102,7 +102,6 @@ public class SleekScrollerXY implements SleekCanvasScroller {
     }
 
     mScroller = new OverScroller(sleekCanvas.getContext());
-    mVelocityTracker = VelocityTracker.obtain();
     mViewConfiguration = ViewConfiguration.get(sleekCanvas.getContext());
 
 //    mFlingVelocityThreshold = UtilPx.getPixels(sleekCanvas.getContext(), 80);
@@ -418,6 +417,7 @@ public class SleekScrollerXY implements SleekCanvasScroller {
         mTouchStartPosTop = mPosTop;
         mTouchStartTS = System.currentTimeMillis();
 
+        mVelocityTracker = VelocityTracker.obtain();
         mVelocityTracker.addMovement(event);
 
         break;
@@ -455,7 +455,8 @@ public class SleekScrollerXY implements SleekCanvasScroller {
               float velocityY = blockFlingY ? 0 : mVelocityTracker.getYVelocity();
               float minFlingVelocity = mViewConfiguration.getScaledMinimumFlingVelocity();
 
-              mVelocityTracker.clear();
+              mVelocityTracker.recycle();
+              mVelocityTracker = null;
 
               //Log.d("SleekScrollerXY", "SleekScrollerXY | velocityY: " + velocityY);
 
@@ -467,24 +468,6 @@ public class SleekScrollerXY implements SleekCanvasScroller {
                 setAnimEdgeEffectsAndFling();
                 didFling = true;
               }
-
-//                            // Calculate velocity based on mTouchStartX and mTouchStartY
-//                            float touchDurationSeconds = (touchDuration / 1000.0f);
-//                            float eventTravelX = event.getX() - mTouchStartX;
-//                            float eventTravelY = event.getY() - mTouchStartY;
-//                            float velocityX = blockFlingX ? 0 : eventTravelX / touchDurationSeconds;
-//                            float velocityY = blockFlingY ? 0 : eventTravelY / touchDurationSeconds;
-//
-//                            Log.d("SleekScrollerXY", "SleekScrollerXY | velocityY: " + velocityY);
-//
-//                            if (
-//                                    Math.abs(velocityX) > mFlingVelocityThreshold
-//                                    || Math.abs(velocityY) > mFlingVelocityThreshold
-//                                    ) {
-//                                executeFling(velocityX, velocityY, info);
-//                                setAnimEdgeEffectsAndFling();
-//                                didFling = true;
-//                            }
             }
           }
 
