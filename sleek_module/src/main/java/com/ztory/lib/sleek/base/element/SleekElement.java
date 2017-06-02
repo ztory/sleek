@@ -1078,7 +1078,6 @@ public class SleekElement extends SleekBaseComposite {
     final float cornerHeight = elementShadowRadius;
     float translateX, translateY;
 
-    float offsetXwidthIncrease = elementShadowOffsetX > 0 ? elementShadowOffsetX : 0;
     //____________________ -START- Top Bitmap ____________________
     bitmapW = (int) (shadowSleekW + cornerWidth + cornerWidth + Math.abs(elementShadowOffsetX));
     bitmapH = (int) (elementBorderRadius + cornerHeight);
@@ -1175,7 +1174,7 @@ public class SleekElement extends SleekBaseComposite {
     //____________________ - END - Left Bitmap ____________________
 
     //____________________ -START- Right Bitmap ____________________
-    bitmapW = (int) (elementBorderRadius + cornerWidth + offsetXwidthIncrease);
+    bitmapW = (int) (elementBorderRadius + cornerWidth);
     if (elementShadowOffsetX > 0) {
       bitmapW = bitmapW + (int) elementShadowOffsetX;
     }

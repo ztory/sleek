@@ -1607,7 +1607,7 @@ public class TestSleekUI {
         finalFeedItem.getSleekW() + feedItemWidth,
         finalFeedItem.getSleekH(),
         finalFeedItem.getSleekH(),
-        2500,
+        1000,
         new ISleekDrawView() {
           @Override
           public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
@@ -1620,7 +1620,7 @@ public class TestSleekUI {
                 finalFeedItem.getSleekW() - feedItemWidth,
                 finalFeedItem.getSleekH(),
                 finalFeedItem.getSleekH(),
-                500,
+                1000,
                 new ISleekDrawView() {
                   @Override
                   public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
@@ -1632,7 +1632,7 @@ public class TestSleekUI {
                         finalFeedItem.getSleekW(),
                         finalFeedItem.getSleekH(),
                         finalFeedItem.getSleekH() + feedItemHeight,
-                        500,
+                        1000,
                         new ISleekDrawView() {
                           @Override
                           public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
@@ -1645,7 +1645,7 @@ public class TestSleekUI {
                                     finalFeedItem.getSleekW(),
                                     finalFeedItem.getSleekH(),
                                     finalFeedItem.getSleekH() - feedItemHeight,
-                                    500,
+                                    1000,
                                     ISleekDrawView.NO_DRAW
                                 ));
                           }
@@ -1787,26 +1787,26 @@ public class TestSleekUI {
     //loadUIelementsWithBackgroundImageCoverOnly(mActivityRule.getActivity().getSleekCanvas());
     //loadUIbackgroundImageResizeElement(mActivityRule.getActivity().getSleekCanvas());
     //loadUIbackgroundCoverWithBorder(mActivityRule.getActivity().getSleekCanvas());
-    loadUIwithCSSblocks(mActivityRule.getActivity().getSleekCanvas(),
-        160,// viewWidthDP
-        160,// viewHeightDP
-        true,// enableAnimationOnTouch
-        false,// viewWrapImageHeight
-        new CSSblockBase(CSS_BORDER_1),
-        new CSSblockBase(CSS_BORDER_2),
-        new CSSblockBase(CSS_BORDER_3),
-        new CSSblockBase(CSS_BORDER_4)
-    );
 //    loadUIwithCSSblocks(mActivityRule.getActivity().getSleekCanvas(),
 //        160,// viewWidthDP
 //        160,// viewHeightDP
 //        true,// enableAnimationOnTouch
 //        false,// viewWrapImageHeight
+//        new CSSblockBase(CSS_BORDER_1),
+//        new CSSblockBase(CSS_BORDER_2),
 //        new CSSblockBase(CSS_BORDER_3),
-//        new CSSblockBase(CSS_BORDER_5),
-//        new CSSblockBase(CSS_BORDER_3),
-//        new CSSblockBase(CSS_BORDER_5)
+//        new CSSblockBase(CSS_BORDER_4)
 //    );
+    loadUIwithCSSblocks(mActivityRule.getActivity().getSleekCanvas(),
+        160,// viewWidthDP
+        160,// viewHeightDP
+        true,// enableAnimationOnTouch
+        false,// viewWrapImageHeight
+        new CSSblockBase(CSS_BORDER_3),
+        new CSSblockBase(CSS_BORDER_5),
+        new CSSblockBase(CSS_BORDER_3),
+        new CSSblockBase(CSS_BORDER_5)
+    );
 
     final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 
