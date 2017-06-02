@@ -26,6 +26,7 @@ import com.ztory.lib.sleek.layout.IComputeInt;
 import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.util.Calc;
 import com.ztory.lib.sleek.util.UtilDownload;
+import com.ztory.lib.sleek.util.UtilExecutor;
 import com.ztory.lib.sleek.util.UtilResources;
 import java.io.File;
 import java.io.FileInputStream;
@@ -450,7 +451,8 @@ public class SleekElement extends SleekBaseComposite {
     if (elementBackgroundImageUrl == null || localElementBackgroundImageUrl) {
       elementBackgroundImage.setBitmapFetcher(null, null, null);//clear fetcher
     } else {
-      elementBackgroundImage.setBitmapFetcher(mSlkCanvas.getHandler(), UtilDownload.EXECUTOR,
+      elementBackgroundImage.setBitmapFetcher(mSlkCanvas.getHandler(),
+          UtilExecutor.NETWORK_EXECUTOR,
           new ISleekData<Bitmap>() {
             @Override
             public Bitmap getData(Sleek sleek) {
@@ -708,10 +710,10 @@ public class SleekElement extends SleekBaseComposite {
   public void reloadShadowBitmap(boolean allowBgThreadLoad) {
     if (elementShadowRadius > 0) {
       if (allowBgThreadLoad) {
-        // Set shadowSleekW and shadowSleekH so that setSleekBounds doesnt call generateShadowBitmap
-//        shadowViewSizeW = sleekW;
-//        shadowViewSizeH = sleekH;
-        UtilDownload.EXECUTOR.execute(new Runnable() {
+
+        //TODO Maybe exeute on UI-thread if view is within viewport when this method is called ?
+
+        UtilExecutor.CPU_EXECUTOR_MULTI.execute(new Runnable() {
           @Override
           public void run() {
             final List<Bitmap> shadowBitmapList = generateShadowBitmap();

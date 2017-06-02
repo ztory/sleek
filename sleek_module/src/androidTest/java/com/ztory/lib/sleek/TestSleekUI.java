@@ -20,6 +20,7 @@ import com.ztory.lib.sleek.contract.ISleekDrawView;
 import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.mapd.Mapd;
 import com.ztory.lib.sleek.util.UtilDownload;
+import com.ztory.lib.sleek.util.UtilExecutor;
 import com.ztory.lib.sleek.util.UtilPx;
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
@@ -1830,7 +1831,7 @@ public class TestSleekUI {
     // Attempt download on bg-thread
     UtilDownload.downloadUrl(imageUrl,
         customFileName,
-        UtilDownload.EXECUTOR,
+        UtilExecutor.NETWORK_EXECUTOR,
         new UtilDownload.FileDownload() {
           @Override
           public void downloadProgress(float percent) {
@@ -1847,7 +1848,7 @@ public class TestSleekUI {
     // Attempt download on bg-thread
     UtilDownload.downloadUrl(imageUrl,
         customFileName,
-        UtilDownload.EXECUTOR,
+        UtilExecutor.NETWORK_EXECUTOR,
         new UtilDownload.FileDownload() {
           @Override
           public void downloadProgress(float percent) {
@@ -1864,7 +1865,7 @@ public class TestSleekUI {
     // Attempt download on bg-thread
     UtilDownload.downloadUrl(imageUrl,
         customFileName,
-        UtilDownload.EXECUTOR,
+        UtilExecutor.NETWORK_EXECUTOR,
         new UtilDownload.FileDownload() {
           @Override
           public void downloadProgress(float percent) {

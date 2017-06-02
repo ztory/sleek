@@ -1,8 +1,6 @@
 package com.ztory.lib.sleek.util;
 
-import android.os.Build;
 import android.util.Log;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,11 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by jonruna on 2017-04-19.
@@ -44,9 +37,6 @@ public class UtilDownload {
             //DO NOTHING
         }
     };
-
-    public static final Executor
-            EXECUTOR = createExecutor(UtilDownload.class.getName() + "_EXECUTOR", 8);
 
     private static final HashMap<String, List<FileDownload>> sActiveDownloads = new HashMap<>(40);
 
@@ -325,32 +315,6 @@ public class UtilDownload {
                 e.printStackTrace();
             }
         }
-    }
-
-    public static ThreadPoolExecutor createExecutor(
-            final String threadNamePrefix,
-            int poolSizeMax
-    ) {
-        ThreadPoolExecutor returnPool = new ThreadPoolExecutor(
-                poolSizeMax,
-                poolSizeMax,
-                4L,
-                TimeUnit.SECONDS,
-                new LinkedBlockingQueue<Runnable>(),
-                new ThreadFactory() {
-                    private final AtomicInteger mCount = new AtomicInteger(1);
-                    public Thread newThread(Runnable runnable) {
-                        return new Thread(
-                                runnable,
-                                threadNamePrefix + " #" + mCount.getAndIncrement()
-                        );
-                    }
-                }
-        );
-        if (Build.VERSION.SDK_INT >= 9) {
-            returnPool.allowCoreThreadTimeOut(true);
-        }
-        return returnPool;
     }
 
 }
