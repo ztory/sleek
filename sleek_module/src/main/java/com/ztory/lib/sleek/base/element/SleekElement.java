@@ -19,6 +19,7 @@ import com.ztory.lib.sleek.base.element.css.CSSblock;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
 import com.ztory.lib.sleek.base.image.SleekBaseImage;
 import com.ztory.lib.sleek.base.text.SleekViewText;
+import com.ztory.lib.sleek.contract.ISleekAnimRun;
 import com.ztory.lib.sleek.contract.ISleekCallback;
 import com.ztory.lib.sleek.contract.ISleekData;
 import com.ztory.lib.sleek.layout.IComputeInt;
@@ -67,6 +68,8 @@ public class SleekElement extends SleekBaseComposite {
 
   protected Paint elementShadowBitmapPaint;
   protected final List<Bitmap> elementShadowBitmapList = new ArrayList<>();
+  protected int shadowViewSizeW;
+  protected int shadowViewSizeH;
 
   protected int elementBackgroundColor = SleekColorArea.COLOR_TRANSPARENT;
   protected int elementBorderColor = SleekColorArea.COLOR_TRANSPARENT;
@@ -650,8 +653,19 @@ public class SleekElement extends SleekBaseComposite {
     if (loaded && addedToParent) {
 
       if (elementShadowRadius > 0) {
-        if (elementShadowBitmapList.size() == 0 || sleekW != oldW || sleekH != oldH) {
-          setElementShadowBitmap(generateShadowBitmap());
+        if (sleekW != shadowViewSizeW || sleekH != shadowViewSizeH) {
+
+          // TODO HOW TO AVOID LOADING THIS ON UI-THREAD ????
+          // TODO THIS NEEDS TO BE CALLED ON UI-THREAD IF ANIMATIONS ARE GOING TO ANIMATE SHADOW !!!
+
+          //TODO POSSIBLE SOLUTION:
+          //TODO Maybe we can "stretch" north/south shadow when animating width, and...
+          //TODO ... west/east shadow when animating height
+          //reloadShadowBitmap(false);// param: allowBgThreadLoad
+
+          Log.d("SleekElement",
+              "SleekElement.reloadShadowBitmap on UI THREAD!"
+          );
         }
       }
 
@@ -685,10 +699,48 @@ public class SleekElement extends SleekBaseComposite {
     super.onSleekCanvasResize(info);
   }
 
+  public void reloadShadowBitmap(boolean allowBgThreadLoad) {
+    if (elementShadowRadius > 0) {
+      if (allowBgThreadLoad) {
+        // Set shadowSleekW and shadowSleekH so that setSleekBounds doesnt call generateShadowBitmap
+        shadowViewSizeW = sleekW;
+        shadowViewSizeH = sleekH;
+        UtilDownload.EXECUTOR.execute(new Runnable() {
+          @Override
+          public void run() {
+            final List<Bitmap> shadowBitmapList = generateShadowBitmap();
+            addPreDrawSafe(mSlkCanvas, new ISleekAnimRun() {
+              @Override
+              public void run(SleekCanvasInfo info) {
+                if (loaded && addedToParent) {
+                  setElementShadowBitmap(shadowBitmapList);
+                }
+              }
+            });
+          }
+        });
+      } else {
+        setElementShadowBitmap(generateShadowBitmap());
+      }
+    }
+    else {
+      setElementShadowBitmap(null);
+    }
+  }
+
   @Override
   public void onSleekLoad(SleekCanvasInfo info) {
+
+    final boolean alreadyLoaded = loaded;
+
     super.onSleekLoad(info);
-    setElementShadowBitmap(generateShadowBitmap());
+
+    if (alreadyLoaded) {
+      return;
+    }
+
+    reloadShadowBitmap(true);
+
     if (elementBackgroundImage != null) {
       elementBackgroundImage.onSleekLoad(info);
       checkSetLocalBackground();
@@ -847,13 +899,18 @@ public class SleekElement extends SleekBaseComposite {
       return null;
     }
 
-        /*
-        // LOW PRIO since why would we want alpha bg-elements with shadow?
-        // If we implement alpha bg with shadow then shadowBitmaps need to contain "hidden" ...
-        // ... shadow-edges as well, so that they shine through when y-offset is 100px for on a...
-        // ... 400x400px box for example, in that example we want the shadow to be drawn behind...
-        // ... background at pos Y==100px !
-         */
+    /*
+    // LOW PRIO since why would we want alpha bg-elements with shadow?
+    // If we implement alpha bg with shadow then shadowBitmaps need to contain "hidden" ...
+    // ... shadow-edges as well, so that they shine through when y-offset is 100px for on a...
+    // ... 400x400px box for example, in that example we want the shadow to be drawn behind...
+    // ... background at pos Y==100px !
+     */
+
+    final int shadowSleekW = sleekW;
+    final int shadowSleekH = sleekH;
+    shadowViewSizeW = shadowSleekW;
+    shadowViewSizeH = shadowSleekH;
 
     long timestamp = System.currentTimeMillis();
 
@@ -881,7 +938,7 @@ public class SleekElement extends SleekBaseComposite {
     float translateX, translateY;
 
     //____________________ -START- Top Bitmap ____________________
-    bitmapW = (int) (sleekW + cornerWidth + cornerWidth + Math.abs(elementShadowOffsetX));
+    bitmapW = (int) (shadowSleekW + cornerWidth + cornerWidth + Math.abs(elementShadowOffsetX));
     bitmapH = (int) (elementBorderRadius + cornerHeight);
     if (elementShadowOffsetY < 0) {
       bitmapH = bitmapH - (int) elementShadowOffsetY;
@@ -907,7 +964,7 @@ public class SleekElement extends SleekBaseComposite {
     }
     canvas.translate(translateX, translateY);
     canvas.drawRoundRect(
-        new RectF(cornerWidth, cornerHeight, cornerWidth + sleekW, cornerHeight + sleekH),
+        new RectF(cornerWidth, cornerHeight, cornerWidth + shadowSleekW, cornerHeight + shadowSleekH),
         elementBorderRadius,
         elementBorderRadius,
         paint
@@ -916,7 +973,7 @@ public class SleekElement extends SleekBaseComposite {
     //____________________ - END - Top Bitmap ____________________
 
     //____________________ -START- Bottom Bitmap ____________________
-    bitmapW = (int) (sleekW + cornerWidth + cornerWidth + Math.abs(elementShadowOffsetX));
+    bitmapW = (int) (shadowSleekW + cornerWidth + cornerWidth + Math.abs(elementShadowOffsetX));
     bitmapH = (int) (elementBorderRadius + cornerHeight);
     if (elementShadowOffsetY > 0) {
       bitmapH = bitmapH + (int) elementShadowOffsetY;
@@ -932,12 +989,12 @@ public class SleekElement extends SleekBaseComposite {
     //bitmap.eraseColor(0x66ff00ff);
     canvas = new Canvas(bitmap);
     if (elementShadowOffsetX < 0) {
-      canvas.translate(-elementShadowOffsetX, -sleekH - elementShadowRadius + elementBorderRadius);
+      canvas.translate(-elementShadowOffsetX, -shadowSleekH - elementShadowRadius + elementBorderRadius);
     } else {
-      canvas.translate(0, -sleekH - elementShadowRadius + elementBorderRadius);
+      canvas.translate(0, -shadowSleekH - elementShadowRadius + elementBorderRadius);
     }
     canvas.drawRoundRect(
-        new RectF(cornerWidth, cornerHeight, cornerWidth + sleekW, cornerHeight + sleekH),
+        new RectF(cornerWidth, cornerHeight, cornerWidth + shadowSleekW, cornerHeight + shadowSleekH),
         elementBorderRadius,
         elementBorderRadius,
         paint
@@ -950,7 +1007,7 @@ public class SleekElement extends SleekBaseComposite {
     if (elementShadowOffsetX < 0) {
       bitmapW = bitmapW - (int) elementShadowOffsetX;
     }
-    bitmapH = (int) (sleekH - elementBorderRadius - elementBorderRadius);
+    bitmapH = (int) (shadowSleekH - elementBorderRadius - elementBorderRadius);
     if (bitmapW < 1) {
       bitmapW = 1;
     }
@@ -967,7 +1024,7 @@ public class SleekElement extends SleekBaseComposite {
       canvas.translate(0, -cornerHeight - elementBorderRadius);
     }
     canvas.drawRoundRect(
-        new RectF(cornerWidth, cornerHeight, cornerWidth + sleekW, cornerHeight + sleekH),
+        new RectF(cornerWidth, cornerHeight, cornerWidth + shadowSleekW, cornerHeight + shadowSleekH),
         elementBorderRadius,
         elementBorderRadius,
         paint
@@ -980,7 +1037,7 @@ public class SleekElement extends SleekBaseComposite {
     if (elementShadowOffsetX > 0) {
       bitmapW = bitmapW + (int) elementShadowOffsetX;
     }
-    bitmapH = (int) (sleekH - elementBorderRadius - elementBorderRadius);
+    bitmapH = (int) (shadowSleekH - elementBorderRadius - elementBorderRadius);
     if (bitmapW < 1) {
       bitmapW = 1;
     }
@@ -993,11 +1050,11 @@ public class SleekElement extends SleekBaseComposite {
     canvas = new Canvas(bitmap);
     //canvas.translate(0, - elementBorderRadius - elementBorderRadius);
     canvas.translate(
-        -sleekW - elementShadowRadius + elementBorderRadius,
+        -shadowSleekW - elementShadowRadius + elementBorderRadius,
         -cornerHeight - elementBorderRadius
     );
     canvas.drawRoundRect(
-        new RectF(cornerWidth, cornerHeight, cornerWidth + sleekW, cornerHeight + sleekH),
+        new RectF(cornerWidth, cornerHeight, cornerWidth + shadowSleekW, cornerHeight + shadowSleekH),
         elementBorderRadius,
         elementBorderRadius,
         paint
