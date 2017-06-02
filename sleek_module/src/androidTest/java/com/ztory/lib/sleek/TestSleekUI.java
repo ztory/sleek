@@ -1589,7 +1589,7 @@ public class TestSleekUI {
         finalFeedItem.getSleekW() + feedItemWidth,
         finalFeedItem.getSleekH(),
         finalFeedItem.getSleekH(),
-        500,
+        2500,
         new ISleekDrawView() {
           @Override
           public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
@@ -1770,9 +1770,9 @@ public class TestSleekUI {
     //loadUIbackgroundImageResizeElement(mActivityRule.getActivity().getSleekCanvas());
     //loadUIbackgroundCoverWithBorder(mActivityRule.getActivity().getSleekCanvas());
     loadUIwithCSSblocks(mActivityRule.getActivity().getSleekCanvas(),
-        200,// viewWidthDP
+        160,// viewWidthDP
         160,// viewHeightDP
-        false,// enableAnimationOnTouch
+        true,// enableAnimationOnTouch
         false,// viewWrapImageHeight
         new CSSblockBase(CSS_BORDER_1),
         new CSSblockBase(CSS_BORDER_2),
