@@ -830,26 +830,28 @@ public class SleekElement extends SleekBaseComposite {
       );
     }
 
-        /*
-        // LOW PRIO since why would we want alpha bg-elements with shadow?
-        // If we implement alpha bg with shadow then shadowBitmaps need to contain "hidden" ...
-        // ... shadow-edges as well, so that they shine through.
-        // Draw middle area of shadow, if bg has alpha we need to draw this because otherwise...
-        // ...there is a "hole" in the middle since shadow will only be drawn along edges.
-        float shadowBgTopOffset = elementShadowOffsetY > 0 ? elementShadowOffsetY : 0;
-        float shadowBgBottomOffset = elementShadowOffsetY < 0 ? elementShadowOffsetY : 0;
-        float shadowBgLeftOffset = elementShadowOffsetX > 0 ? elementShadowOffsetX : 0;
-        float shadowBgRightOffset = elementShadowOffsetX < 0 ? elementShadowOffsetX : 0;
-        elementBackground.getPaint().setColor(0x99ff00ff);
-        canvas.drawRect(
-                elementBorderRadius + shadowBgLeftOffset,
-                elementBorderRadius + shadowBgTopOffset,
-                sleekW - elementBorderRadius + shadowBgRightOffset,
-                sleekH - elementBorderRadius + shadowBgBottomOffset,
-                elementBackground.getPaint()//using elementBackground.getPaint to have correct Alpha
-        );
-        elementBackground.getPaint().setColor(elementBackgroundColor);
-        */
+    /*
+    // LOW PRIO since why would we want alpha bg-elements with shadow?
+    // If we implement alpha bg with shadow then shadowBitmaps need to contain "hidden" ...
+    // ... shadow-edges as well, so that they shine through.
+    // Draw middle area of shadow, if bg has alpha we need to draw this because otherwise...
+    // ...there is a "hole" in the middle since shadow will only be drawn along edges.
+    float shadowBgTopOffset = elementShadowOffsetY > 0 ? elementShadowOffsetY : 0;
+    float shadowBgBottomOffset = elementShadowOffsetY < 0 ? elementShadowOffsetY : 0;
+    float shadowBgLeftOffset = elementShadowOffsetX > 0 ? elementShadowOffsetX : 0;
+    float shadowBgRightOffset = elementShadowOffsetX < 0 ? elementShadowOffsetX : 0;
+    elementBackground.getPaint().setColor(0x99ff00ff);
+    canvas.drawRect(
+            elementBorderRadius + shadowBgLeftOffset,
+            elementBorderRadius + shadowBgTopOffset,
+            sleekW - elementBorderRadius + shadowBgRightOffset,
+            sleekH - elementBorderRadius + shadowBgBottomOffset,
+            elementBackground.getPaint()//using elementBackground.getPaint to have correct Alpha
+    );
+    elementBackground.getPaint().setColor(elementBackgroundColor);
+    */
+
+    //TODO REFACTOR CODE IN THIS METHOD TO BE EASIER TO READ !
 
     float leftOffset = 0;
     if (elementShadowOffsetX < 0) {
@@ -866,19 +868,25 @@ public class SleekElement extends SleekBaseComposite {
     Bitmap currentBitmap;
     int currentBitmapW;
     int currentBitmapH;
-    final int cornerWidth = (int) (elementShadowRadius + elementBorderRadius);
-    float rightBitmapOffsetX = elementShadowOffsetX > 0 ? elementShadowOffsetX : 0;
+    final Bitmap leftBitmap = elementShadowBitmapList.get(2);
+    final int leftBitmapW = leftBitmap.getWidth();
+    final int leftBitmapH = leftBitmap.getHeight();
+    final Bitmap rightBitmap = elementShadowBitmapList.get(3);
+    final int rightBitmapW = rightBitmap.getWidth();
+    final int rightBitmapH = rightBitmap.getHeight();
+    final int westCornerWidth = leftBitmapW;
+    final int eastCornerWidth = rightBitmapW;
 
     // Top Bitmap Init
     currentBitmap = elementShadowBitmapList.get(0);
     currentBitmapW = currentBitmap.getWidth();
     currentBitmapH = currentBitmap.getHeight();
     // Top-Left-Corner Bitmap
-    shadowSrcRect.set(0, 0, cornerWidth, currentBitmapH);
+    shadowSrcRect.set(0, 0, westCornerWidth, currentBitmapH);
     shadowDstRectF.set(
         -elementShadowRadius + leftOffset,
         -elementShadowRadius + topOffset,
-        -elementShadowRadius + leftOffset + cornerWidth,
+        -elementShadowRadius + leftOffset + westCornerWidth,
         -elementShadowRadius + topOffset + currentBitmapH
     );
     canvas.drawBitmap(
@@ -888,11 +896,11 @@ public class SleekElement extends SleekBaseComposite {
         elementShadowBitmapPaint
     );
     // Top-Right-Corner Bitmap
-    shadowSrcRect.set(currentBitmapW - cornerWidth, 0, currentBitmapW, currentBitmapH);
+    shadowSrcRect.set(currentBitmapW - eastCornerWidth, 0, currentBitmapW, currentBitmapH);
     shadowDstRectF.set(
-        sleekW - elementBorderRadius + rightBitmapOffsetX,
+        sleekW - elementBorderRadius,
         -elementShadowRadius + topOffset,
-        sleekW + cornerWidth - elementBorderRadius + rightBitmapOffsetX,
+        sleekW + eastCornerWidth - elementBorderRadius,
         -elementShadowRadius + topOffset + currentBitmapH
     );
     canvas.drawBitmap(
@@ -902,11 +910,11 @@ public class SleekElement extends SleekBaseComposite {
         elementShadowBitmapPaint
     );
     // Top-Center Bitmap
-    shadowSrcRect.set(cornerWidth, 0, currentBitmapW - cornerWidth, currentBitmapH);
+    shadowSrcRect.set(westCornerWidth, 0, currentBitmapW - eastCornerWidth, currentBitmapH);
     shadowDstRectF.set(
-        -elementShadowRadius + leftOffset + cornerWidth,
+        -elementShadowRadius + leftOffset + westCornerWidth,
         -elementShadowRadius + topOffset,
-        sleekW - elementBorderRadius + rightBitmapOffsetX,
+        sleekW - elementBorderRadius,
         -elementShadowRadius + topOffset + currentBitmapH
     );
     canvas.drawBitmap(
@@ -928,11 +936,11 @@ public class SleekElement extends SleekBaseComposite {
     currentBitmapW = currentBitmap.getWidth();
     currentBitmapH = currentBitmap.getHeight();
     // Bottom-Left-Corner Bitmap
-    shadowSrcRect.set(0, 0, cornerWidth, currentBitmapH);
+    shadowSrcRect.set(0, 0, westCornerWidth, currentBitmapH);
     shadowDstRectF.set(
         -elementShadowRadius + leftOffset,
         sleekH - elementBorderRadius,
-        -elementShadowRadius + leftOffset + cornerWidth,
+        -elementShadowRadius + leftOffset + westCornerWidth,
         sleekH - elementBorderRadius + currentBitmapH
     );
     canvas.drawBitmap(
@@ -942,11 +950,11 @@ public class SleekElement extends SleekBaseComposite {
         elementShadowBitmapPaint
     );
     // Bottom-Right-Corner Bitmap
-    shadowSrcRect.set(currentBitmapW - cornerWidth, 0, currentBitmapW, currentBitmapH);
+    shadowSrcRect.set(currentBitmapW - eastCornerWidth, 0, currentBitmapW, currentBitmapH);
     shadowDstRectF.set(
-        sleekW - elementBorderRadius + rightBitmapOffsetX,
+        sleekW - elementBorderRadius,
         sleekH - elementBorderRadius,
-        sleekW + cornerWidth - elementBorderRadius + rightBitmapOffsetX,
+        sleekW + eastCornerWidth - elementBorderRadius,
         sleekH - elementBorderRadius + currentBitmapH
     );
     canvas.drawBitmap(
@@ -956,11 +964,11 @@ public class SleekElement extends SleekBaseComposite {
         elementShadowBitmapPaint
     );
     // Bottom-Center Bitmap
-    shadowSrcRect.set(cornerWidth, 0, currentBitmapW - cornerWidth, currentBitmapH);
+    shadowSrcRect.set(westCornerWidth, 0, currentBitmapW - eastCornerWidth, currentBitmapH);
     shadowDstRectF.set(
-        -elementShadowRadius + leftOffset + cornerWidth,
+        -elementShadowRadius + leftOffset + westCornerWidth,
         sleekH - elementBorderRadius,
-        sleekW - elementBorderRadius + rightBitmapOffsetX,
+        sleekW - elementBorderRadius,
         sleekH - elementBorderRadius + currentBitmapH
     );
     canvas.drawBitmap(
@@ -978,9 +986,9 @@ public class SleekElement extends SleekBaseComposite {
 //    );
 
     // Left Bitmap
-    currentBitmap = elementShadowBitmapList.get(2);
-    currentBitmapW = currentBitmap.getWidth();
-    currentBitmapH = currentBitmap.getHeight();
+    currentBitmap = leftBitmap;
+    currentBitmapW = leftBitmapW;
+    currentBitmapH = leftBitmapH;
     shadowSrcRect.set(0, 0, currentBitmapW, currentBitmapH);
     shadowDstRectF.set(
         -elementShadowRadius + leftOffset,
@@ -1003,9 +1011,9 @@ public class SleekElement extends SleekBaseComposite {
 //    );
 
     // Right Bitmap
-    currentBitmap = elementShadowBitmapList.get(3);
-    currentBitmapW = currentBitmap.getWidth();
-    currentBitmapH = currentBitmap.getHeight();
+    currentBitmap = rightBitmap;
+    currentBitmapW = rightBitmapW;
+    currentBitmapH = rightBitmapH;
     shadowSrcRect.set(0, 0, currentBitmapW, currentBitmapH);
     shadowDstRectF.set(
         sleekW - elementBorderRadius,
