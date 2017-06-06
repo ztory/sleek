@@ -23,8 +23,8 @@ public class SleekColorArea extends SleekBase {
 
     protected Paint paint;
 
-    protected boolean rounded;
-    protected float roundRadius;
+    protected boolean rounded = false;
+    protected float roundRadius = 0.0f;
 
 //    public SleekColorArea(int color, boolean isAntiAliased, boolean isLoadable, int theTouchPrio) {
 //        this(color, isAntiAliased, false, false, isLoadable, theTouchPrio);
@@ -80,6 +80,10 @@ public class SleekColorArea extends SleekBase {
     public void setRounded(float theRoundRadius) {
         rounded = theRoundRadius > 0;
         roundRadius = theRoundRadius;
+    }
+
+    public float getRoundedRadius() {
+        return roundRadius;
     }
 
     public Paint getPaint() {
