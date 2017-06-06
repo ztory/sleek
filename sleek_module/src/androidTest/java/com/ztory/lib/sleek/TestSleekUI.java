@@ -278,6 +278,34 @@ public class TestSleekUI {
           + "    box-shadow: -10px -10px 20px rgba(255,0,0,0.9);\n"
           + "    border: 6px solid #fff;\n"
           + "}",
+      CSS_SHADOW_OFFSET_X_POSITIVE = "{"
+          + "background: #33E776;"
+//          + "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");\n"
+          + "background-size: cover;"
+          + "border-radius: 8px;"
+          + "color: #f8f8f8;"
+          + "font-size: 20px;"
+          + "line-height: 24px;"
+          + "text-align: left;"
+          + "vertical-align: top;"
+          + "padding: 12px;"
+          + "box-shadow: 40px 20px 20px rgba(255,0,0,0.9);"
+          + "border: 6px solid #fff;"
+          + "}",
+      CSS_SHADOW_OFFSET_X_NEGATIVE = "{"
+          + "background: #33E776;"
+//          + "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");\n"
+          + "background-size: cover;"
+          + "border-radius: 8px;"
+          + "color: #f8f8f8;"
+          + "font-size: 20px;"
+          + "line-height: 24px;"
+          + "text-align: left;"
+          + "vertical-align: top;"
+          + "padding: 12px;"
+          + "box-shadow: -40px 20px 20px rgba(255,0,0,0.9);"
+          + "border: 6px solid #fff;"
+          + "}",
       CSS_TEST_1 = "{" +
           "background: #33E776;" +
           "border-radius: 8px;" +
@@ -341,35 +369,7 @@ public class TestSleekUI {
 //          "box-shadow: -10px -10px 20px rgba(255,0,0,0.9);" +
 //          "background-size: cover;" +
 //          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Wallpaper-5790.jpg/1024px-Wallpaper-5790.jpg\");" +
-          "}",
-      CSS_BUG_RIGHT_EDGE = "{"//Bugs out when box-shadow and border is set
-          + "background: #33E776;"
-//          + "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");\n"
-          + "background-size: cover;"
-          + "border-radius: 8px;"
-          + "color: #f8f8f8;"
-          + "font-size: 20px;"
-          + "line-height: 24px;"
-          + "text-align: left;"
-          + "vertical-align: top;"
-          + "padding: 12px;"
-          + "box-shadow: 20px 10px 20px rgba(255,0,0,0.9);"
-          + "border: 6px solid #fff;"
-          + "}",
-      CSS_BUG_LEFT_EDGE = "{"//Bugs out when box-shadow and border is set
-          + "background: #33E776;"
-//          + "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");\n"
-          + "background-size: cover;"
-          + "border-radius: 8px;"
-          + "color: #f8f8f8;"
-          + "font-size: 20px;"
-          + "line-height: 24px;"
-          + "text-align: left;"
-          + "vertical-align: top;"
-          + "padding: 12px;"
-          + "box-shadow: -20px 10px 20px rgba(255,0,0,0.9);"
-          + "border: 6px solid #fff;"
-          + "}";
+          "}";
 
   @Rule
   public ActivityTestRule<SleekActivity> mActivityRule =
@@ -1886,16 +1886,16 @@ public class TestSleekUI {
     //loadUIelementsWithBackgroundImageCoverOnly(mActivityRule.getActivity().getSleekCanvas());
     //loadUIbackgroundImageResizeElement(mActivityRule.getActivity().getSleekCanvas());
     //loadUIbackgroundCoverWithBorder(mActivityRule.getActivity().getSleekCanvas());
-//    loadUIwithCSSblocks(mActivityRule.getActivity().getSleekCanvas(),
-//        160,// viewWidthDP
-//        160,// viewHeightDP
-//        true,// enableAnimationOnTouch
-//        false,// viewWrapImageHeight
-//        new CSSblockBase(CSS_BORDER_1),
-//        new CSSblockBase(CSS_BORDER_2),
-//        new CSSblockBase(CSS_BORDER_3),
-//        new CSSblockBase(CSS_BORDER_4)
-//    );
+    loadUIwithCSSblocks(mActivityRule.getActivity().getSleekCanvas(),
+        160,// viewWidthDP
+        160,// viewHeightDP
+        true,// enableAnimationOnTouch
+        false,// viewWrapImageHeight
+        new CSSblockBase(CSS_BORDER_1),
+        new CSSblockBase(CSS_BORDER_2),
+        new CSSblockBase(CSS_BORDER_3),
+        new CSSblockBase(CSS_BORDER_4)
+    );
 //    loadUIwithCSSblocks(mActivityRule.getActivity().getSleekCanvas(),
 //        160,// viewWidthDP
 //        160,// viewHeightDP
@@ -1926,17 +1926,16 @@ public class TestSleekUI {
 //        new CSSblockBase(CSS_TEST_7),
 //        new CSSblockBase(CSS_TEST_8)
 //    );
-    //TODO BUG WHEN box-shadow-x-offset IS SET !!!!
-    loadUIwithCSSblocks(mActivityRule.getActivity().getSleekCanvas(),
-        160,// viewWidthDP
-        160,// viewHeightDP
-        true,// enableAnimationOnTouch
-        false,// viewWrapImageHeight
-        new CSSblockBase(CSS_TEST_8),
-        new CSSblockBase(CSS_BUG_LEFT_EDGE),
-        new CSSblockBase(CSS_BUG_RIGHT_EDGE),
-        new CSSblockBase(CSS_TEST_8)
-    );
+//    loadUIwithCSSblocks(mActivityRule.getActivity().getSleekCanvas(),
+//        160,// viewWidthDP
+//        160,// viewHeightDP
+//        true,// enableAnimationOnTouch
+//        false,// viewWrapImageHeight
+//        new CSSblockBase(CSS_TEST_8),
+//        new CSSblockBase(CSS_SHADOW_OFFSET_X_NEGATIVE),
+//        new CSSblockBase(CSS_SHADOW_OFFSET_X_POSITIVE),
+//        new CSSblockBase(CSS_TEST_8)
+//    );
 
     final CountDownLatch activityPauseLatch = new CountDownLatch(1);
 
