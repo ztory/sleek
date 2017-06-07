@@ -32,7 +32,7 @@ public class SleekScrollerXY implements SleekCanvasScroller {
   protected int mMoveDistanceThresholdDefaultDIPvalue = 20;
   //protected float mFlingVelocityThreshold;
 
-  protected int mOverscrollX, mOverscrollY;
+  protected int mOverflingX, mOverflingY;
 
   protected SleekCanvas mSleekCanvas;
 
@@ -106,11 +106,11 @@ public class SleekScrollerXY implements SleekCanvasScroller {
 
 //    mFlingVelocityThreshold = UtilPx.getPixels(sleekCanvas.getContext(), 80);
 
-    //TODO mViewConfiguration.getScaledOverscrollDistance() returns 0 (zero) on Samsung S7
-    mOverscrollX = UtilPx.getPixels(sleekCanvas.getContext(), 28);
-    mOverscrollY = UtilPx.getPixels(sleekCanvas.getContext(), 28);
-//    mOverscrollX = mViewConfiguration.getScaledOverscrollDistance();
-//    mOverscrollY = mViewConfiguration.getScaledOverscrollDistance();
+//    Log.d("SleekScrollerXY", "overfling: " + mViewConfiguration.getScaledOverflingDistance());
+//    mOverflingX = UtilPx.getPixels(sleekCanvas.getContext(), 28);
+//    mOverflingY = UtilPx.getPixels(sleekCanvas.getContext(), 28);
+    mOverflingX = mViewConfiguration.getScaledOverflingDistance();
+    mOverflingY = mViewConfiguration.getScaledOverflingDistance();
 
     mMoveDistanceThreshold = UtilPx.getPixels(
         sleekCanvas.getContext(),
@@ -141,8 +141,8 @@ public class SleekScrollerXY implements SleekCanvasScroller {
         Math.round(mRightScrollEdge - mCanvasWidth),//maxX
         0,//minY
         Math.round(mBottomScrollEdge - mCanvasHeight),//maxY
-        mOverscrollX,//overX
-        mOverscrollY//overY
+        mOverflingX,//overX
+        mOverflingY//overY
     );
 
     info.invalidate();
