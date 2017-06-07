@@ -877,18 +877,14 @@ public class SleekElement extends SleekBaseComposite {
     final int westCornerWidth;
     final int eastCornerWidth;
     final int rightEdgeModifier;
-    //TODO NO NEED FOR Math.max() here below !!!!
-    //TODO NO NEED FOR Math.max() here below !!!!
-    //TODO NO NEED FOR Math.max() here below !!!!
-    //TODO NO NEED FOR Math.max() here below !!!!
     if (rightBitmapW > leftBitmapW) {
-      westCornerWidth = rightBitmapW;
-      eastCornerWidth = rightBitmapW;
-      rightEdgeModifier = 0;
+      westCornerWidth = rightBitmapW + elementBorderWidth.left;
+      eastCornerWidth = rightBitmapW + elementBorderWidth.right;
+      rightEdgeModifier = elementBorderWidth.right;
     } else {
-      westCornerWidth = leftBitmapW;
-      eastCornerWidth = leftBitmapW;
-      rightEdgeModifier = leftBitmapW - rightBitmapW;
+      westCornerWidth = leftBitmapW + elementBorderWidth.left;
+      eastCornerWidth = leftBitmapW + elementBorderWidth.right;
+      rightEdgeModifier = leftBitmapW - rightBitmapW + elementBorderWidth.right;
     }
 
     // Top Bitmap Init
