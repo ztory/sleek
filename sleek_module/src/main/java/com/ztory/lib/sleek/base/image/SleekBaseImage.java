@@ -30,8 +30,8 @@ public class SleekBaseImage extends SleekBase {
     protected volatile Bitmap mBitmap;
     protected Paint mPaint;
     protected BitmapShader mShader;
-    protected boolean mUseShader;
-    protected int mRoundedRadius;
+    protected boolean mUseShader = false;
+    protected float mRoundedRadius = 0.0f;
 
     protected RectF mImgSize = new RectF();
     protected Rect mSourceRect = new Rect();
@@ -74,9 +74,9 @@ public class SleekBaseImage extends SleekBase {
         setUnloadOnRemove(true);
     }
 
-    public void setRoundedRadius(int theRoundedRadius) {
+    public void setRoundedRadius(float theRoundedRadius) {
         mRoundedRadius = theRoundedRadius;
-        mUseShader = mRoundedRadius > 0;
+        mUseShader = mRoundedRadius > 0.0f;
     }
 
     /**

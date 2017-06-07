@@ -7,6 +7,7 @@ import com.ztory.lib.sleek.contract.ISleekAnimRun;
 import com.ztory.lib.sleek.contract.ISleekAnimView;
 import com.ztory.lib.sleek.contract.ISleekDrawView;
 import com.ztory.lib.sleek.Sleek;
+import com.ztory.lib.sleek.util.Calc;
 
 /**
  * Translate Sleek instance in X and Y direction, as well as resizing W and H.
@@ -71,10 +72,10 @@ public class SAVtransXYWH implements ISleekAnimView {
         if (progressTs < duration) {
             percent = (float) progressTs / (float) duration;
             percent = percent * percent;
-            currTransX = startX + (int) (amountTransX * percent);
-            currTransY = startY + (int) (amountTransY * percent);
-            currTransW = startW + (int) (amountTransW * percent);
-            currTransH = startH + (int) (amountTransH * percent);
+            currTransX = startX + Calc.multiplyToInt(amountTransX, percent);
+            currTransY = startY + Calc.multiplyToInt(amountTransY, percent);
+            currTransW = startW + Calc.multiplyToInt(amountTransW, percent);
+            currTransH = startH + Calc.multiplyToInt(amountTransH, percent);
         }
         else {
             finished = true;

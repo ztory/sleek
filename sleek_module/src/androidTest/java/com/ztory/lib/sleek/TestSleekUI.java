@@ -1887,8 +1887,8 @@ public class TestSleekUI {
     //loadUIbackgroundImageResizeElement(mActivityRule.getActivity().getSleekCanvas());
     //loadUIbackgroundCoverWithBorder(mActivityRule.getActivity().getSleekCanvas());
     loadUIwithCSSblocks(mActivityRule.getActivity().getSleekCanvas(),
-        160,// viewWidthDP
-        160,// viewHeightDP
+        240,// viewWidthDP
+        240,// viewHeightDP
         true,// enableAnimationOnTouch
         false,// viewWrapImageHeight
         new CSSblockBase(CSS_BORDER_1),

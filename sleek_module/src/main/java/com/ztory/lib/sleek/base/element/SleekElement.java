@@ -353,6 +353,8 @@ public class SleekElement extends SleekBaseComposite {
     int backgroundY = 0;
     int backgroundWidth = bitmapW;
     int backgroundHeight = bitmapH;
+    final int imgContainerW = elementBackground.getSleekW();
+    final int imgContainerH = elementBackground.getSleekH();
 
     // Reset source rect
     elementBackgroundImage.getSourceRect().set(0, 0, backgroundWidth, backgroundHeight);
@@ -368,16 +370,16 @@ public class SleekElement extends SleekBaseComposite {
                 When the image and container have different dimensions, the empty
                 areas (either top/bottom of left/right) are filled with the background-color.
                  */
-        float elementRatio = Calc.divide(sleekW, sleekH);
+        float elementRatio = Calc.divide(imgContainerW, imgContainerH);
         float bitmapRatio = Calc.divide(backgroundWidth, backgroundHeight);
         if (bitmapRatio > elementRatio) {
-          backgroundWidth = sleekW;
-          backgroundHeight = Calc.divideToInt(sleekW, bitmapRatio);
-          backgroundY = Calc.divideToInt(sleekH - backgroundHeight, 2.0f);
+          backgroundWidth = imgContainerW;
+          backgroundHeight = Calc.divideToInt(imgContainerW, bitmapRatio);
+          backgroundY = Calc.divideToInt(imgContainerH - backgroundHeight, 2.0f);
         } else {
-          backgroundHeight = sleekH;
-          backgroundWidth = Calc.multiplyToInt(sleekH, bitmapRatio);
-          backgroundX = Calc.divideToInt(sleekW - backgroundWidth, 2.0f);
+          backgroundHeight = imgContainerH;
+          backgroundWidth = Calc.multiplyToInt(imgContainerH, bitmapRatio);
+          backgroundX = Calc.divideToInt(imgContainerW - backgroundWidth, 2.0f);
         }
       } else if (elementBackgroundSize.equals(CSS.Value.COVER)) {
                 /*
@@ -389,18 +391,16 @@ public class SleekElement extends SleekBaseComposite {
                 different dimensions, the image is clipped either left/right or top/bottom.
                  */
         float bitmapScale;
-        float elementRatio = Calc.divide(sleekW, sleekH);
+        float elementRatio = Calc.divide(imgContainerW, imgContainerH);
         float bitmapRatio = Calc.divide(backgroundWidth, backgroundHeight);
         if (bitmapRatio > elementRatio) {
-          bitmapScale = Calc.divide(sleekH, bitmapH);
-          //backgroundHeight = sleekH;
-          backgroundWidth = Calc.multiplyToInt(sleekH, bitmapRatio);
-          backgroundX = Calc.divideToInt(sleekW - backgroundWidth, 2.0f);
+          bitmapScale = Calc.divide(imgContainerH, bitmapH);
+          backgroundWidth = Calc.multiplyToInt(imgContainerH, bitmapRatio);
+          backgroundX = Calc.divideToInt(imgContainerW - backgroundWidth, 2.0f);
         } else {
-          bitmapScale = Calc.divide(sleekW, bitmapW);
-          //backgroundWidth = sleekW;
-          backgroundHeight = Calc.divideToInt(sleekW, bitmapRatio);
-          backgroundY = Calc.divideToInt(sleekH - backgroundHeight, 2.0f);
+          bitmapScale = Calc.divide(imgContainerW, bitmapW);
+          backgroundHeight = Calc.divideToInt(imgContainerW, bitmapRatio);
+          backgroundY = Calc.divideToInt(imgContainerH - backgroundHeight, 2.0f);
         }
 
         int sourceTop = Calc.multiplyToInt(Calc.divide(backgroundY, bitmapScale), -1.0f);
@@ -417,13 +417,23 @@ public class SleekElement extends SleekBaseComposite {
         backgroundY = 0;
 
         // Reset drawing size to element size
-        backgroundWidth = sleekW;
-        backgroundHeight = sleekH;
+        backgroundWidth = imgContainerW;
+        backgroundHeight = imgContainerH;
       }
     }
 
-    if (backgroundX > elementBorderRadius || backgroundY > elementBorderRadius) {
-      elementBackgroundImage.setRoundedRadius(0);
+    if (backgroundX > 0) {// Used for dynamic-corner-radius on CONTAIN background-image
+      float borderRadiusModif = elementBackground.getRoundedRadius() - backgroundX;
+      if (borderRadiusModif < 0) {
+        borderRadiusModif = 0;
+      }
+      elementBackgroundImage.setRoundedRadius(borderRadiusModif);
+    } else if (backgroundY > 0) {// Used for dynamic-corner-radius on CONTAIN background-image
+      float borderRadiusModif = elementBackground.getRoundedRadius() - backgroundY;
+      if (borderRadiusModif < 0) {
+        borderRadiusModif = 0;
+      }
+      elementBackgroundImage.setRoundedRadius(borderRadiusModif);
     } else {
       if (elementBorderColor == SleekColorArea.COLOR_TRANSPARENT) {
         elementBackgroundImage.setRoundedRadius(elementBorderRadius);
@@ -437,8 +447,8 @@ public class SleekElement extends SleekBaseComposite {
     elementBackgroundImage.setSleekBounds(
         backgroundX + elementBorderWidth.left,
         backgroundY + elementBorderWidth.top,
-        backgroundWidth - elementBorderWidth.left - elementBorderWidth.right,
-        backgroundHeight - elementBorderWidth.top - elementBorderWidth.bottom
+        backgroundWidth,
+        backgroundHeight
     );
   }
 
@@ -820,7 +830,9 @@ public class SleekElement extends SleekBaseComposite {
     //TODO ... bg-alpha and its shadow-alpha ????
     //TODO NEED TO add interface that is called HasAlpha and has getAlpha and setAlpha methods.
 
-    if (elementBorderColor == SleekColorArea.COLOR_TRANSPARENT) {
+    final boolean drawBgRectBeforeShadow = elementBorderColor == SleekColorArea.COLOR_TRANSPARENT;
+
+    if (drawBgRectBeforeShadow) {
       canvas.drawRect(
           elementBorderRadius,
           elementBorderRadius,
@@ -1045,7 +1057,24 @@ public class SleekElement extends SleekBaseComposite {
 //        elementShadowBitmapPaint
 //    );
 
-    if (elementBorderColor != SleekColorArea.COLOR_TRANSPARENT) {
+    if (!drawBgRectBeforeShadow) {
+
+      // Draw border-rect
+      elementShadowBitmapPaint.setColor(elementBorderColor);
+      canvas.drawRoundRect(
+          new RectF(
+              elementBorderRadius,
+              elementBorderRadius,
+              sleekW - elementBorderRadius,
+              sleekH - elementBorderRadius
+          ),
+          elementBackground.getRoundedRadius(),
+          elementBackground.getRoundedRadius(),
+          elementShadowBitmapPaint
+      );
+
+      // Draw background-rect
+      elementShadowBitmapPaint.setColor(elementBackgroundColor);
       canvas.drawRoundRect(
           new RectF(
               elementBorderWidth.left,
