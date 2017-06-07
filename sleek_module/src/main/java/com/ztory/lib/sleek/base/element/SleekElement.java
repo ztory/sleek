@@ -363,44 +363,44 @@ public class SleekElement extends SleekBaseComposite {
     if (elementBackgroundSize != null) {
 
       if (elementBackgroundSize.equals(CSS.Value.CONTAIN)) {
-                /*
-                contain
-                A keyword that scales the image as large as possible and maintains image aspect
-                ratio (image doesn't get squished). Image is letterboxed within the container.
-                When the image and container have different dimensions, the empty
-                areas (either top/bottom of left/right) are filled with the background-color.
-                 */
+        /*
+        contain
+        A keyword that scales the image as large as possible and maintains image aspect
+        ratio (image doesn't get squished). Image is letterboxed within the container.
+        When the image and container have different dimensions, the empty
+        areas (either top/bottom of left/right) are filled with the background-color.
+         */
         float elementRatio = Calc.divide(imgContainerW, imgContainerH);
         float bitmapRatio = Calc.divide(backgroundWidth, backgroundHeight);
         if (bitmapRatio > elementRatio) {
           backgroundWidth = imgContainerW;
-          backgroundHeight = Calc.divideToInt(imgContainerW, bitmapRatio);
-          backgroundY = Calc.divideToInt(imgContainerH - backgroundHeight, 2.0f);
+          backgroundHeight = (int) Calc.divide(imgContainerW, bitmapRatio);
+          backgroundY = (int) Calc.divide(imgContainerH - backgroundHeight, 2.0f);
         } else {
           backgroundHeight = imgContainerH;
-          backgroundWidth = Calc.multiplyToInt(imgContainerH, bitmapRatio);
-          backgroundX = Calc.divideToInt(imgContainerW - backgroundWidth, 2.0f);
+          backgroundWidth = (int) Calc.multiply(imgContainerH, bitmapRatio);
+          backgroundX = (int) Calc.divide(imgContainerW - backgroundWidth, 2.0f);
         }
       } else if (elementBackgroundSize.equals(CSS.Value.COVER)) {
-                /*
-                cover
-                A keyword that is the inverse of contain.
-                Scales the image as large as possible and maintains image aspect
-                ratio (image doesn't get squished). The image "covers" the entire
-                width or height of the container. When the image and container have
-                different dimensions, the image is clipped either left/right or top/bottom.
-                 */
+        /*
+        cover
+        A keyword that is the inverse of contain.
+        Scales the image as large as possible and maintains image aspect
+        ratio (image doesn't get squished). The image "covers" the entire
+        width or height of the container. When the image and container have
+        different dimensions, the image is clipped either left/right or top/bottom.
+         */
         float bitmapScale;
         float elementRatio = Calc.divide(imgContainerW, imgContainerH);
         float bitmapRatio = Calc.divide(backgroundWidth, backgroundHeight);
         if (bitmapRatio > elementRatio) {
           bitmapScale = Calc.divide(imgContainerH, bitmapH);
           backgroundWidth = Calc.multiplyToInt(imgContainerH, bitmapRatio);
-          backgroundX = Calc.divideToInt(imgContainerW - backgroundWidth, 2.0f);
+          backgroundX = (int) Calc.divide(imgContainerW - backgroundWidth, 2.0f);
         } else {
           bitmapScale = Calc.divide(imgContainerW, bitmapW);
           backgroundHeight = Calc.divideToInt(imgContainerW, bitmapRatio);
-          backgroundY = Calc.divideToInt(imgContainerH - backgroundHeight, 2.0f);
+          backgroundY = (int) Calc.divide(imgContainerH - backgroundHeight, 2.0f);
         }
 
         int sourceTop = Calc.multiplyToInt(Calc.divide(backgroundY, bitmapScale), -1.0f);
@@ -581,32 +581,14 @@ public class SleekElement extends SleekBaseComposite {
     //TODO DEBUG
 
     if (!drawShadowBitmap(canvas, info)) {
-//      if (
-//          elementBorderColor != SleekColorArea.COLOR_TRANSPARENT
-//              && elementBackgroundImage != null
-//              && elementBackgroundImage.isBitmapLoaded()
-//          ) {
-//        // This prevents bg-color from bleeding through on elementBackgroundImage's Bitmap corners
-//        elementBackground.getPaint().setColor(elementBorderColor);
-//      } else if (elementBackground.getPaint().getColor() != elementBackgroundColor) {
-//        elementBackground.getPaint().setColor(elementBackgroundColor);
-//      }
       drawBorder(canvas, info);
-      //elementBackground.onSleekDraw(canvas, info);
-
+      elementBackground.onSleekDraw(canvas, info);
       if (elementBackgroundImage != null) {
         elementBackgroundImage.onSleekDraw(canvas, info);
-        if (!elementBackgroundImage.isBitmapLoaded()) {
-          elementBackground.onSleekDraw(canvas, info);
-        }
-      } else {
-        elementBackground.onSleekDraw(canvas, info);
       }
     } else if (elementBackgroundImage != null) {
       elementBackgroundImage.onSleekDraw(canvas, info);
     }
-
-    //drawBorder(canvas, info);
 
     if (elementText != null) {
       elementText.onSleekDraw(canvas, info);
@@ -622,15 +604,31 @@ public class SleekElement extends SleekBaseComposite {
 
   @Override
   public void setSleekBounds(float x, float y, int w, int h) {
+
+//    Log.d("TEZT",
+//        "TEZT [" + (w % 2) + "] [" + (h % 2) + "]"
+//    );
+//
+//    x = (float) Math.floor(x);
+//    y = (float) Math.floor(y);
+//
+//    if (w % 2 != 0) {
+//      w = w - 1;
+//    }
+//
+//    if (h % 2 != 0) {
+//      h = h - 1;
+//    }
+
     if (elementText != null) {
       if (paddingRect != null) {
         elementText.setSleekBounds(
             paddingRect.left + elementBorderWidth.left,
             paddingRect.top + elementBorderWidth.top,
-            w - paddingRect.left - paddingRect.right - elementBorderWidth.left
-                - elementBorderWidth.right,
-            h - paddingRect.top - paddingRect.bottom - elementBorderWidth.top
-                - elementBorderWidth.bottom
+            w - paddingRect.left - paddingRect.right
+                - elementBorderWidth.left - elementBorderWidth.right,
+            h - paddingRect.top - paddingRect.bottom
+                - elementBorderWidth.top - elementBorderWidth.bottom
         );
       } else {
         elementText.setSleekBounds(

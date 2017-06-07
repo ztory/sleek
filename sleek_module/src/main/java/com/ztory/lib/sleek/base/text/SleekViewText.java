@@ -3,7 +3,6 @@ package com.ztory.lib.sleek.base.text;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvasInfo;
 import com.ztory.lib.sleek.base.SleekBase;
@@ -167,10 +166,10 @@ public class SleekViewText extends SleekBase {
             }
         }
         else {// center text inside of sleekH
-            calcTextY = sleekY + ((sleekH - textTop - textBottom) / 2.0f);
+            calcTextY = sleekY + Math.round((sleekH - textTop - textBottom) / 2.0f);
 
             if (linesAboveOne > 0) {
-                calcTextY -= (textLineHeight / 2.0f) * linesAboveOne;
+                calcTextY -= Math.round((textLineHeight / 2.0f) * linesAboveOne);
             }
         }
         //________________ - END - calc Y ________________
@@ -179,7 +178,7 @@ public class SleekViewText extends SleekBase {
         float calcTextX = sleekX;
 
         if (textAlignInt == ALIGN_CENTER) {
-            calcTextX = sleekX + (sleekW / 2.0f);
+            calcTextX = sleekX + Math.round(sleekW / 2.0f);
         }
         else if (textAlignInt == ALIGN_RIGHT) {
             calcTextX = sleekX + sleekW;
