@@ -104,6 +104,11 @@ In your module `build.gradle` add this:
 compile 'com.ztory.lib.sleek:sleek_module:1.0.8'
 ```
 
+## Code Style
+`NOTE:` Just started using this code style, so classes that were created before have not been reformatted yet!
+- [Google Style Guides](https://github.com/google/styleguide)
+  - [intellij-java-google-style.xml](https://raw.githubusercontent.com/google/styleguide/gh-pages/intellij-java-google-style.xml)
+
 ## What else?
 
 If you create great stuff with the Sleek framework and think it would make a great addition to the library, well then just FORK and PR I'd say!
