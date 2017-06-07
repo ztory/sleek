@@ -1100,10 +1100,16 @@ public class SleekElement extends SleekBaseComposite {
       return null;
     }
 
+    //TODO Refactor Shadow Bitmaps:
     //TODO Change so that corners and sides are generated instead of TOP/BOTTOM/LEFT/RIGHT ...
     //TODO ...this way we can have large enough corners to get glow in both X-/Y-axis for when...
     //TODO ...we stretch the shadow. As it is now large offset in Y-axis will result in...
     //TODO ...stretched corner-glow when corner-radius ends outside of TOP or BOTTOM Bitmap.
+
+    //TODO BONUS TASK AFTER "Refactor Shadow Bitmaps":
+    //TODO Move out drawShadowOnBitmap() method from generateShadowBitmap() in SleekElement,
+    //TODO   so that its easy to customize if you want to draw shadow with RenderScript in a
+    //TODO   subclass, or some other totally *WILD* way of drawing shadows!
 
     /*
     // LOW PRIO since why would we want alpha bg-elements with shadow?
