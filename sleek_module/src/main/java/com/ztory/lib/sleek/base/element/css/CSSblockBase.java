@@ -22,6 +22,7 @@ import java.util.Map;
  * vertical-align: middle;
  * box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);
  * padding: 5px 10px 15px 20px;
+ * border: 1px solid #0000ff;
  * }
  * Created by jonruna on 2017-04-07.
  */
