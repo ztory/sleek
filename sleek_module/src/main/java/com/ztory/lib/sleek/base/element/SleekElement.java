@@ -251,6 +251,18 @@ public class SleekElement extends SleekBaseComposite {
       createText();
       elementText.setTextString(elementString);
       elementText.initText();
+
+      Integer textShadowColor = elementCSS.getTextShadowColor();
+      if (textShadowColor != null && textShadowColor != SleekColorArea.COLOR_TRANSPARENT) {
+        elementText.getTextPaint().setShadowLayer(
+            elementCSS.getTextShadowBlurRadius(),
+            elementCSS.getTextShadowOffsetX(),
+            elementCSS.getTextShadowOffsetY(),
+            textShadowColor
+        );
+      } else {
+        elementText.getTextPaint().clearShadowLayer();
+      }
     }
 
     paddingRect = elementCSS.getPadding();

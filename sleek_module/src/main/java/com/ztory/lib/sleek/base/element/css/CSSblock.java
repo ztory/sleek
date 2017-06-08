@@ -29,6 +29,13 @@ public interface CSSblock extends Map<String, String> {
   Integer getBoxShadowOffsetX();
   Integer getBoxShadowOffsetY();
 
+  /* offset-x | offset-y | blur-radius | color */
+  //text-shadow: 1px 1px 2px black;
+  Integer getTextShadowBlurRadius();
+  Integer getTextShadowColor();
+  Integer getTextShadowOffsetX();
+  Integer getTextShadowOffsetY();
+
   Rect getPadding();
 
   Rect getBorderWidth();

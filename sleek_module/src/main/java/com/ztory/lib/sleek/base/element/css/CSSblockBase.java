@@ -15,14 +15,15 @@ import java.util.Map;
  * background-image: url("https://example.com/example.png");
  * background-size: cover;
  * border-radius: 22px;
+ * border: 1px solid #0000ff;
+ * box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);
+ * padding: 5px 10px 15px 20px;
  * color: #666;
  * font-size: 10px;
  * line-height: 46px;
  * text-align: center;
  * vertical-align: middle;
- * box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);
- * padding: 5px 10px 15px 20px;
- * border: 1px solid #0000ff;
+ * text-shadow: 1px 1px 2px black;
  * }
  * Created by jonruna on 2017-04-07.
  */
@@ -230,57 +231,6 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
     return null;
   }
 
-  public static final Integer getColorFromString(String colorString) {
-    try {
-      if (colorString.startsWith("#")) {
-        if (colorString.length() == 7) {//#RRGGBB
-          return Color.parseColor(colorString);
-        } else if (colorString.length() == 4) {//#RGB -> #RRGGBB
-          String calculatedColorString = "#"
-              + colorString.charAt(1)
-              + colorString.charAt(1)
-              + colorString.charAt(2)
-              + colorString.charAt(2)
-              + colorString.charAt(3)
-              + colorString.charAt(3);
-          return Color.parseColor(calculatedColorString);
-        } else if (colorString.length() == 9) {//#RRGGBBAA -> #AARRGGBB
-          String calculatedColorString =
-              "#" + colorString.substring(7, 9) + colorString.substring(1, 7);
-          return Color.parseColor(calculatedColorString);
-        } else {
-          return null;
-        }
-      }
-
-      int indexOfComma = colorString.indexOf(',');
-
-      if (indexOfComma > -1) {
-
-        String[] colorValues;
-        int indexOfStartParenthesis = colorString.indexOf('(');
-        if (indexOfStartParenthesis > -1) {// rgba(255, 0, 0, 0.7)
-          // Convert "rgba(255, 0, 0, 0.7)" -> "255, 0, 0, 0.7"
-          colorValues = colorString.substring(indexOfStartParenthesis + 1, colorString.length() - 1)
-              .split(",");
-        } else {//255, 0, 0, 0.7
-          colorValues = colorString.split(",");
-        }
-
-        int red = Integer.parseInt(colorValues[0].trim());
-        int green = Integer.parseInt(colorValues[1].trim());
-        int blue = Integer.parseInt(colorValues[2].trim());
-        float alpha = Float.parseFloat(colorValues[3].trim());
-        return Color.argb((int) (255 * alpha), red, green, blue);
-      } else {// parse values such as "red" or "blue"
-        return Color.parseColor(colorString);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      return null;
-    }
-  }
-
   @Override public Integer getBoxShadowOffsetX() {
 
     //offset-x | offset-y | blur-radius | color
@@ -309,6 +259,99 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
     //box-shadow: 10px 5px 5px #ff0000;
 
     String boxShadowString = Mapd.get(this, CSS.Property.BOX_SHADOW, String.class);
+    if (boxShadowString != null) {
+      try {
+        String[] boxShadowParams = boxShadowString.split(" ");
+        String offsetYstring = boxShadowParams[1];
+        int indexOfPX = offsetYstring.indexOf(CSS.Unit.PX);
+        if (indexOfPX > -1) {
+          String valueString = offsetYstring.substring(0, indexOfPX);
+          return UtilPx.getPixels(Integer.parseInt(valueString));
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    return null;
+  }
+
+  @Override public Integer getTextShadowBlurRadius() {
+
+    //offset-x | offset-y | blur-radius | color
+    //text-shadow: 1px 1px 2px black;
+
+    String boxShadowString = Mapd.get(this, CSS.Property.TEXT_SHADOW, String.class);
+    if (boxShadowString != null) {
+      try {
+        String[] boxShadowParams = boxShadowString.split(" ");
+        String blurRadiusString = boxShadowParams[2];
+        int indexOfPX = blurRadiusString.indexOf(CSS.Unit.PX);
+        if (indexOfPX > -1) {
+          String valueString = blurRadiusString.substring(0, indexOfPX);
+          return UtilPx.getPixels(Integer.parseInt(valueString));
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    return null;
+  }
+
+  @Override public Integer getTextShadowColor() {
+
+    //offset-x | offset-y | blur-radius | color
+    //text-shadow: 1px 1px 2px black;
+
+    String boxShadowString = Mapd.get(this, CSS.Property.TEXT_SHADOW, String.class);
+    if (boxShadowString != null) {
+      try {
+
+        String colorString;
+        if (boxShadowString.indexOf('(') != -1) {
+          // Convert "10px 5px 5px rgba(255, 0, 0, 0.7)" -> "255, 0, 0, 0.7"
+          colorString = boxShadowString.substring(boxShadowString.indexOf('(') + 1,
+              boxShadowString.length() - 1);
+        } else {
+          String[] boxShadowParams = boxShadowString.split(" ");
+          colorString = boxShadowParams[3];
+        }
+
+        return getColorFromString(colorString);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    return null;
+  }
+
+  @Override public Integer getTextShadowOffsetX() {
+
+    //offset-x | offset-y | blur-radius | color
+    //text-shadow: 1px 1px 2px black;
+
+    String boxShadowString = Mapd.get(this, CSS.Property.TEXT_SHADOW, String.class);
+    if (boxShadowString != null) {
+      try {
+        String[] boxShadowParams = boxShadowString.split(" ");
+        String offsetXstring = boxShadowParams[0];
+        int indexOfPX = offsetXstring.indexOf(CSS.Unit.PX);
+        if (indexOfPX > -1) {
+          String valueString = offsetXstring.substring(0, indexOfPX);
+          return UtilPx.getPixels(Integer.parseInt(valueString));
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    return null;
+  }
+
+  @Override public Integer getTextShadowOffsetY() {
+
+    //offset-x | offset-y | blur-radius | color
+    //text-shadow: 1px 1px 2px black;
+
+    String boxShadowString = Mapd.get(this, CSS.Property.TEXT_SHADOW, String.class);
     if (boxShadowString != null) {
       try {
         String[] boxShadowParams = boxShadowString.split(" ");
@@ -469,4 +512,56 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
   public void updateModifiedTimestamp() {
     modifiedTimestamp = System.currentTimeMillis();
   }
+
+  public static final Integer getColorFromString(String colorString) {
+    try {
+      if (colorString.startsWith("#")) {
+        if (colorString.length() == 7) {//#RRGGBB
+          return Color.parseColor(colorString);
+        } else if (colorString.length() == 4) {//#RGB -> #RRGGBB
+          String calculatedColorString = "#"
+              + colorString.charAt(1)
+              + colorString.charAt(1)
+              + colorString.charAt(2)
+              + colorString.charAt(2)
+              + colorString.charAt(3)
+              + colorString.charAt(3);
+          return Color.parseColor(calculatedColorString);
+        } else if (colorString.length() == 9) {//#RRGGBBAA -> #AARRGGBB
+          String calculatedColorString =
+              "#" + colorString.substring(7, 9) + colorString.substring(1, 7);
+          return Color.parseColor(calculatedColorString);
+        } else {
+          return null;
+        }
+      }
+
+      int indexOfComma = colorString.indexOf(',');
+
+      if (indexOfComma > -1) {
+
+        String[] colorValues;
+        int indexOfStartParenthesis = colorString.indexOf('(');
+        if (indexOfStartParenthesis > -1) {// rgba(255, 0, 0, 0.7)
+          // Convert "rgba(255, 0, 0, 0.7)" -> "255, 0, 0, 0.7"
+          colorValues = colorString.substring(indexOfStartParenthesis + 1, colorString.length() - 1)
+              .split(",");
+        } else {//255, 0, 0, 0.7
+          colorValues = colorString.split(",");
+        }
+
+        int red = Integer.parseInt(colorValues[0].trim());
+        int green = Integer.parseInt(colorValues[1].trim());
+        int blue = Integer.parseInt(colorValues[2].trim());
+        float alpha = Float.parseFloat(colorValues[3].trim());
+        return Color.argb((int) (255 * alpha), red, green, blue);
+      } else {// parse values such as "red" or "blue"
+        return Color.parseColor(colorString);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
 }

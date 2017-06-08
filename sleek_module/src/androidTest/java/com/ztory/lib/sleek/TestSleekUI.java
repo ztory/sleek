@@ -262,7 +262,8 @@ public class TestSleekUI {
           + "    vertical-align: top;\n"
           + "    padding: 8px;\n"
           + "    box-shadow: 0px 1px 2px rgba(0,0,0,0.3);\n"
-          + "    border: 1px solid #FFC638;\n"
+          + "    border: 30px solid #FFC638;\n"
+          + "    text-shadow: 1px 1px 2px black;\n"
           + "}",
       CSS_BORDER_5 = "{\n"
           + "    background: #33E776;\n"

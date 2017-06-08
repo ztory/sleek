@@ -19,8 +19,8 @@ public class CSS {
         VERTICAL_ALIGN = "vertical-align",
         BOX_SHADOW = "box-shadow",
         PADDING = "padding",
-        BORDER = "border",// TODO IMPLEMENT border
-        TEXT_SHADOW = "text-shadow";// TODO IMPLEMENT text-shadow, http://android-er.blogspot.se/2012/09/draw-text-with-shadow-on-canvas.html
+        BORDER = "border",
+        TEXT_SHADOW = "text-shadow";
   }
 
   public static final class Unit {
