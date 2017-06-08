@@ -1,5 +1,7 @@
 package com.ztory.lib.sleek;
 
+import static com.ztory.lib.sleek.base.SleekParam.DEFAULT;
+import static com.ztory.lib.sleek.base.SleekParam.FIXED_TOUCHABLE;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
@@ -18,6 +20,10 @@ import com.ztory.lib.sleek.base.element.css.CSSblock;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
 import com.ztory.lib.sleek.contract.ISleekDrawView;
 import com.ztory.lib.sleek.layout.SL;
+import com.ztory.lib.sleek.layout.SL.H;
+import com.ztory.lib.sleek.layout.SL.W;
+import com.ztory.lib.sleek.layout.SL.X;
+import com.ztory.lib.sleek.layout.SL.Y;
 import com.ztory.lib.sleek.mapd.Mapd;
 import com.ztory.lib.sleek.util.UtilDownload;
 import com.ztory.lib.sleek.util.UtilExecutor;
@@ -1857,11 +1863,135 @@ public class TestSleekUI {
     }
   }
 
-  private static final void loadUIcompleteAppUIexample1(final SleekCanvas sleekCanvas) {
+  private static final String
+//      CSS_TOOLBAR = "{" +
+//          "background: #d8d8d8;" +
+//          "background-color: #d8d8d8;" +
+//          "background-image: url(\"https://example.com/example.png\");" +
+//          "background-size: cover;" +
+//          "border-radius: 22px;" +
+//          "border: 1px solid #0000ff;" +
+//          "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
+//          "padding: 5px 10px 15px 20px;" +
+//          "color: #666;" +
+//          "font-size: 10px;" +
+//          "line-height: 46px;" +
+//          "text-align: center;" +
+//          "vertical-align: middle;" +
+//          "text-shadow: 1px 1px 2px black;" +
+//          "}",
+      CSS_TOOLBAR = "{" +
+          "background-color: #121212;" +
+//          "background-image: url(\"https://example.com/example.png\");" +
+//          "background-size: cover;" +
+//          "border-radius: 22px;" +
+//          "border: 1px solid #0000ff;" +
+//          "box-shadow: 0px 3px 2px #12121244;" +
+          "padding: 0px 10px 0px 30px;" +
+          "color: #eee;" +
+          "font-size: 20px;" +
+          "line-height: 20px;" +
+          "text-align: left;" +
+          "vertical-align: middle;" +
+//          "text-shadow: 0px 0px 2px #38B0DE;" +
+          "}",
+      CSS_BTN_SETTINGS = "{" +
+          "background-color: #ff0000;" +
+//          "background-image: url(\"https://example.com/example.png\");" +
+//          "background-size: cover;" +
+//          "border-radius: 22px;" +
+//          "border: 1px solid #0000ff;" +
+//          "box-shadow: 0px 3px 2px #12121244;" +
+//          "padding: 0px 0px 0px 30px;" +
+          "color: #eee;" +
+          "font-size: 20px;" +
+          "line-height: 20px;" +
+          "text-align: center;" +
+          "vertical-align: middle;" +
+//          "text-shadow: 0px 0px 2px #38B0DE;" +
+          "}",
+      CSS_BTN_PROFILE = "{" +
+//          "background-color: #ff0000;" +
+//          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Arizona.svg/2000px-Flag_of_Arizona.svg.png\");" +
+          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Flag_of_Flanders.svg/1024px-Flag_of_Flanders.svg.png\");" +
+          "background-size: cover;" +
+          "border-radius: 25px;" +
+//          "border: 1px solid #0000ff;" +
+//          "box-shadow: 0px 3px 2px #12121244;" +
+//          "padding: 0px 0px 0px 30px;" +
+//          "color: #eee;" +
+//          "font-size: 20px;" +
+//          "line-height: 20px;" +
+//          "text-align: center;" +
+//          "vertical-align: middle;" +
+//          "text-shadow: 0px 0px 2px #38B0DE;" +
+          "}";
+
+  private static final void loadUIcompleteAppUIexample1(final SleekCanvas slkc) {
     //TODO Build a simple complete App UI to test and demonstrate how easy Sleek is to use.
+
+    SleekElement toolbar = new SleekElement(FIXED_TOUCHABLE.prio(slkc.getNextPrio()));
+    toolbar.setElementString("Main\uD83D\uDD28");
+    toolbar.addCSSblock(new CSSblockBase(CSS_TOOLBAR));
+    toolbar.getLayout()
+        .x(X.ABSOLUTE, -UtilPx.getPixels(10), null)
+        .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
+        .h(H.ABSOLUTE, UtilPx.getPixels(60), null);
+    slkc.addSleek(toolbar);
+
+    SleekElement btnSettings = new SleekElement(DEFAULT);
+    btnSettings.setElementString("α");
+    btnSettings.addCSSblock(new CSSblockBase(CSS_BTN_SETTINGS));
+    btnSettings.getLayout()
+        .x(X.PARENT_RIGHT, toolbar.getPadding().right, toolbar.getBackground())
+        .w(W.ABSOLUTE, UtilPx.getPixels(60), null)
+        .h(H.ABSOLUTE, UtilPx.getPixels(60), null);
+    toolbar.addSleek(btnSettings);
+
+    SleekElement btnProfile = new SleekElement(DEFAULT);
+    btnProfile.addCSSblock(new CSSblockBase(CSS_BTN_PROFILE));
+    btnProfile.createBackgroundImage();
+    btnProfile.getBackgroundImage().getPaint().setDither(true);
+    btnProfile.getBackgroundImage().getPaint().setFilterBitmap(true);
+    btnProfile.getBackgroundImage().getPaint().setAntiAlias(true);
+    btnProfile.getLayout()
+        .x(X.WEST_OF, UtilPx.getPixels(5), btnSettings)
+        .y(Y.POS_CENTER, 0, toolbar.getBackground())
+        .w(W.ABSOLUTE, UtilPx.getPixels(200), null)
+        .h(H.ABSOLUTE, UtilPx.getPixels(200), null);
+    toolbar.addSleek(btnProfile);
   }
 
   @Test
+  public void testCompleteAppUI() throws Exception {
+
+    if (mActivityRule.getActivity() == null) {
+      throw new IllegalStateException("mActivityRule.getActivity() == null");
+    }
+
+    UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+    UtilTestSleekUI.setSleekActivitySleekCanvasScrollerY(mActivityRule.getActivity());
+    UtilTestSleekUI.addUIframeRate(mActivityRule.getActivity().getSleekCanvas());
+
+    // Load App UI
+    mActivityRule.getActivity().getUiHandler().post(new Runnable() {
+      @Override
+      public void run() {
+        loadUIcompleteAppUIexample1(mActivityRule.getActivity().getSleekCanvas());
+      }
+    });
+
+    final CountDownLatch activityPauseLatch = new CountDownLatch(1);
+    mActivityRule.getActivity().setPauseListener(new Runnable() {
+      @Override
+      public void run() {
+        activityPauseLatch.countDown();
+      }
+    });
+    activityPauseLatch.await();
+  }
+
+  //@Test
   public void testGeneralUI() throws Exception {
 
     if (mActivityRule.getActivity() == null) {

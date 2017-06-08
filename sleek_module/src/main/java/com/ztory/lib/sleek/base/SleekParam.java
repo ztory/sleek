@@ -6,30 +6,33 @@ package com.ztory.lib.sleek.base;
 public class SleekParam {
 
     public static final SleekParam
-            DEFAULT = new SleekParam(
-                    SleekBase.FIXED_POSITION_FALSE,
-                    SleekBase.TOUCHABLE_FALSE,
-                    SleekBase.LOADABLE_TRUE,
-                    SleekBase.TOUCH_PRIO_DEFAULT
-            ),
-            DEFAULT_TOUCHABLE = new SleekParam(
-                    SleekBase.FIXED_POSITION_FALSE,
-                    SleekBase.TOUCHABLE_TRUE,
-                    SleekBase.LOADABLE_TRUE,
-                    SleekBase.TOUCH_PRIO_DEFAULT
-            ),
-            FIXED_DEFAULT = new SleekParam(
-                    SleekBase.FIXED_POSITION_TRUE,
-                    SleekBase.TOUCHABLE_FALSE,
-                    SleekBase.LOADABLE_TRUE,
-                    SleekBase.TOUCH_PRIO_DEFAULT
-            ),
-            FIXED_DEFAULT_TOUCHABLE = new SleekParam(
-                    SleekBase.FIXED_POSITION_TRUE,
-                    SleekBase.TOUCHABLE_TRUE,
-                    SleekBase.LOADABLE_TRUE,
-                    SleekBase.TOUCH_PRIO_DEFAULT
-            );
+        DEFAULT = new SleekParam(
+                SleekBase.FIXED_POSITION_FALSE,
+                SleekBase.TOUCHABLE_FALSE,
+                SleekBase.LOADABLE_TRUE,
+                SleekBase.TOUCH_PRIO_DEFAULT
+        ),
+        TOUCHABLE = new SleekParam(
+            SleekBase.FIXED_POSITION_FALSE,
+            SleekBase.TOUCHABLE_TRUE,
+            SleekBase.LOADABLE_TRUE,
+            SleekBase.TOUCH_PRIO_DEFAULT
+        ),
+        DEFAULT_TOUCHABLE = TOUCHABLE,//Deprecated constant
+        FIXED = new SleekParam(
+            SleekBase.FIXED_POSITION_TRUE,
+            SleekBase.TOUCHABLE_FALSE,
+            SleekBase.LOADABLE_TRUE,
+            SleekBase.TOUCH_PRIO_DEFAULT
+        ),
+        FIXED_DEFAULT = FIXED,//Deprecated constant
+        FIXED_TOUCHABLE = new SleekParam(
+            SleekBase.FIXED_POSITION_TRUE,
+            SleekBase.TOUCHABLE_TRUE,
+            SleekBase.LOADABLE_TRUE,
+            SleekBase.TOUCH_PRIO_DEFAULT
+        ),
+        FIXED_DEFAULT_TOUCHABLE = FIXED_TOUCHABLE;//Deprecated constant
 
     public final boolean fixed, touchable, loadable;
     public final int priority;
@@ -41,7 +44,12 @@ public class SleekParam {
         priority = thePriority;
     }
 
+    @Deprecated
     public SleekParam newPriority(int thePriority) {
+        return prio(thePriority);
+    }
+
+    public SleekParam prio(int thePriority) {
         return new SleekParam(
                 fixed,
                 touchable,

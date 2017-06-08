@@ -233,6 +233,11 @@ public class SleekBaseComposite extends SleekBase implements SleekParent {
     public void addSleek(Sleek addView, boolean loadViewOnAdd, int addIndex) {
         views.add(addIndex, addView);
 
+        //call addView.parentDidAddView() if SleekViewCollection.this is addedToParent==true
+        if (addedToParent) {
+            addView.onSleekParentAdd(mCompositeCanvas, SleekBaseComposite.this);
+        }
+
         if (canvasInfo != null) {// Call child views onResize when view is added at runtime
             addView.onSleekCanvasResize(canvasInfo);
             if (
@@ -243,11 +248,6 @@ public class SleekBaseComposite extends SleekBase implements SleekParent {
                     ) {// load child if this view is loaded
                 addView.onSleekLoad(canvasInfo);
             }
-        }
-
-        //call addView.parentDidAddView() if SleekViewCollection.this is addedToParent==true
-        if (addedToParent) {
-            addView.onSleekParentAdd(mCompositeCanvas, SleekBaseComposite.this);
         }
 
         refreshTouchable(addView);

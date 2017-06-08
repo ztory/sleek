@@ -127,7 +127,12 @@ public class SleekCanvas extends RelativeLayout {
         return drawPrioAtomInt.get();
     }
 
+    @Deprecated
     public int getDrawPrioNext() {
+        return getNextPrio();
+    }
+
+    public int getNextPrio() {
         return drawPrioAtomInt.incrementAndGet();
     }
 

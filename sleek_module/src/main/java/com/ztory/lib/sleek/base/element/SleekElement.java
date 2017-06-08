@@ -10,7 +10,9 @@ import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 import com.ztory.lib.sleek.Sleek;
+import com.ztory.lib.sleek.SleekCanvas;
 import com.ztory.lib.sleek.SleekCanvasInfo;
+import com.ztory.lib.sleek.SleekParent;
 import com.ztory.lib.sleek.base.SleekBaseComposite;
 import com.ztory.lib.sleek.base.SleekColorArea;
 import com.ztory.lib.sleek.base.SleekParam;
@@ -110,6 +112,13 @@ public class SleekElement extends SleekBaseComposite {
     }
   }
 
+  @Override
+  public void onSleekParentAdd(SleekCanvas sleekCanvas, SleekParent composite) {
+    super.onSleekParentAdd(sleekCanvas, composite);
+    checkCSS();// Check CSS immediately so that computed values are ready for consumers/children.
+    requestLayout();// Needs to be called in order for children to call their onSleekCanvasResize().
+  }
+
   public void checkCSS() {
 
     if (!isAddedToParent()) {
@@ -131,6 +140,18 @@ public class SleekElement extends SleekBaseComposite {
     if (elementCSSmodifiedTs != elementCSS.getModifiedTimestamp()) {
       elementCSSmodifiedTs = elementCSS.getModifiedTimestamp();
       applyCSS();
+    }
+  }
+
+  /**
+   * NOTE: If applyCSS() has not been called prior to this then padding will not be initialized.
+   * @return
+   */
+  public Rect getPadding() {
+    if (paddingRect != null) {
+      return paddingRect;
+    } else {
+      return new Rect();
     }
   }
 
