@@ -2009,18 +2009,21 @@ public class TestSleekUI {
         .h(H.ABSOLUTE, btnSize, null);
     btnImage.getTouchHandler().setClickAction(
         new Runnable() { @Override public void run() {
-          //btnImage.addCSSblock(activeCSS);
           btnImage.setSleekAnimView(
-              new SleekCSSanim(btnImage, activeCSS)
-                  .setGoalX(btnImage.getSleekX() - btnImage.getSleekW())
-//                  .setGoalY(btnImage.getSleekY() + btnImage.getSleekH())
-//                  .setGoalW(btnImage.getSleekW() + btnImage.getSleekW())
-//                  .setGoalH(btnImage.getSleekH() + btnSpacing)
+              new SleekCSSanim(btnImage, activeCSS, false)
+                  .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing - btnSpacing)
+                  .setGoalY(btnProfile.getSleekY() + btnSpacing)
                   .setDuration(1500)
                   .setInterpolator(new DecelerateInterpolator())
           );
         }}, new Runnable() { @Override public void run() {
-          //btnImage.removeCSSblock(activeCSS);
+          btnImage.setSleekAnimView(
+              new SleekCSSanim(btnImage, activeCSS, true)
+                  .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing)
+                  .setGoalY(btnProfile.getSleekY())
+                  .setDuration(1500)
+                  .setInterpolator(new DecelerateInterpolator())
+          );
         }}, new Runnable() { @Override public void run() {
 
         }}

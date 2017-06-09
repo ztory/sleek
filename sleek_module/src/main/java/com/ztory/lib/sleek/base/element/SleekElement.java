@@ -45,6 +45,8 @@ import java.util.List;
  */
 public class SleekElement extends SleekBaseComposite {
 
+  public static final String CSS_BLOCK_ANIMATION_KEY = "SleekElement.isAnimationCSSblock";
+
   protected final List<CSSblock> elementCSSlist = new ArrayList<>(4);
 
   /**
@@ -333,19 +335,29 @@ public class SleekElement extends SleekBaseComposite {
     return this;
   }
 
-  public SleekElement removeCSSblockRaw(CSSblock cssBlock) {
-    elementCSSlist.remove(cssBlock);
-    return this;
+  public boolean removeCSSblockRaw(CSSblock cssBlock) {
+    return elementCSSlist.remove(cssBlock);
   }
 
-  public SleekElement removeCSSblock(CSSblock cssBlock) {
-    elementCSSlist.remove(cssBlock);
+  public boolean removeCSSblock(CSSblock cssBlock) {
+    boolean removedItem = elementCSSlist.remove(cssBlock);
     setCSSneedsUpdate();
-    return this;
+    return removedItem;
   }
 
   public boolean containsCSSblock(CSSblock cssBlock) {
     return elementCSSlist.contains(cssBlock);
+  }
+
+  public int removeAnimationCSSblocks() {
+    int removedBlocks = 0;
+    for (int i = elementCSSlist.size() - 1 ; i >= 0; i--) {
+      if (elementCSSlist.get(i).get(CSS_BLOCK_ANIMATION_KEY) != null) {
+        elementCSSlist.remove(i);
+        removedBlocks++;
+      }
+    }
+    return removedBlocks;
   }
 
   public void setElementString(String theElementString) {

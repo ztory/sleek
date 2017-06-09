@@ -21,16 +21,22 @@ import com.ztory.lib.sleek.util.UtilPx;
 public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
 
   protected final SleekElement sleekElement;
-  protected final CSSblock targetCSS, startCSS, animStateCSS;//, goalCSS;
+  protected final CSSblock targetCSS, targetCSSraw, startCSS, animStateCSS;
   protected boolean animatingBounds = false;
   protected float startX, startY, goalX, goalY;
   protected int startW, startH, goalW, goalH;
+  protected final boolean removeTargetCSS;
 
   //TODO SUPPORT both ADDING and REMOVING blocks of CSS with this animation !!!!
 
-  public SleekCSSanim(SleekElement theSleekElement, CSSblock theTargetCSS) {
+  public SleekCSSanim(
+      SleekElement theSleekElement,
+      CSSblock theTargetCSS,
+      boolean shouldRemoveTargetCSS
+  ) {
     super(null);
     sleekElement = theSleekElement;
+    removeTargetCSS = shouldRemoveTargetCSS;
     startX = sleekElement.getSleekX();
     startY = sleekElement.getSleekY();
     startW = sleekElement.getSleekW();
@@ -40,16 +46,34 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
     goalW = startW;
     goalH = startH;
 
-    targetCSS = theTargetCSS;
     CSSblock sleekElementCSS = sleekElement.getCSS();
     startCSS = new CSSblockBase(sleekElementCSS.size());
     startCSS.putAll(sleekElementCSS);
-//    goalCSS = new CSSblockBase(sleekElementCSS.size());
-//    goalCSS.putAll(sleekElementCSS);
-//    goalCSS.putAll(targetCSS);
+
+    targetCSSraw = theTargetCSS;
+    targetCSS = new CSSblockBase(sleekElementCSS.size() + targetCSSraw.size());
+    if (sleekElement.removeAnimationCSSblocks() > 0) {// remove animation blocks
+      if (removeTargetCSS) {
+        sleekElement.removeCSSblock(targetCSSraw);
+      }
+      sleekElement.checkCSS(true);
+      sleekElementCSS = sleekElement.getCSS();
+      targetCSS.putAll(sleekElementCSS);
+    } else if (removeTargetCSS && sleekElement.removeCSSblock(targetCSSraw)) {
+      sleekElement.checkCSS(true);
+      sleekElementCSS = sleekElement.getCSS();
+      targetCSS.putAll(sleekElementCSS);
+    }
+
+    if (!removeTargetCSS) {
+      targetCSS.putAll(targetCSSraw);
+    }
 
     animStateCSS = new CSSblockBase(sleekElementCSS.size());
-    //animStateCSS.putAll(sleekElementCSS);
+    animStateCSS.put(SleekElement.CSS_BLOCK_ANIMATION_KEY, "true");// Mark as animation CSS block
+
+    // Use addCSSblockRaw() to avoid calling requestLayout
+    sleekElement.addCSSblockRaw(animStateCSS);
   }
 
   public SleekCSSanim setGoalX(float theGoalX) {
@@ -163,10 +187,8 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
     }
 
     // Force update SleekElement CSS
-    sleekElement.addCSSblockRaw(animStateCSS);// Use addCSSblockRaw() to avoid calling requestLayout
     sleekElement.checkCSS(true);
     sleekElement.reloadShadowBitmap(false);
-    sleekElement.removeCSSblockRaw(animStateCSS);
   }
 
   @Override
@@ -182,8 +204,13 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
         );
       }
 
-      // Add targetCSS and update CSS without calling SleekElement.requestLayout()
-      sleekElement.addCSSblockRaw(targetCSS);
+      // Remove animation CSSblock
+      sleekElement.removeCSSblockRaw(animStateCSS);
+
+      if (!removeTargetCSS) {
+        // Add targetCSS and update CSS without calling SleekElement.requestLayout()
+        sleekElement.addCSSblockRaw(targetCSSraw);
+      }
       sleekElement.checkCSS(true);
       sleekElement.reloadShadowBitmap(false);
     }
