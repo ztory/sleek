@@ -1882,11 +1882,11 @@ public class TestSleekUI {
 //          "text-shadow: 1px 1px 2px black;" +
 //          "}",
       CSS_TOOLBAR = "{" +
-          "background-color: #121212;" +
+          "background-color: #101010;" +
 //          "background-image: url(\"https://example.com/example.png\");" +
 //          "background-size: cover;" +
 //          "border-radius: 22px;" +
-//          "border: 1px solid #0000ff;" +
+          "border: 1px solid #202020;" +
           "box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);" +
           "padding: 0px 10px 0px 30px;" +
           "color: #eee;" +
@@ -1934,7 +1934,7 @@ public class TestSleekUI {
     SleekElement toolbar = new SleekElement(FIXED_TOUCHABLE.prio(slkc.getNextPrio()));
     toolbar.setElementString("\u2605 Sleek \u2605");
     toolbar.addCSSblock(new CSSblockBase(CSS_TOOLBAR));
-    toolbar.getLayout()
+    toolbar.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
         .x(X.ABSOLUTE, -UtilPx.getPixels(10), null)
         .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
         .h(H.ABSOLUTE, UtilPx.getPixels(50), null);
@@ -1957,9 +1957,6 @@ public class TestSleekUI {
     SleekElement btnProfile = new SleekElement(DEFAULT);
     btnProfile.addCSSblock(new CSSblockBase(CSS_BTN_PROFILE));
     btnProfile.createBackgroundImage();
-    btnProfile.getBackgroundImage().getPaint().setDither(true);
-    btnProfile.getBackgroundImage().getPaint().setFilterBitmap(true);
-    btnProfile.getBackgroundImage().getPaint().setAntiAlias(true);
     btnProfile.getLayout()
         .x(X.WEST_OF, btnSpacing, btnSettings)
 //        .y(Y.POS_CENTER, 0, toolbar.getBackground())
