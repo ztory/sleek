@@ -1902,7 +1902,7 @@ public class TestSleekUI {
 //          "background-size: cover;" +
           "border-radius: 25px;" +
           "border: 1px solid #38B0DE;" +
-          "box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);" +
+          "box-shadow: 0px 0px 4px #38B0DEdd;" +
           "padding: 0px 0px 5px 0px;" +
           "color: #eee;" +
           "font-size: 20px;" +
@@ -1918,7 +1918,7 @@ public class TestSleekUI {
           "background-size: cover;" +
           "border-radius: 25px;" +
           "border: 1px solid #38B0DE;" +
-          "box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);" +
+          "box-shadow: 0px 0px 4px #38B0DEdd;" +
 //          "padding: 0px 0px 0px 30px;" +
 //          "color: #eee;" +
 //          "font-size: 20px;" +

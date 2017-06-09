@@ -86,6 +86,7 @@ public class SleekElement extends SleekBaseComposite {
   protected Rect paddingRect;
 
   protected String elementBackgroundSize = null;
+  protected boolean elementBackgroundSizeIsCover = false;
 
   protected boolean localElementBackgroundImageUrl;
   protected String elementBackgroundImageUrl = null;
@@ -305,6 +306,7 @@ public class SleekElement extends SleekBaseComposite {
     }
 
     elementBackgroundSize = elementCSS.getBackgroundSize();
+    elementBackgroundSizeIsCover = CSS.Value.COVER.equals(elementBackgroundSize);
   }
 
   public void setCSSneedsUpdate() {
@@ -396,26 +398,7 @@ public class SleekElement extends SleekBaseComposite {
 
     if (elementBackgroundSize != null) {
 
-      if (elementBackgroundSize.equals(CSS.Value.CONTAIN)) {
-        /*
-        contain
-        A keyword that scales the image as large as possible and maintains image aspect
-        ratio (image doesn't get squished). Image is letterboxed within the container.
-        When the image and container have different dimensions, the empty
-        areas (either top/bottom of left/right) are filled with the background-color.
-         */
-        float elementRatio = Calc.divide(imgContainerW, imgContainerH);
-        float bitmapRatio = Calc.divide(backgroundWidth, backgroundHeight);
-        if (bitmapRatio > elementRatio) {
-          backgroundWidth = imgContainerW;
-          backgroundHeight = (int) Calc.divide(imgContainerW, bitmapRatio);
-          backgroundY = (int) Calc.divide(imgContainerH - backgroundHeight, 2.0f);
-        } else {
-          backgroundHeight = imgContainerH;
-          backgroundWidth = (int) Calc.multiply(imgContainerH, bitmapRatio);
-          backgroundX = (int) Calc.divide(imgContainerW - backgroundWidth, 2.0f);
-        }
-      } else if (elementBackgroundSize.equals(CSS.Value.COVER)) {
+      if (elementBackgroundSizeIsCover) {
         /*
         cover
         A keyword that is the inverse of contain.
@@ -453,6 +436,25 @@ public class SleekElement extends SleekBaseComposite {
         // Reset drawing size to element size
         backgroundWidth = imgContainerW;
         backgroundHeight = imgContainerH;
+      } else if (elementBackgroundSize.equals(CSS.Value.CONTAIN)) {
+        /*
+        contain
+        A keyword that scales the image as large as possible and maintains image aspect
+        ratio (image doesn't get squished). Image is letterboxed within the container.
+        When the image and container have different dimensions, the empty
+        areas (either top/bottom of left/right) are filled with the background-color.
+         */
+        float elementRatio = Calc.divide(imgContainerW, imgContainerH);
+        float bitmapRatio = Calc.divide(backgroundWidth, backgroundHeight);
+        if (bitmapRatio > elementRatio) {
+          backgroundWidth = imgContainerW;
+          backgroundHeight = (int) Calc.divide(imgContainerW, bitmapRatio);
+          backgroundY = (int) Calc.divide(imgContainerH - backgroundHeight, 2.0f);
+        } else {
+          backgroundHeight = imgContainerH;
+          backgroundWidth = (int) Calc.multiply(imgContainerH, bitmapRatio);
+          backgroundX = (int) Calc.divide(imgContainerW - backgroundWidth, 2.0f);
+        }
       }
     }
 
@@ -934,7 +936,7 @@ public class SleekElement extends SleekBaseComposite {
     if (elementBorderRadius > 0
         && elementBorderRadius + elementBorderRadius >= sleekW
         && elementBorderRadius + elementBorderRadius >= sleekH
-        ) {// Special case for round SleekElement instances
+        ) {// Special case for round SleekElement instances, does not draw WEST and EAST bitmaps.
       //DRAW unscaled Top-Bitmap
       canvas.drawBitmap(
           elementShadowBitmapList.get(0),
@@ -950,113 +952,119 @@ public class SleekElement extends SleekBaseComposite {
           elementShadowBitmapPaint
       );
     } else {
-      // Top Bitmap Init
-      currentBitmap = elementShadowBitmapList.get(0);
-      currentBitmapW = currentBitmap.getWidth();
-      currentBitmapH = currentBitmap.getHeight();
-      // Top-Left-Corner Bitmap
-      shadowSrcRect.set(0, 0, westCornerWidth, currentBitmapH);
-      shadowDstRectF.set(
-          -elementShadowRadius + leftOffset,
-          -elementShadowRadius + topOffset,
-          -elementShadowRadius + leftOffset + westCornerWidth,
-          -elementShadowRadius + topOffset + currentBitmapH
-      );
-      canvas.drawBitmap(
-          currentBitmap,
-          shadowSrcRect,
-          shadowDstRectF,
-          elementShadowBitmapPaint
-      );
-      // Top-Right-Corner Bitmap
-      shadowSrcRect.set(currentBitmapW - eastCornerWidth, 0, currentBitmapW, currentBitmapH);
-      shadowDstRectF.set(
-          sleekW - elementBorderRadius - rightEdgeModifier,
-          -elementShadowRadius + topOffset,
-          sleekW + eastCornerWidth - elementBorderRadius - rightEdgeModifier,
-          -elementShadowRadius + topOffset + currentBitmapH
-      );
-      canvas.drawBitmap(
-          currentBitmap,
-          shadowSrcRect,
-          shadowDstRectF,
-          elementShadowBitmapPaint
-      );
-      // Top-Center Bitmap
-      shadowSrcRect.set(westCornerWidth, 0, currentBitmapW - eastCornerWidth, currentBitmapH);
-      shadowDstRectF.set(
-          -elementShadowRadius + leftOffset + westCornerWidth,
-          -elementShadowRadius + topOffset,
-          sleekW - elementBorderRadius - rightEdgeModifier,
-          -elementShadowRadius + topOffset + currentBitmapH
-      );
-      canvas.drawBitmap(
-          currentBitmap,
-          shadowSrcRect,
-          shadowDstRectF,
-          elementShadowBitmapPaint
-      );
-      //DEBUG DRAW unscaled Top-Bitmap
-//    canvas.drawBitmap(
-//        elementShadowBitmapList.get(0),
-//        -elementShadowRadius + leftOffset,
-//        -elementShadowRadius + topOffset,
-//        elementShadowBitmapPaint
-//    );
+      if (elementBorderRadius > 0 && elementBorderRadius + elementBorderRadius >= sleekW) {
 
-      // Bottom Bitmap Init
-      currentBitmap = elementShadowBitmapList.get(1);
-      currentBitmapW = currentBitmap.getWidth();
-      currentBitmapH = currentBitmap.getHeight();
-      // Bottom-Left-Corner Bitmap
-      shadowSrcRect.set(0, 0, westCornerWidth, currentBitmapH);
-      shadowDstRectF.set(
-          -elementShadowRadius + leftOffset,
-          sleekH - elementBorderRadius,
-          -elementShadowRadius + leftOffset + westCornerWidth,
-          sleekH - elementBorderRadius + currentBitmapH
-      );
-      canvas.drawBitmap(
-          currentBitmap,
-          shadowSrcRect,
-          shadowDstRectF,
-          elementShadowBitmapPaint
-      );
-      // Bottom-Right-Corner Bitmap
-      shadowSrcRect.set(currentBitmapW - eastCornerWidth, 0, currentBitmapW, currentBitmapH);
-      shadowDstRectF.set(
-          sleekW - elementBorderRadius - rightEdgeModifier,
-          sleekH - elementBorderRadius,
-          sleekW + eastCornerWidth - elementBorderRadius - rightEdgeModifier,
-          sleekH - elementBorderRadius + currentBitmapH
-      );
-      canvas.drawBitmap(
-          currentBitmap,
-          shadowSrcRect,
-          shadowDstRectF,
-          elementShadowBitmapPaint
-      );
-      // Bottom-Center Bitmap
-      shadowSrcRect.set(westCornerWidth, 0, currentBitmapW - eastCornerWidth, currentBitmapH);
-      shadowDstRectF.set(
-          -elementShadowRadius + leftOffset + westCornerWidth,
-          sleekH - elementBorderRadius,
-          sleekW - elementBorderRadius - rightEdgeModifier,
-          sleekH - elementBorderRadius + currentBitmapH
-      );
-      canvas.drawBitmap(
-          currentBitmap,
-          shadowSrcRect,
-          shadowDstRectF,
-          elementShadowBitmapPaint
-      );
-      //DEBUG DRAW unscaled Bottom-Bitmap
-//    canvas.drawBitmap(
-//        elementShadowBitmapList.get(1),
-//        -elementShadowRadius + leftOffset,
-//        sleekH - elementBorderRadius,
-//        elementShadowBitmapPaint
-//    );
+        // Draw unscaled TOP and BOTTOM bitmaps, but WEST and EAST will be drawn in regular way.
+
+        //DRAW unscaled Top-Bitmap
+        canvas.drawBitmap(
+            elementShadowBitmapList.get(0),
+            -elementShadowRadius + leftOffset,
+            -elementShadowRadius + topOffset,
+            elementShadowBitmapPaint
+        );
+        //DRAW unscaled Bottom-Bitmap
+        canvas.drawBitmap(
+            elementShadowBitmapList.get(1),
+            -elementShadowRadius + leftOffset,
+            sleekH - elementBorderRadius,
+            elementShadowBitmapPaint
+        );
+      } else {
+        // Top Bitmap Init
+        currentBitmap = elementShadowBitmapList.get(0);
+        currentBitmapW = currentBitmap.getWidth();
+        currentBitmapH = currentBitmap.getHeight();
+        // Top-Left-Corner Bitmap
+        shadowSrcRect.set(0, 0, westCornerWidth, currentBitmapH);
+        shadowDstRectF.set(
+            -elementShadowRadius + leftOffset,
+            -elementShadowRadius + topOffset,
+            -elementShadowRadius + leftOffset + westCornerWidth,
+            -elementShadowRadius + topOffset + currentBitmapH
+        );
+        canvas.drawBitmap(
+            currentBitmap,
+            shadowSrcRect,
+            shadowDstRectF,
+            elementShadowBitmapPaint
+        );
+        // Top-Right-Corner Bitmap
+        shadowSrcRect.set(currentBitmapW - eastCornerWidth, 0, currentBitmapW, currentBitmapH);
+        shadowDstRectF.set(
+            sleekW - elementBorderRadius - rightEdgeModifier,
+            -elementShadowRadius + topOffset,
+            sleekW + eastCornerWidth - elementBorderRadius - rightEdgeModifier,
+            -elementShadowRadius + topOffset + currentBitmapH
+        );
+        canvas.drawBitmap(
+            currentBitmap,
+            shadowSrcRect,
+            shadowDstRectF,
+            elementShadowBitmapPaint
+        );
+        // Top-Center Bitmap
+        shadowSrcRect.set(westCornerWidth, 0, currentBitmapW - eastCornerWidth, currentBitmapH);
+        shadowDstRectF.set(
+            -elementShadowRadius + leftOffset + westCornerWidth,
+            -elementShadowRadius + topOffset,
+            sleekW - elementBorderRadius - rightEdgeModifier,
+            -elementShadowRadius + topOffset + currentBitmapH
+        );
+        canvas.drawBitmap(
+            currentBitmap,
+            shadowSrcRect,
+            shadowDstRectF,
+            elementShadowBitmapPaint
+        );
+
+        // Bottom Bitmap Init
+        currentBitmap = elementShadowBitmapList.get(1);
+        currentBitmapW = currentBitmap.getWidth();
+        currentBitmapH = currentBitmap.getHeight();
+        // Bottom-Left-Corner Bitmap
+        shadowSrcRect.set(0, 0, westCornerWidth, currentBitmapH);
+        shadowDstRectF.set(
+            -elementShadowRadius + leftOffset,
+            sleekH - elementBorderRadius,
+            -elementShadowRadius + leftOffset + westCornerWidth,
+            sleekH - elementBorderRadius + currentBitmapH
+        );
+        canvas.drawBitmap(
+            currentBitmap,
+            shadowSrcRect,
+            shadowDstRectF,
+            elementShadowBitmapPaint
+        );
+        // Bottom-Right-Corner Bitmap
+        shadowSrcRect.set(currentBitmapW - eastCornerWidth, 0, currentBitmapW, currentBitmapH);
+        shadowDstRectF.set(
+            sleekW - elementBorderRadius - rightEdgeModifier,
+            sleekH - elementBorderRadius,
+            sleekW + eastCornerWidth - elementBorderRadius - rightEdgeModifier,
+            sleekH - elementBorderRadius + currentBitmapH
+        );
+        canvas.drawBitmap(
+            currentBitmap,
+            shadowSrcRect,
+            shadowDstRectF,
+            elementShadowBitmapPaint
+        );
+        // Bottom-Center Bitmap
+        shadowSrcRect.set(westCornerWidth, 0, currentBitmapW - eastCornerWidth, currentBitmapH);
+        shadowDstRectF.set(
+            -elementShadowRadius + leftOffset + westCornerWidth,
+            sleekH - elementBorderRadius,
+            sleekW - elementBorderRadius - rightEdgeModifier,
+            sleekH - elementBorderRadius + currentBitmapH
+        );
+        canvas.drawBitmap(
+            currentBitmap,
+            shadowSrcRect,
+            shadowDstRectF,
+            elementShadowBitmapPaint
+        );
+      }
 
       // Left Bitmap
       currentBitmap = leftBitmap;
@@ -1127,19 +1135,25 @@ public class SleekElement extends SleekBaseComposite {
           elementShadowBitmapPaint
       );
 
-      // Draw background-rect
-      elementShadowBitmapPaint.setColor(elementBackgroundColor);
-      canvas.drawRoundRect(
-          new RectF(
-              elementBorderWidth.left,
-              elementBorderWidth.top,
-              sleekW - elementBorderWidth.right,
-              sleekH - elementBorderWidth.bottom
-          ),
-          elementBackground.getRoundedRadius(),
-          elementBackground.getRoundedRadius(),
-          elementShadowBitmapPaint
-      );
+      // If background-size==COVER and isBitmapLoaded==true then drawing this results in edge-bleed
+      if (!elementBackgroundSizeIsCover
+          || elementBackgroundImage == null
+          || !elementBackgroundImage.isBitmapLoaded()
+          ) {
+        // Draw background-rect
+        elementShadowBitmapPaint.setColor(elementBackgroundColor);
+        canvas.drawRoundRect(
+            new RectF(
+                elementBorderWidth.left,
+                elementBorderWidth.top,
+                sleekW - elementBorderWidth.right,
+                sleekH - elementBorderWidth.bottom
+            ),
+            elementBackground.getRoundedRadius(),
+            elementBackground.getRoundedRadius(),
+            elementShadowBitmapPaint
+        );
+      }
     }
 
     //DEBUG DRAW regular background for position reference
