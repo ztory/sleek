@@ -3,7 +3,6 @@ package com.ztory.lib.sleek.base.element;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.util.Log;
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvasInfo;
 import com.ztory.lib.sleek.animation.SAVpercent.PercentDrawView;
@@ -96,12 +95,11 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
           targetCSS.getBackgroundColor()
       );
       animStateCSS.put(Property.BACKGROUND_COLOR, getStringColorFromInt(backgroundColor));
-
-      Log.d("SleekCSSanim", "SleekCSSanim" +
-          " | target.bg: " + targetCSS.getBackgroundColor() +
-          " | anim.bg: " + animStateCSS.getBackgroundColor() +
-          " | getStringColorFromInt: " + getStringColorFromInt(backgroundColor)
-      );
+//      Log.d("SleekCSSanim", "SleekCSSanim" +
+//          " | target.bg: " + targetCSS.getBackgroundColor() +
+//          " | anim.bg: " + animStateCSS.getBackgroundColor() +
+//          " | getStringColorFromInt: " + getStringColorFromInt(backgroundColor)
+//      );
     }
 
     if (isPropertyUpdated(targetCSS.getBorderRadius(), startCSS.getBorderRadius())) {
@@ -111,12 +109,6 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
           targetCSS.getBorderRadius()
       );
       animStateCSS.put(Property.BORDER_RADIUS, getStringPXfromPixels(borderRadius));
-
-      Log.d("SleekCSSanim", "SleekCSSanim" +
-          " | start.borderRadius: " + startCSS.getBorderRadius() +
-          " | current.borderRadius: " + borderRadius +
-          " | current.borderRadius.DP: " + getStringPXfromPixels(borderRadius)
-      );
     }
 
     if (isPropertyUpdated(targetCSS.getBorderWidth(), startCSS.getBorderWidth())
@@ -126,28 +118,47 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
           getOrDefault(startCSS.getBorderWidth(), new Rect()).left,
           targetCSS.getBorderWidth().left
       );
-//      animStateCSS.put(
-//          Property.BORDER_RADIUS,
-//          UtilPx.getDP(UtilPx.getDefaultContext(), borderRadius) + Unit.PX
-//      );
       int borderColor = getAnimatedColor(
           percent,
           getOrDefault(startCSS.getBorderColor(), SleekColorArea.COLOR_TRANSPARENT),
           targetCSS.getBorderColor()
       );
-//      animStateCSS.put(Property.BACKGROUND_COLOR, getStringColorFromInt(backgroundColor));
-
       animStateCSS.put(
           Property.BORDER,
           getStringPXfromPixels(borderWidth) +
               " solid " + getStringColorFromInt(borderColor)
       );
+    }
 
-      Log.d("SleekCSSanim", "SleekCSSanim" +
-          " | current.borderWidth.CSS_PX: " + getStringPXfromPixels(borderWidth) +
-          " | current.borderColor: " + getStringColorFromInt(borderColor) +
-          " | Property.BORDER.start: " + startCSS.get(Property.BORDER) +
-          " | Property.BORDER: " + animStateCSS.get(Property.BORDER)
+    if (isPropertyUpdated(targetCSS.getBoxShadowBlurRadius(), startCSS.getBoxShadowBlurRadius())
+        || isPropertyUpdated(targetCSS.getBoxShadowColor(), startCSS.getBoxShadowColor())
+        || isPropertyUpdated(targetCSS.getBoxShadowOffsetX(), startCSS.getBoxShadowOffsetX())
+        || isPropertyUpdated(targetCSS.getBoxShadowOffsetY(), startCSS.getBoxShadowOffsetY())) {
+      int offsetXpixels = getAnimatedInt(
+          percent,
+          getOrDefault(startCSS.getBoxShadowOffsetX(), 0),
+          targetCSS.getBoxShadowOffsetX()
+      );
+      int offsetYpixels = getAnimatedInt(
+          percent,
+          getOrDefault(startCSS.getBoxShadowOffsetY(), 0),
+          targetCSS.getBoxShadowOffsetY()
+      );
+      int blurRadiusPixels = getAnimatedInt(
+          percent,
+          getOrDefault(startCSS.getBoxShadowBlurRadius(), 0),
+          targetCSS.getBoxShadowBlurRadius()
+      );
+      int boxShadowColor = getAnimatedColor(
+          percent,
+          getOrDefault(startCSS.getBoxShadowColor(), SleekColorArea.COLOR_TRANSPARENT),
+          targetCSS.getBoxShadowColor()
+      );
+      animStateCSS.put(
+          Property.BOX_SHADOW, getStringPXfromPixels(offsetXpixels)
+              + " " + getStringPXfromPixels(offsetYpixels)
+              + " " + getStringPXfromPixels(blurRadiusPixels) +
+              " " + getStringColorFromInt(boxShadowColor)
       );
     }
 

@@ -47,20 +47,11 @@ public class CSSblockBase extends HashMap<String, String> implements CSSblock {
 
     String[] keyValuePairs = parseString.split(";");
     for (String iterKeyValue : keyValuePairs) {
-      iterKeyValue = iterKeyValue.trim();
       try {
-        if (iterKeyValue.contains("url(")) {
-          //String[] keyValueArrau = iterKeyValue.split(":");
-          String key = iterKeyValue.substring(0, iterKeyValue.indexOf(':'));
-          String value =
-              iterKeyValue.substring(iterKeyValue.indexOf(':') + 1, iterKeyValue.length()).trim();
-          put(key, value);
-        } else {
-          String[] keyValueArrau = iterKeyValue.split(":");
-          String key = keyValueArrau[0].trim();
-          String value = keyValueArrau[1].trim();
-          put(key, value);
-        }
+        int firstIndexOfColon = iterKeyValue.indexOf(':');
+        String key = iterKeyValue.substring(0, firstIndexOfColon).trim();
+        String value = iterKeyValue.substring(firstIndexOfColon + 1, iterKeyValue.length()).trim();
+        put(key, value);
       } catch (Exception e) {
         e.printStackTrace();
       }
