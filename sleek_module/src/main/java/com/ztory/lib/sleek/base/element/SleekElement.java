@@ -344,6 +344,10 @@ public class SleekElement extends SleekBaseComposite {
     return this;
   }
 
+  public boolean containsCSSblock(CSSblock cssBlock) {
+    return elementCSSlist.contains(cssBlock);
+  }
+
   public void setElementString(String theElementString) {
     elementString = theElementString;
   }
