@@ -1,7 +1,7 @@
 package com.ztory.lib.sleek;
 
-import static com.ztory.lib.sleek.base.SleekParam.DEFAULT;
 import static com.ztory.lib.sleek.base.SleekParam.FIXED_TOUCHABLE;
+import static com.ztory.lib.sleek.base.SleekParam.TOUCHABLE;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
@@ -1926,12 +1926,20 @@ public class TestSleekUI {
 //          "text-align: center;" +
 //          "vertical-align: middle;" +
 //          "text-shadow: 0px 0px 2px #38B0DE;" +
+          "}",
+      CSS_BTN_ACTIVE = "{" +
+          "background-color: #ff0000;" +
+          "border-radius: 4px;" +
+          "border: 1px solid #FFA038;" +
+          "box-shadow: 0px 0px 4px #FFA038;" +
           "}";
 
   private static final void loadUIcompleteAppUIexample1(final SleekCanvas slkc) {
     //TODO Build a simple complete App UI to test and demonstrate how easy Sleek is to use.
 
-    SleekElement toolbar = new SleekElement(FIXED_TOUCHABLE.prio(slkc.getNextPrio()));
+    final CSSblock activeCSS = new CSSblockBase(CSS_BTN_ACTIVE);
+
+    final SleekElement toolbar = new SleekElement(FIXED_TOUCHABLE.prio(slkc.getNextPrio()));
     toolbar.setElementString("\u2605 Sleek \u2605");
     toolbar.addCSSblock(new CSSblockBase(CSS_TOOLBAR));
     toolbar.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
@@ -1943,7 +1951,7 @@ public class TestSleekUI {
     final int btnSize = UtilPx.getPixels(50);
     final int btnSpacing = UtilPx.getPixels(15);
 
-    SleekElement btnSettings = new SleekElement(DEFAULT);
+    final SleekElement btnSettings = new SleekElement(TOUCHABLE);
     btnSettings.setElementString("α");
     btnSettings.addCSSblock(new CSSblockBase(CSS_BTN_SETTINGS));
     btnSettings.getLayout()
@@ -1954,15 +1962,23 @@ public class TestSleekUI {
         .h(H.ABSOLUTE, btnSize, null);
     toolbar.addSleek(btnSettings);
 
-    SleekElement btnProfile = new SleekElement(DEFAULT);
+    final SleekElement btnProfile = new SleekElement(TOUCHABLE);
     btnProfile.addCSSblock(new CSSblockBase(CSS_BTN_PROFILE));
-    btnProfile.createBackgroundImage();
     btnProfile.getLayout()
         .x(X.WEST_OF, btnSpacing, btnSettings)
 //        .y(Y.POS_CENTER, 0, toolbar.getBackground())
         .y(Y.PARENT_BOTTOM, -Calc.divideToInt(btnSize, 2.0f), toolbar.getBackground())
         .w(W.ABSOLUTE, btnSize, null)
         .h(H.ABSOLUTE, btnSize, null);
+    btnProfile.getTouchHandler().setClickAction(
+        new Runnable() { @Override public void run() {
+          btnProfile.addCSSblock(activeCSS);
+        }}, new Runnable() { @Override public void run() {
+          btnProfile.removeCSSblock(activeCSS);
+        }}, new Runnable() { @Override public void run() {
+
+        }}
+    );
     toolbar.addSleek(btnProfile);
   }
 

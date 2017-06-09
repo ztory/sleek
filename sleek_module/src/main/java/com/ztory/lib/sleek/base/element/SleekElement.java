@@ -51,6 +51,7 @@ public class SleekElement extends SleekBaseComposite {
    * If CSS is updated at runtime, be sure to set this to true.
    */
   protected boolean elementCSSneedsUpdate = false;
+  protected boolean elementCSSruntimeUpdate = false;
 
   protected final CSSblock elementCSS = new CSSblockBase(12);
   protected long elementCSSmodifiedTs;
@@ -310,6 +311,7 @@ public class SleekElement extends SleekBaseComposite {
   }
 
   public void setCSSneedsUpdate() {
+    elementCSSruntimeUpdate = addedToParent && loaded;
     elementCSSneedsUpdate = true;
     requestLayout();
   }
@@ -757,7 +759,14 @@ public class SleekElement extends SleekBaseComposite {
   @Override
   public void onSleekCanvasResize(SleekCanvasInfo info) {
 
-    checkCSS();//checks if changes have been made to CSS properties
+    // Check if changes have been made to CSS properties
+    if (elementCSSneedsUpdate) {
+      checkCSS();
+      if (elementCSSruntimeUpdate && addedToParent && loaded) {
+        reloadShadowBitmap(false);
+      }
+      elementCSSruntimeUpdate = false;
+    }
 
     super.onSleekCanvasResize(info);
   }
