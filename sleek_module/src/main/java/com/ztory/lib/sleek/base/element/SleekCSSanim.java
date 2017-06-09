@@ -2,6 +2,7 @@ package com.ztory.lib.sleek.base.element;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.util.Log;
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvasInfo;
@@ -21,7 +22,7 @@ import com.ztory.lib.sleek.util.UtilPx;
 public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
 
   protected final SleekElement sleekElement;
-  protected final CSSblock targetCSS, startCSS, goalCSS, animStateCSS;
+  protected final CSSblock targetCSS, startCSS, animStateCSS;//, goalCSS;
   protected boolean animatingBounds = false;
   protected float startX, startY, goalX, goalY;
   protected int startW, startH, goalW, goalH;
@@ -44,9 +45,9 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
     CSSblock sleekElementCSS = sleekElement.getCSS();
     startCSS = new CSSblockBase(sleekElementCSS.size());
     startCSS.putAll(sleekElementCSS);
-    goalCSS = new CSSblockBase(sleekElementCSS.size());
-    goalCSS.putAll(sleekElementCSS);
-    goalCSS.putAll(targetCSS);
+//    goalCSS = new CSSblockBase(sleekElementCSS.size());
+//    goalCSS.putAll(sleekElementCSS);
+//    goalCSS.putAll(targetCSS);
 
     animStateCSS = new CSSblockBase(sleekElementCSS.size());
     //animStateCSS.putAll(sleekElementCSS);
@@ -88,7 +89,7 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
       );
     }
 
-    if (targetCSS.getBackgroundColor() != null) {
+    if (isPropertyUpdated(targetCSS.getBackgroundColor(), startCSS.getBackgroundColor())) {
       int backgroundColor = getAnimatedColor(
           percent,
           getOrDefault(startCSS.getBackgroundColor(), SleekColorArea.COLOR_TRANSPARENT),
@@ -103,21 +104,50 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
       );
     }
 
-    if (targetCSS.getBorderRadius() != null) {
+    if (isPropertyUpdated(targetCSS.getBorderRadius(), startCSS.getBorderRadius())) {
       int borderRadius = getAnimatedInt(
           percent,
           getOrDefault(startCSS.getBorderRadius(), 0),
           targetCSS.getBorderRadius()
       );
-      animStateCSS.put(
-          Property.BORDER_RADIUS,
-          UtilPx.getDP(UtilPx.getDefaultContext(), borderRadius) + Unit.PX
-      );
+      animStateCSS.put(Property.BORDER_RADIUS, getStringPXfromPixels(borderRadius));
 
       Log.d("SleekCSSanim", "SleekCSSanim" +
           " | start.borderRadius: " + startCSS.getBorderRadius() +
           " | current.borderRadius: " + borderRadius +
-          " | current.borderRadius.DP" + UtilPx.getDP(UtilPx.getDefaultContext(), borderRadius)
+          " | current.borderRadius.DP: " + getStringPXfromPixels(borderRadius)
+      );
+    }
+
+    if (isPropertyUpdated(targetCSS.getBorderWidth(), startCSS.getBorderWidth())
+        || isPropertyUpdated(targetCSS.getBorderColor(), startCSS.getBorderColor())) {
+      int borderWidth = getAnimatedInt(
+          percent,
+          getOrDefault(startCSS.getBorderWidth(), new Rect()).left,
+          targetCSS.getBorderWidth().left
+      );
+//      animStateCSS.put(
+//          Property.BORDER_RADIUS,
+//          UtilPx.getDP(UtilPx.getDefaultContext(), borderRadius) + Unit.PX
+//      );
+      int borderColor = getAnimatedColor(
+          percent,
+          getOrDefault(startCSS.getBorderColor(), SleekColorArea.COLOR_TRANSPARENT),
+          targetCSS.getBorderColor()
+      );
+//      animStateCSS.put(Property.BACKGROUND_COLOR, getStringColorFromInt(backgroundColor));
+
+      animStateCSS.put(
+          Property.BORDER,
+          getStringPXfromPixels(borderWidth) +
+              " solid " + getStringColorFromInt(borderColor)
+      );
+
+      Log.d("SleekCSSanim", "SleekCSSanim" +
+          " | current.borderWidth.CSS_PX: " + getStringPXfromPixels(borderWidth) +
+          " | current.borderColor: " + getStringColorFromInt(borderColor) +
+          " | Property.BORDER.start: " + startCSS.get(Property.BORDER) +
+          " | Property.BORDER: " + animStateCSS.get(Property.BORDER)
       );
     }
 
@@ -146,6 +176,14 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
       sleekElement.checkCSS(true);
       sleekElement.reloadShadowBitmap(false);
     }
+  }
+
+  public static <T> boolean isPropertyUpdated(T targetValue, T oldValue) {
+    return targetValue != null && !targetValue.equals(oldValue);
+  }
+
+  public static String getStringPXfromPixels(int pixels) {
+    return UtilPx.getDP(UtilPx.getDefaultContext(), pixels) + Unit.PX;
   }
 
   public static String getStringColorFromInt(int color) {

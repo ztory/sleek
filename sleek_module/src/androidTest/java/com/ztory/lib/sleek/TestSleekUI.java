@@ -2016,7 +2016,7 @@ public class TestSleekUI {
 //                  .setGoalY(btnImage.getSleekY() + btnImage.getSleekH())
 //                  .setGoalW(btnImage.getSleekW() + btnImage.getSleekW())
 //                  .setGoalH(btnImage.getSleekH() + btnSpacing)
-                  .setDuration(1000)
+                  .setDuration(1500)
                   .setInterpolator(new DecelerateInterpolator())
           );
         }}, new Runnable() { @Override public void run() {
