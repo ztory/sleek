@@ -11,10 +11,12 @@ import android.graphics.Color;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.view.animation.DecelerateInterpolator;
 import com.ztory.lib.sleek.animation.SAVfade;
 import com.ztory.lib.sleek.animation.SAVtransXYWH;
 import com.ztory.lib.sleek.base.SleekBase;
 import com.ztory.lib.sleek.base.SleekParam;
+import com.ztory.lib.sleek.base.element.SleekCSSanim;
 import com.ztory.lib.sleek.base.element.SleekElement;
 import com.ztory.lib.sleek.base.element.css.CSSblock;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
@@ -1927,8 +1929,24 @@ public class TestSleekUI {
 //          "vertical-align: middle;" +
 //          "text-shadow: 0px 0px 2px #38B0DE;" +
           "}",
+      CSS_BTN_IMAGE = "{" +
+          "background-color: #33E776;" +
+//          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Arizona.svg/2000px-Flag_of_Arizona.svg.png\");" +
+//          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Flag_of_Flanders.svg/1024px-Flag_of_Flanders.svg.png\");" +
+          "background-size: cover;" +
+          "border-radius: 25px;" +
+          "border: 1px solid #38B0DE;" +
+          "box-shadow: 0px 0px 4px #38B0DEdd;" +
+//          "padding: 0px 0px 0px 30px;" +
+//          "color: #eee;" +
+//          "font-size: 20px;" +
+//          "line-height: 20px;" +
+//          "text-align: center;" +
+//          "vertical-align: middle;" +
+//          "text-shadow: 0px 0px 2px #38B0DE;" +
+          "}",
       CSS_BTN_ACTIVE = "{" +
-          "background-color: #ff0000;" +
+          "background-color: #4860E3;" +
           "border-radius: 4px;" +
           "border: 1px solid #FFA038;" +
           "box-shadow: 0px 0px 4px #FFA038;" +
@@ -1980,6 +1998,34 @@ public class TestSleekUI {
         }}
     );
     toolbar.addSleek(btnProfile);
+
+    final SleekElement btnImage = new SleekElement(TOUCHABLE);
+    btnImage.addCSSblock(new CSSblockBase(CSS_BTN_IMAGE));
+    btnImage.getLayout()
+        .x(X.WEST_OF, btnSpacing, btnProfile)
+//        .y(Y.POS_CENTER, 0, toolbar.getBackground())
+        .y(Y.PARENT_BOTTOM, -Calc.divideToInt(btnSize, 2.0f), toolbar.getBackground())
+        .w(W.ABSOLUTE, btnSize, null)
+        .h(H.ABSOLUTE, btnSize, null);
+    btnImage.getTouchHandler().setClickAction(
+        new Runnable() { @Override public void run() {
+          //btnImage.addCSSblock(activeCSS);
+          btnImage.setSleekAnimView(
+              new SleekCSSanim(btnImage, activeCSS)
+                  .setGoalX(btnImage.getSleekX() - btnImage.getSleekW())
+//                  .setGoalY(btnImage.getSleekY() + btnImage.getSleekH())
+//                  .setGoalW(btnImage.getSleekW() + btnImage.getSleekW())
+//                  .setGoalH(btnImage.getSleekH() + btnSpacing)
+                  .setDuration(1000)
+                  .setInterpolator(new DecelerateInterpolator())
+          );
+        }}, new Runnable() { @Override public void run() {
+          //btnImage.removeCSSblock(activeCSS);
+        }}, new Runnable() { @Override public void run() {
+
+        }}
+    );
+    toolbar.addSleek(btnImage);
   }
 
   @Test
