@@ -25,6 +25,7 @@ import com.ztory.lib.sleek.layout.SL.W;
 import com.ztory.lib.sleek.layout.SL.X;
 import com.ztory.lib.sleek.layout.SL.Y;
 import com.ztory.lib.sleek.mapd.Mapd;
+import com.ztory.lib.sleek.util.Calc;
 import com.ztory.lib.sleek.util.UtilDownload;
 import com.ztory.lib.sleek.util.UtilExecutor;
 import com.ztory.lib.sleek.util.UtilPx;
@@ -1886,7 +1887,7 @@ public class TestSleekUI {
 //          "background-size: cover;" +
 //          "border-radius: 22px;" +
 //          "border: 1px solid #0000ff;" +
-//          "box-shadow: 0px 3px 2px #12121244;" +
+          "box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);" +
           "padding: 0px 10px 0px 30px;" +
           "color: #eee;" +
           "font-size: 20px;" +
@@ -1899,10 +1900,10 @@ public class TestSleekUI {
           "background-color: #ff0000;" +
 //          "background-image: url(\"https://example.com/example.png\");" +
 //          "background-size: cover;" +
-//          "border-radius: 22px;" +
-//          "border: 1px solid #0000ff;" +
-//          "box-shadow: 0px 3px 2px #12121244;" +
-//          "padding: 0px 0px 0px 30px;" +
+          "border-radius: 25px;" +
+          "border: 1px solid #38B0DE;" +
+          "box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);" +
+          "padding: 0px 0px 5px 0px;" +
           "color: #eee;" +
           "font-size: 20px;" +
           "line-height: 20px;" +
@@ -1911,13 +1912,13 @@ public class TestSleekUI {
 //          "text-shadow: 0px 0px 2px #38B0DE;" +
           "}",
       CSS_BTN_PROFILE = "{" +
-//          "background-color: #ff0000;" +
+          "background-color: #ff0000;" +
 //          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Arizona.svg/2000px-Flag_of_Arizona.svg.png\");" +
           "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Flag_of_Flanders.svg/1024px-Flag_of_Flanders.svg.png\");" +
           "background-size: cover;" +
           "border-radius: 25px;" +
-//          "border: 1px solid #0000ff;" +
-//          "box-shadow: 0px 3px 2px #12121244;" +
+          "border: 1px solid #38B0DE;" +
+          "box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);" +
 //          "padding: 0px 0px 0px 30px;" +
 //          "color: #eee;" +
 //          "font-size: 20px;" +
@@ -1931,21 +1932,26 @@ public class TestSleekUI {
     //TODO Build a simple complete App UI to test and demonstrate how easy Sleek is to use.
 
     SleekElement toolbar = new SleekElement(FIXED_TOUCHABLE.prio(slkc.getNextPrio()));
-    toolbar.setElementString("Main\uD83D\uDD28");
+    toolbar.setElementString("\u2605 Sleek \u2605");
     toolbar.addCSSblock(new CSSblockBase(CSS_TOOLBAR));
     toolbar.getLayout()
         .x(X.ABSOLUTE, -UtilPx.getPixels(10), null)
         .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
-        .h(H.ABSOLUTE, UtilPx.getPixels(60), null);
+        .h(H.ABSOLUTE, UtilPx.getPixels(50), null);
     slkc.addSleek(toolbar);
+
+    final int btnSize = UtilPx.getPixels(50);
+    final int btnSpacing = UtilPx.getPixels(15);
 
     SleekElement btnSettings = new SleekElement(DEFAULT);
     btnSettings.setElementString("α");
     btnSettings.addCSSblock(new CSSblockBase(CSS_BTN_SETTINGS));
     btnSettings.getLayout()
-        .x(X.PARENT_RIGHT, toolbar.getPadding().right, toolbar.getBackground())
-        .w(W.ABSOLUTE, UtilPx.getPixels(60), null)
-        .h(H.ABSOLUTE, UtilPx.getPixels(60), null);
+        .x(X.PARENT_RIGHT, toolbar.getPadding().right + btnSpacing, toolbar.getBackground())
+//        .y(Y.POS_CENTER, 0, toolbar.getBackground())
+        .y(Y.PARENT_BOTTOM, -Calc.divideToInt(btnSize, 2.0f), toolbar.getBackground())
+        .w(W.ABSOLUTE, btnSize, null)
+        .h(H.ABSOLUTE, btnSize, null);
     toolbar.addSleek(btnSettings);
 
     SleekElement btnProfile = new SleekElement(DEFAULT);
@@ -1955,10 +1961,11 @@ public class TestSleekUI {
     btnProfile.getBackgroundImage().getPaint().setFilterBitmap(true);
     btnProfile.getBackgroundImage().getPaint().setAntiAlias(true);
     btnProfile.getLayout()
-        .x(X.WEST_OF, UtilPx.getPixels(5), btnSettings)
-        .y(Y.POS_CENTER, 0, toolbar.getBackground())
-        .w(W.ABSOLUTE, UtilPx.getPixels(200), null)
-        .h(H.ABSOLUTE, UtilPx.getPixels(200), null);
+        .x(X.WEST_OF, btnSpacing, btnSettings)
+//        .y(Y.POS_CENTER, 0, toolbar.getBackground())
+        .y(Y.PARENT_BOTTOM, -Calc.divideToInt(btnSize, 2.0f), toolbar.getBackground())
+        .w(W.ABSOLUTE, btnSize, null)
+        .h(H.ABSOLUTE, btnSize, null);
     toolbar.addSleek(btnProfile);
   }
 
