@@ -27,4 +27,8 @@ public class UtilPx {
         return Math.round(dipValue * theContext.getResources().getDisplayMetrics().density);
     }
 
+    public static int getDP(Context theContext, int pixelValue) {
+        return Math.round(pixelValue / theContext.getResources().getDisplayMetrics().density);
+    }
+
 }

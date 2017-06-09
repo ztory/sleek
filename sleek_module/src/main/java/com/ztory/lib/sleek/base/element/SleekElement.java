@@ -117,18 +117,18 @@ public class SleekElement extends SleekBaseComposite {
   @Override
   public void onSleekParentAdd(SleekCanvas sleekCanvas, SleekParent composite) {
     super.onSleekParentAdd(sleekCanvas, composite);
-    checkCSS();// Check CSS immediately so that computed values are ready for consumers/children.
+    checkCSS(false);// Check CSS immediately so that computed values are ready for consumers/children.
     requestLayout();// Needs to be called in order for children to call their onSleekCanvasResize().
   }
 
-  public void checkCSS() {
+  public void checkCSS(boolean forceCSSupdate) {
 
     if (!isAddedToParent()) {
       return;//do not apply css if element does not have a parent
     }
 
     // Add CSS blocks from elementCSSlist to elementCSS
-    if (elementCSSneedsUpdate) {
+    if (forceCSSupdate || elementCSSneedsUpdate) {
       elementCSSneedsUpdate = false;
       if (elementCSS.size() > 0) {
         elementCSS.clear();
@@ -140,8 +140,14 @@ public class SleekElement extends SleekBaseComposite {
 
     // Apply new CSS if state in elementCSS has changed
     if (elementCSSmodifiedTs != elementCSS.getModifiedTimestamp()) {
+
       elementCSSmodifiedTs = elementCSS.getModifiedTimestamp();
       applyCSS();
+
+      if (elementCSSruntimeUpdate && addedToParent && loaded) {
+        reloadShadowBitmap(false);
+      }
+      elementCSSruntimeUpdate = false;
     }
   }
 
@@ -316,9 +322,19 @@ public class SleekElement extends SleekBaseComposite {
     requestLayout();
   }
 
+  public SleekElement addCSSblockRaw(CSSblock cssBlock) {
+    elementCSSlist.add(cssBlock);
+    return this;
+  }
+
   public SleekElement addCSSblock(CSSblock cssBlock) {
     elementCSSlist.add(cssBlock);
     setCSSneedsUpdate();
+    return this;
+  }
+
+  public SleekElement removeCSSblockRaw(CSSblock cssBlock) {
+    elementCSSlist.remove(cssBlock);
     return this;
   }
 
@@ -760,13 +776,7 @@ public class SleekElement extends SleekBaseComposite {
   public void onSleekCanvasResize(SleekCanvasInfo info) {
 
     // Check if changes have been made to CSS properties
-    if (elementCSSneedsUpdate) {
-      checkCSS();
-      if (elementCSSruntimeUpdate && addedToParent && loaded) {
-        reloadShadowBitmap(false);
-      }
-      elementCSSruntimeUpdate = false;
-    }
+    checkCSS(false);
 
     super.onSleekCanvasResize(info);
   }
