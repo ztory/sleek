@@ -219,6 +219,7 @@ public class SleekElement extends SleekBaseComposite {
         elementShadowColor = boxShadowColor;
         elementShadowBitmapPaint = new Paint();
         elementShadowBitmapPaint.setColor(elementBackgroundColor);
+        elementShadowBitmapPaint.setAntiAlias(true);
       } else {
         elementShadowRadius = 0;
       }

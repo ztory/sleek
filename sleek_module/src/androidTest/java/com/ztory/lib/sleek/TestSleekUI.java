@@ -1897,7 +1897,7 @@ public class TestSleekUI {
 //          "text-shadow: 0px 0px 2px #38B0DE;" +
           "}",
       CSS_BTN_SETTINGS = "{" +
-          "background-color: #ff0000;" +
+          "background-color: #222;" +
 //          "background-image: url(\"https://example.com/example.png\");" +
 //          "background-size: cover;" +
           "border-radius: 25px;" +
