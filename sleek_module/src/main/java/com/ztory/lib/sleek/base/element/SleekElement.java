@@ -706,6 +706,8 @@ public class SleekElement extends SleekBaseComposite {
 //    }
 
     if (elementText != null) {
+      final int textOldW = elementText.getSleekW();
+      final int textOldH = elementText.getSleekH();
       if (paddingRect != null) {
         elementText.setSleekBounds(
             paddingRect.left + elementBorderWidth.left,
@@ -722,6 +724,13 @@ public class SleekElement extends SleekBaseComposite {
             w - elementBorderWidth.left - elementBorderWidth.right,
             h - elementBorderWidth.top - elementBorderWidth.bottom
         );
+      }
+
+      // Refresh text bounds if size has changed
+      if (textOldW != elementText.getSleekW() || textOldH != elementText.getSleekH()) {
+        elementText.setMaxWrapWidth(elementText.getSleekW());
+        elementText.setMaxWrapHeight(elementText.getSleekH());
+        elementText.initText();
       }
     }
 

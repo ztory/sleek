@@ -2009,6 +2009,8 @@ public class TestSleekUI {
     toolbar.addSleek(btnProfile);
 
     final SleekElement btnImage = new SleekElement(TOUCHABLE);
+//    btnImage.setWrapTextWidth(true);
+//    btnImage.setWrapTextHeight(true);
     btnImage.setElementString("Image");
     btnImage.addCSSblock(new CSSblockBase(CSS_BTN_IMAGE));
 //    btnImage.createBackgroundImage();
@@ -2030,9 +2032,7 @@ public class TestSleekUI {
           //TODO ALSO maybe we need a start() method on the SleekCSSanim to be in control????
           //TODO I dont think we need start() method since goalX/Y/W/H can be set at runtime?
 
-          //TODO INVESTIGATE WHY elementString is not centered during animation !!!!
-
-//          btnImage.setElementString("");
+          btnImage.setElementString("");
           btnImage.addCSSblockRaw(flagBgImgCSS);
           btnImage.setSleekAnimView(
               new SleekCSSanim(btnImage, SleekCSSanim.ADD_CSS, activeCSS, yellowBgCSS)
@@ -2043,7 +2043,7 @@ public class TestSleekUI {
                   .setInterpolator(new DecelerateInterpolator())
           );
         }}, new Runnable() { @Override public void run() {
-//          btnImage.setElementString("Image");
+          btnImage.setElementString("Image");
           btnImage.removeCSSblockRaw(flagBgImgCSS);
           btnImage.setSleekAnimView(
               new SleekCSSanim(btnImage, SleekCSSanim.REMOVE_CSS, activeCSS, yellowBgCSS)

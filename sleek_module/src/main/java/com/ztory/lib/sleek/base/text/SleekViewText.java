@@ -38,7 +38,7 @@ public class SleekViewText extends SleekBase {
 
     protected int mMaxWrapWidth = -1, mMaxWrapHeight = -1;
 
-    protected String textString = "UNSET";
+    protected String textString = "";
     protected int textColor = 0xff000000;
     protected float textSize = TEXT_SIZE_DEFAULT;
     protected float textLineHeight = SleekText.LINE_HEIGHT_DYNAMIC;
@@ -299,7 +299,11 @@ public class SleekViewText extends SleekBase {
     }
 
     public SleekViewText setTextString(String theTextString) {
-        textString = theTextString;
+        if (theTextString != null) {
+            textString = theTextString;
+        } else {
+            textString = "";
+        }
         return this;
     }
 
