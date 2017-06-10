@@ -1937,12 +1937,12 @@ public class TestSleekUI {
           "border-radius: 25px;" +
           "border: 1px solid #38B0DE;" +
           "box-shadow: 0px 0px 4px #38B0DEdd;" +
-//          "padding: 0px 0px 0px 30px;" +
-//          "color: #eee;" +
-//          "font-size: 20px;" +
-//          "line-height: 20px;" +
-//          "text-align: center;" +
-//          "vertical-align: middle;" +
+          "padding: 0px 0px 2px 0px;" +
+          "color: #333;" +
+          "font-size: 14px;" +
+          "line-height: 14px;" +
+          "text-align: center;" +
+          "vertical-align: middle;" +
 //          "text-shadow: 0px 0px 2px #38B0DE;" +
           "}",
       CSS_BTN_ACTIVE = "{" +
@@ -1950,12 +1950,21 @@ public class TestSleekUI {
           "border-radius: 4px;" +
           "border: 1px solid #FFA038;" +
           "box-shadow: 0px 0px 4px #FFA038;" +
+          "}",
+      CSS_YELLOW_BACKGROUND = "{" +
+          "background-color: #FFC638;" +
+          "}",
+      CSS_FLAG_BG_IMG = "{" +
+          "background-size: cover;" +
+          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Arizona.svg/2000px-Flag_of_Arizona.svg.png\");" +
           "}";
 
   private static final void loadUIcompleteAppUIexample1(final SleekCanvas slkc) {
     //TODO Build a simple complete App UI to test and demonstrate how easy Sleek is to use.
 
     final CSSblock activeCSS = new CSSblockBase(CSS_BTN_ACTIVE);
+    final CSSblock yellowBgCSS = new CSSblockBase(CSS_YELLOW_BACKGROUND);
+    final CSSblock flagBgImgCSS = new CSSblockBase(CSS_FLAG_BG_IMG);
 
     final SleekElement toolbar = new SleekElement(FIXED_TOUCHABLE.prio(slkc.getNextPrio()));
     toolbar.setElementString("\u2605 Sleek \u2605");
@@ -2000,7 +2009,10 @@ public class TestSleekUI {
     toolbar.addSleek(btnProfile);
 
     final SleekElement btnImage = new SleekElement(TOUCHABLE);
+    btnImage.setElementString("Image");
     btnImage.addCSSblock(new CSSblockBase(CSS_BTN_IMAGE));
+//    btnImage.createBackgroundImage();
+//    btnImage.getBackgroundImage().setFadeAnimOnLoad(false);
     btnImage.getLayout()
         .x(X.WEST_OF, btnSpacing, btnProfile)
 //        .y(Y.POS_CENTER, 0, toolbar.getBackground())
@@ -2009,19 +2021,36 @@ public class TestSleekUI {
         .h(H.ABSOLUTE, btnSize, null);
     btnImage.getTouchHandler().setClickAction(
         new Runnable() { @Override public void run() {
+
+          //TODO If we were to use CSS "transition: all 0.5s ease-out;"
+          //TODO then when we add CSSblock we need to get a SleekCSSanim object back...
+          //TODO ...but what should happen if "transition"-property is NOT set, then we...
+          //TODO ...should NOT get a SleekCSSanim-object returned... THINK ABOUT THIS!
+
+          //TODO ALSO maybe we need a start() method on the SleekCSSanim to be in control????
+          //TODO I dont think we need start() method since goalX/Y/W/H can be set at runtime?
+
+          //TODO INVESTIGATE WHY elementString is not centered during animation !!!!
+
+//          btnImage.setElementString("");
+          btnImage.addCSSblockRaw(flagBgImgCSS);
           btnImage.setSleekAnimView(
-              new SleekCSSanim(btnImage, activeCSS, false)
-                  .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing - btnSpacing)
-                  .setGoalY(btnProfile.getSleekY() + btnSpacing)
-                  .setDuration(1500)
+              new SleekCSSanim(btnImage, SleekCSSanim.ADD_CSS, activeCSS, yellowBgCSS)
+                  .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing - btnSize)
+                  .setGoalW(btnProfile.getSleekW() + btnSize)
+                  .setGoalH(btnProfile.getSleekH() + btnSize)
+                  .setDuration(1000)
                   .setInterpolator(new DecelerateInterpolator())
           );
         }}, new Runnable() { @Override public void run() {
+//          btnImage.setElementString("Image");
+          btnImage.removeCSSblockRaw(flagBgImgCSS);
           btnImage.setSleekAnimView(
-              new SleekCSSanim(btnImage, activeCSS, true)
+              new SleekCSSanim(btnImage, SleekCSSanim.REMOVE_CSS, activeCSS, yellowBgCSS)
                   .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing)
-                  .setGoalY(btnProfile.getSleekY())
-                  .setDuration(1500)
+                  .setGoalW(btnProfile.getSleekW())
+                  .setGoalH(btnProfile.getSleekH())
+                  .setDuration(1000)
                   .setInterpolator(new DecelerateInterpolator())
           );
         }}, new Runnable() { @Override public void run() {

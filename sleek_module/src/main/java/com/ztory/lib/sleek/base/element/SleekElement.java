@@ -302,16 +302,15 @@ public class SleekElement extends SleekBaseComposite {
     String oldElementBackgroundImageUrl = elementBackgroundImageUrl;
     elementBackgroundImageUrl = elementCSS.getBackgroundImage();
     if (elementBackgroundImageUrl != null) {
-      createBackgroundImage();
       if (!elementBackgroundImageUrl.equals(oldElementBackgroundImageUrl)) {
-        localElementBackgroundImageUrl =
-            !elementBackgroundImageUrl.startsWith("https://")
-                && !elementBackgroundImageUrl.startsWith("http://");
+        localElementBackgroundImageUrl = !elementBackgroundImageUrl.startsWith("https://")
+            && !elementBackgroundImageUrl.startsWith("http://");
+        createBackgroundImage();
         reloadBackgroundImage();
       }
     } else if (elementBackgroundImage != null) {
       initBackgroundImageBitmapFetcher();
-      elementBackgroundImage.setBitmap(null);
+      elementBackgroundImage.onSleekUnload();
     }
 
     elementBackgroundSize = elementCSS.getBackgroundSize();
@@ -343,6 +342,16 @@ public class SleekElement extends SleekBaseComposite {
     boolean removedItem = elementCSSlist.remove(cssBlock);
     setCSSneedsUpdate();
     return removedItem;
+  }
+
+  public int removeCSSblocksRaw(CSSblock... cssBlock) {
+    int removedBlocks = 0;
+    for (CSSblock iterBlock : cssBlock) {
+      if (removeCSSblockRaw(iterBlock)) {
+        removedBlocks++;
+      }
+    }
+    return removedBlocks;
   }
 
   public boolean containsCSSblock(CSSblock cssBlock) {
@@ -394,12 +403,17 @@ public class SleekElement extends SleekBaseComposite {
   }
 
   public void createBackgroundImage() {
+    // Default to fade anim for remote images
+    createBackgroundImage(!localElementBackgroundImageUrl);
+  }
+
+  public void createBackgroundImage(boolean fadeAnimOnLoad) {
     if (elementBackgroundImage != null) {
       return;
     }
 
     elementBackgroundImage = new SleekBaseImage(elementBorderRadius, SleekParam.DEFAULT);
-    elementBackgroundImage.setFadeAnimOnLoad(false);
+    elementBackgroundImage.setFadeAnimOnLoad(fadeAnimOnLoad);
     elementBackgroundImage.setBitmapListener(new ISleekCallback<SleekBaseImage>() {
       @Override
       public void sleekCallback(SleekBaseImage sleekBaseImage) {
@@ -528,6 +542,7 @@ public class SleekElement extends SleekBaseComposite {
 
     if (elementBackgroundImageUrl != null) {
       if (loaded && addedToParent) {
+        elementBackgroundImage.onSleekUnload();
         mSlkCanvas.loadSleek(elementBackgroundImage);
         checkSetLocalBackground();
       }
@@ -1174,6 +1189,7 @@ public class SleekElement extends SleekBaseComposite {
       if (!elementBackgroundSizeIsCover
           || elementBackgroundImage == null
           || !elementBackgroundImage.isBitmapLoaded()
+          || elementBackgroundImage.getPaint().getAlpha() != 255
           ) {
         // Draw background-rect
         elementShadowBitmapPaint.setColor(elementBackgroundColor);

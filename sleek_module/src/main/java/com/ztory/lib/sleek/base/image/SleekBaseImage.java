@@ -9,16 +9,15 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.os.Handler;
-
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvasInfo;
 import com.ztory.lib.sleek.animation.SAVfade;
+import com.ztory.lib.sleek.animation.SleekAnimation;
 import com.ztory.lib.sleek.base.SleekBase;
 import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.contract.ISleekCallback;
 import com.ztory.lib.sleek.contract.ISleekData;
 import com.ztory.lib.sleek.contract.ISleekDrawView;
-
 import java.util.concurrent.Executor;
 
 /**
@@ -181,16 +180,21 @@ public class SleekBaseImage extends SleekBase {
             mPaint.setShader(null);
         }
 
-        if (mFadeAnimOnLoad && mBitmapLoaded) {
-            setSleekAnimView(
+        if (mBitmapLoaded) {
+            if (mFadeAnimOnLoad) {
+                mPaint.setAlpha(0);
+                setSleekAnimView(
                     new SAVfade(
-                            100,
-                            255,
-                            300,
-                            mPaint,
-                            ISleekDrawView.NO_DRAW
+                        0,
+                        255,
+                        SleekAnimation.ANIM_DURATION_SHORT,
+                        mPaint,
+                        ISleekDrawView.NO_DRAW
                     )
-            );
+                );
+            } else {
+                mPaint.setAlpha(255);
+            }
         }
 
         if (mBitmapListener != null) {
