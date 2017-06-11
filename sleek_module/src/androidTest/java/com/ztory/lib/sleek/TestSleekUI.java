@@ -2031,16 +2031,16 @@ public class TestSleekUI {
           //TODO I dont think we need start() method since goalX/Y/W/H can be set at runtime?
 
           btnImage.setElementString("");
-          btnImage.addCSSblockRaw(flagBgImgCSS);
-          btnImage.addCSSanimated(activeCSS, yellowBgCSS)
+          //btnImage.addCSSblockRaw(flagBgImgCSS);
+          btnImage.addCSSanimated(flagBgImgCSS, activeCSS, yellowBgCSS)
               .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing - btnSize)
               .setGoalW(btnProfile.getSleekW() + btnSize)
               .setGoalH(btnProfile.getSleekH() + btnSize)
               .setDuration(1000);
         }}, new Runnable() { @Override public void run() {
           btnImage.setElementString("Image");
-          btnImage.removeCSSblockRaw(flagBgImgCSS);
-          btnImage.removeCSSanimated(activeCSS, yellowBgCSS)
+          //btnImage.removeCSSblockRaw(flagBgImgCSS);
+          btnImage.removeCSSanimated(flagBgImgCSS, activeCSS, yellowBgCSS)
               .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing)
               .setGoalW(btnProfile.getSleekW())
               .setGoalH(btnProfile.getSleekH())

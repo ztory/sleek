@@ -72,10 +72,15 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
       }
     }
 
+    // Add CSSblocks before animStateCSS is added
+    if (!removeTargetCSS) {
+      for (CSSblock iterBlock : targetCSSlist) {
+        sleekElement.addCSSblockRaw(iterBlock);
+      }
+    }
+
     animStateCSS = new CSSblockBase(sleekElementCSS.size());
     animStateCSS.put(SleekElement.CSS_BLOCK_ANIMATION_KEY, "true");// Mark as animation CSS block
-
-    // Use addCSSblockRaw() to avoid calling requestLayout
     sleekElement.addCSSblockRaw(animStateCSS);
   }
 
@@ -209,13 +214,6 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
 
       // Remove animation CSSblock
       sleekElement.removeCSSblockRaw(animStateCSS);
-
-      if (!removeTargetCSS) {
-        // Add goalCSS and update CSS without calling SleekElement.requestLayout()
-        for (CSSblock iterBlock : targetCSSlist) {
-          sleekElement.addCSSblockRaw(iterBlock);
-        }
-      }
       sleekElement.checkCSS(true);
       sleekElement.reloadShadowBitmap(false);
     }
