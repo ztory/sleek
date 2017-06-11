@@ -11,12 +11,10 @@ import android.graphics.Color;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.view.animation.DecelerateInterpolator;
 import com.ztory.lib.sleek.animation.SAVfade;
 import com.ztory.lib.sleek.animation.SAVtransXYWH;
 import com.ztory.lib.sleek.base.SleekBase;
 import com.ztory.lib.sleek.base.SleekParam;
-import com.ztory.lib.sleek.base.element.SleekCSSanim;
 import com.ztory.lib.sleek.base.element.SleekElement;
 import com.ztory.lib.sleek.base.element.css.CSSblock;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
@@ -2034,25 +2032,19 @@ public class TestSleekUI {
 
           btnImage.setElementString("");
           btnImage.addCSSblockRaw(flagBgImgCSS);
-          btnImage.setSleekAnimView(
-              new SleekCSSanim(btnImage, SleekCSSanim.ADD_CSS, activeCSS, yellowBgCSS)
-                  .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing - btnSize)
-                  .setGoalW(btnProfile.getSleekW() + btnSize)
-                  .setGoalH(btnProfile.getSleekH() + btnSize)
-                  .setDuration(1000)
-                  .setInterpolator(new DecelerateInterpolator())
-          );
+          btnImage.addCSSanimated(activeCSS, yellowBgCSS)
+              .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing - btnSize)
+              .setGoalW(btnProfile.getSleekW() + btnSize)
+              .setGoalH(btnProfile.getSleekH() + btnSize)
+              .setDuration(1000);
         }}, new Runnable() { @Override public void run() {
           btnImage.setElementString("Image");
           btnImage.removeCSSblockRaw(flagBgImgCSS);
-          btnImage.setSleekAnimView(
-              new SleekCSSanim(btnImage, SleekCSSanim.REMOVE_CSS, activeCSS, yellowBgCSS)
-                  .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing)
-                  .setGoalW(btnProfile.getSleekW())
-                  .setGoalH(btnProfile.getSleekH())
-                  .setDuration(1000)
-                  .setInterpolator(new DecelerateInterpolator())
-          );
+          btnImage.removeCSSanimated(activeCSS, yellowBgCSS)
+              .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing)
+              .setGoalW(btnProfile.getSleekW())
+              .setGoalH(btnProfile.getSleekH())
+              .setDuration(1000);
         }}, new Runnable() { @Override public void run() {
 
         }}

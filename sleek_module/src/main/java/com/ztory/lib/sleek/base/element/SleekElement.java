@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.animation.DecelerateInterpolator;
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvas;
 import com.ztory.lib.sleek.SleekCanvasInfo;
@@ -321,6 +322,20 @@ public class SleekElement extends SleekBaseComposite {
     elementCSSruntimeUpdate = addedToParent && loaded;
     elementCSSneedsUpdate = true;
     requestLayout();
+  }
+
+  public SleekCSSanim addCSSanimated(CSSblock... cssBlockArray) {
+    SleekCSSanim cssAnimation = new SleekCSSanim(this, SleekCSSanim.ADD_CSS, cssBlockArray);
+    cssAnimation.setInterpolator(new DecelerateInterpolator());
+    setSleekAnimView(cssAnimation);
+    return cssAnimation;
+  }
+
+  public SleekCSSanim removeCSSanimated(CSSblock... cssBlockArray) {
+    SleekCSSanim cssAnimation = new SleekCSSanim(this, SleekCSSanim.REMOVE_CSS, cssBlockArray);
+    cssAnimation.setInterpolator(new DecelerateInterpolator());
+    setSleekAnimView(cssAnimation);
+    return cssAnimation;
   }
 
   public SleekElement addCSSblockRaw(CSSblock cssBlock) {
