@@ -2027,11 +2027,7 @@ public class TestSleekUI {
           //TODO ...but what should happen if "transition"-property is NOT set, then we...
           //TODO ...should NOT get a SleekCSSanim-object returned... THINK ABOUT THIS!
 
-          //TODO ALSO maybe we need a start() method on the SleekCSSanim to be in control????
-          //TODO I dont think we need start() method since goalX/Y/W/H can be set at runtime?
-
           btnImage.setElementString("");
-          //btnImage.addCSSblockRaw(flagBgImgCSS);
           btnImage.addCSSanimated(flagBgImgCSS, activeCSS, yellowBgCSS)
               .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing - btnSize)
               .setGoalW(btnProfile.getSleekW() + btnSize)
@@ -2039,7 +2035,6 @@ public class TestSleekUI {
               .setDuration(1000);
         }}, new Runnable() { @Override public void run() {
           btnImage.setElementString("Image");
-          //btnImage.removeCSSblockRaw(flagBgImgCSS);
           btnImage.removeCSSanimated(flagBgImgCSS, activeCSS, yellowBgCSS)
               .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing)
               .setGoalW(btnProfile.getSleekW())
