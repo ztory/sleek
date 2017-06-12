@@ -50,12 +50,6 @@ public class SleekElement extends SleekBaseComposite {
 
   protected final List<CSSblock> elementCSSlist = new ArrayList<>(4);
 
-  /**
-   * If CSS is updated at runtime, be sure to set this to true.
-   */
-  protected boolean elementCSSneedsUpdate = false;
-  protected boolean elementCSSruntimeUpdate = false;
-
   protected final CSSblock elementCSS = new CSSblockBase(12);
   protected long elementCSSmodifiedTs;
 
@@ -120,43 +114,33 @@ public class SleekElement extends SleekBaseComposite {
   @Override
   public void onSleekParentAdd(SleekCanvas sleekCanvas, SleekParent composite) {
     super.onSleekParentAdd(sleekCanvas, composite);
-    checkCSS(false);// Check CSS immediately so that computed values are ready for consumers/children.
     requestLayout();// Needs to be called in order for children to call their onSleekCanvasResize().
   }
 
-  public void checkCSS(boolean forceCSSupdate) {
+  public void refreshCSS() {
 
-    if (!isAddedToParent()) {
-      return;//do not apply css if element does not have a parent
+    if (elementCSS.size() > 0) {
+      elementCSS.clear();
     }
 
-    // Add CSS blocks from elementCSSlist to elementCSS
-    if (forceCSSupdate || elementCSSneedsUpdate) {
-      elementCSSneedsUpdate = false;
-      if (elementCSS.size() > 0) {
-        elementCSS.clear();
-      }
-      for (CSSblock iterBlock : elementCSSlist) {
-        elementCSS.putAll(iterBlock);//will overwrite existing keys
-      }
+    for (CSSblock iterBlock : elementCSSlist) {
+      elementCSS.putAll(iterBlock);//will overwrite existing keys
     }
 
     // Apply new CSS if state in elementCSS has changed
     if (elementCSSmodifiedTs != elementCSS.getModifiedTimestamp()) {
-
       elementCSSmodifiedTs = elementCSS.getModifiedTimestamp();
       applyCSS();
-
-      if (elementCSSruntimeUpdate && addedToParent && loaded) {
+      resetSleekBounds();// refreshes text padding and background-image positioning
+      if (addedToParent && loaded) {
         reloadShadowBitmap(false);
       }
-      elementCSSruntimeUpdate = false;
     }
   }
 
   /**
    * NOTE: If applyCSS() has not been called prior to this then padding will not be initialized.
-   * @return
+   * @return a Rect with padding values
    */
   public Rect getPadding() {
     if (paddingRect != null) {
@@ -192,9 +176,6 @@ public class SleekElement extends SleekBaseComposite {
     Rect borderWidth = elementCSS.getBorderWidth();
     if (borderWidth != null) {
       elementBorderWidth.set(borderWidth);
-//      elementBorder.getPaint().setStyle(Paint.Style.STROKE);
-//      elementBorder.getPaint().setStrokeWidth(elementBorderWidth.left);
-      //elementBorder.getPaint().setAlpha(120);
     } else {
       elementBorderWidth.set(0, 0, 0, 0);
     }
@@ -318,22 +299,24 @@ public class SleekElement extends SleekBaseComposite {
     elementBackgroundSizeIsCover = CSS.Value.COVER.equals(elementBackgroundSize);
   }
 
-  public void setCSSneedsUpdate() {
-    elementCSSruntimeUpdate = addedToParent && loaded;
-    elementCSSneedsUpdate = true;
-    requestLayout();
-  }
+  //TODO If we add below methods then we can call checkCSS(forced==true) if addedToParent==true
+  //TODO checkCSS can always be forced i think setCSSneedsUpdate is not needed anymore i think?
+  //TODO elementCSSruntimeUpdate in checkCSS can be replaced with checking addedToParent && loaded
+
+  //TODO WHAT should be the return type ?
+  //public ??? addCSS(CSSblock... cssBlockArray) { }
+  //public ??? removeCSS(CSSblock... cssBlockArray) { }
 
   public SleekCSSanim addCSSanimated(CSSblock... cssBlockArray) {
     SleekCSSanim cssAnimation = new SleekCSSanim(this, SleekCSSanim.ADD_CSS, cssBlockArray);
-    cssAnimation.setInterpolator(new DecelerateInterpolator());
+    cssAnimation.setInterpolator(new DecelerateInterpolator());//TODO TRY OTHER INTERPOLATORS !!!!
     setSleekAnimView(cssAnimation);
     return cssAnimation;
   }
 
   public SleekCSSanim removeCSSanimated(CSSblock... cssBlockArray) {
     SleekCSSanim cssAnimation = new SleekCSSanim(this, SleekCSSanim.REMOVE_CSS, cssBlockArray);
-    cssAnimation.setInterpolator(new DecelerateInterpolator());
+    cssAnimation.setInterpolator(new DecelerateInterpolator());//TODO TRY OTHER INTERPOLATORS !!!!
     setSleekAnimView(cssAnimation);
     return cssAnimation;
   }
@@ -345,7 +328,7 @@ public class SleekElement extends SleekBaseComposite {
 
   public SleekElement addCSSblock(CSSblock cssBlock) {
     elementCSSlist.add(cssBlock);
-    setCSSneedsUpdate();
+    refreshCSS();
     return this;
   }
 
@@ -355,7 +338,7 @@ public class SleekElement extends SleekBaseComposite {
 
   public boolean removeCSSblock(CSSblock cssBlock) {
     boolean removedItem = elementCSSlist.remove(cssBlock);
-    setCSSneedsUpdate();
+    refreshCSS();
     return removedItem;
   }
 
@@ -568,7 +551,7 @@ public class SleekElement extends SleekBaseComposite {
     if (elementBackgroundImageUrl == null || localElementBackgroundImageUrl) {
       elementBackgroundImage.setBitmapFetcher(null, null, null);//clear fetcher
     } else {
-      elementBackgroundImage.setBitmapFetcher(mSlkCanvas.getHandler(),
+      elementBackgroundImage.setBitmapFetcher(mSlkCanvas != null ? mSlkCanvas.getHandler() : null,
           UtilExecutor.NETWORK_EXECUTOR,
           new ISleekData<Bitmap>() {
             @Override
@@ -593,12 +576,12 @@ public class SleekElement extends SleekBaseComposite {
     if (elementBackgroundImageUrl != null && localElementBackgroundImageUrl) {
 
       // DEBUG CODE, because we have no drawable resources in sleek library.
-      //            int resId = UtilPx.getDefaultContext().getResources().getIdentifier(
-      //                    elementBackgroundImageUrl,
-      //                    "drawable",
-      //                    "android"
-      //            );
-      //            elementBackgroundImage.setBitmap(UtilResources.getBitmap(resId));
+//      int resId = UtilPx.getDefaultContext().getResources().getIdentifier(
+//          elementBackgroundImageUrl,
+//          "drawable",
+//          "android"
+//      );
+//      elementBackgroundImage.setBitmap(UtilResources.getBitmap(resId));
 
       Bitmap bitmapResource = UtilResources.getBitmap(
           UtilResources.getResourceIdDrawable(elementBackgroundImageUrl)
@@ -702,23 +685,12 @@ public class SleekElement extends SleekBaseComposite {
     canvas.restore();
   }
 
+  public void resetSleekBounds() {
+    setSleekBounds(getSleekX(), getSleekY(), getSleekW(), getSleekH());
+  }
+
   @Override
   public void setSleekBounds(float x, float y, int w, int h) {
-
-//    Log.d("TEZT",
-//        "TEZT [" + (w % 2) + "] [" + (h % 2) + "]"
-//    );
-//
-//    x = (float) Math.floor(x);
-//    y = (float) Math.floor(y);
-//
-//    if (w % 2 != 0) {
-//      w = w - 1;
-//    }
-//
-//    if (h % 2 != 0) {
-//      h = h - 1;
-//    }
 
     if (elementText != null) {
       final int textOldW = elementText.getSleekW();
@@ -741,11 +713,13 @@ public class SleekElement extends SleekBaseComposite {
         );
       }
 
-      // Refresh text bounds if size has changed
-      if (textOldW != elementText.getSleekW() || textOldH != elementText.getSleekH()) {
-        elementText.setMaxWrapWidth(elementText.getSleekW());
-        elementText.setMaxWrapHeight(elementText.getSleekH());
-        elementText.initText();
+      if (elementString != null) {
+        // Refresh text bounds if size has changed
+        if (textOldW != elementText.getSleekW() || textOldH != elementText.getSleekH()) {
+          elementText.setMaxWrapWidth(elementText.getSleekW());
+          elementText.setMaxWrapHeight(elementText.getSleekH());
+          elementText.initText();
+        }
       }
     }
 
@@ -777,34 +751,14 @@ public class SleekElement extends SleekBaseComposite {
         elementWidth,
         elementHeight
     );
-    //SOLVES BG-EDGE-BLEED-THROUGH by decreasing elementBackground size when CSS-border is set
     elementBackground.setSleekBounds(
         elementBorder.getSleekX() + elementBorderWidth.left,
         elementBorder.getSleekY() + elementBorderWidth.top,
         elementBorder.getSleekW() - elementBorderWidth.left - elementBorderWidth.right,
         elementBorder.getSleekH() - elementBorderWidth.top - elementBorderWidth.bottom
     );
-    //elementBackground.setSleekBounds(0, 0, elementWidth, elementHeight);
 
     if (loaded && addedToParent) {
-
-//      if (elementShadowRadius > 0) {
-//        if (sleekW != shadowViewSizeW || sleekH != shadowViewSizeH) {
-//
-//          // TODO HOW TO AVOID LOADING THIS ON UI-THREAD ????
-//          // TODO THIS NEEDS TO BE CALLED ON UI-THREAD IF ANIMATIONS ARE GOING TO ANIMATE SHADOW !!!
-//
-//          //TODO POSSIBLE SOLUTION:
-//          //TODO Maybe we can "stretch" north/south shadow when animating width, and...
-//          //TODO ... west/east shadow when animating height
-//          //reloadShadowBitmap(false);// param: allowBgThreadLoad
-//
-//          Log.d("SleekElement",
-//              "SleekElement.reloadShadowBitmap on UI THREAD!"
-//          );
-//        }
-//      }
-
       positionBackgroundImage();
     }
   }
@@ -829,10 +783,6 @@ public class SleekElement extends SleekBaseComposite {
 
   @Override
   public void onSleekCanvasResize(SleekCanvasInfo info) {
-
-    // Check if changes have been made to CSS properties
-    checkCSS(false);
-
     super.onSleekCanvasResize(info);
   }
 
@@ -926,8 +876,6 @@ public class SleekElement extends SleekBaseComposite {
   protected final RectF shadowDstRectF = new RectF();
 
   protected boolean drawShadowBitmap(Canvas canvas, SleekCanvasInfo info) {
-
-    //TODO Add boolean that keeps track of if (elementShadowBitmapList.size() < 4) !
 
     if (elementShadowBitmapList.size() < 4) {
       return false;

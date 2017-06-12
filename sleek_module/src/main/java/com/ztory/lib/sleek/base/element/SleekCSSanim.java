@@ -57,11 +57,11 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
       if (removeTargetCSS) {
         sleekElement.removeCSSblocksRaw(targetCSSlist);
       }
-      sleekElement.checkCSS(true);
+      sleekElement.refreshCSS();
       sleekElementCSS = sleekElement.getCSS();
       goalCSS.putAll(sleekElementCSS);
     } else if (removeTargetCSS && sleekElement.removeCSSblocksRaw(targetCSSlist) > 0) {
-      sleekElement.checkCSS(true);
+      sleekElement.refreshCSS();
       sleekElementCSS = sleekElement.getCSS();
       goalCSS.putAll(sleekElementCSS);
     }
@@ -194,9 +194,7 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
       );
     }
 
-    // Force update SleekElement CSS
-    sleekElement.checkCSS(true);
-    sleekElement.reloadShadowBitmap(false);
+    sleekElement.refreshCSS();
   }
 
   @Override
@@ -214,8 +212,7 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
 
       // Remove animation CSSblock
       sleekElement.removeCSSblockRaw(animStateCSS);
-      sleekElement.checkCSS(true);
-      sleekElement.reloadShadowBitmap(false);
+      sleekElement.refreshCSS();
     }
   }
 
