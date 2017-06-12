@@ -2032,14 +2032,14 @@ public class TestSleekUI {
               .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing - btnSize)
               .setGoalW(btnProfile.getSleekW() + btnSize)
               .setGoalH(btnProfile.getSleekH() + btnSize)
-              .setDuration(1000);
+              .setDuration(400);
         }}, new Runnable() { @Override public void run() {
           btnImage.setElementString("Image");
           btnImage.removeCSSanimated(flagBgImgCSS, activeCSS, yellowBgCSS)
               .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing)
               .setGoalW(btnProfile.getSleekW())
               .setGoalH(btnProfile.getSleekH())
-              .setDuration(1000);
+              .setDuration(400);
         }}, new Runnable() { @Override public void run() {
 
         }}

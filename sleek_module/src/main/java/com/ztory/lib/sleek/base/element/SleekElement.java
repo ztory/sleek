@@ -7,9 +7,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Build.VERSION;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Interpolator;
+import android.view.animation.PathInterpolator;
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvas;
 import com.ztory.lib.sleek.SleekCanvasInfo;
@@ -307,16 +310,24 @@ public class SleekElement extends SleekBaseComposite {
   //public ??? addCSS(CSSblock... cssBlockArray) { }
   //public ??? removeCSS(CSSblock... cssBlockArray) { }
 
+  public Interpolator getDefaultInterpolator() {
+    if (VERSION.SDK_INT >= 21) {
+      return new PathInterpolator(0.785f, 0.135f, 0.150f, 0.860f);// easeInOutCirc
+    } else {
+      return new AccelerateDecelerateInterpolator();
+    }
+  }
+
   public SleekCSSanim addCSSanimated(CSSblock... cssBlockArray) {
     SleekCSSanim cssAnimation = new SleekCSSanim(this, SleekCSSanim.ADD_CSS, cssBlockArray);
-    cssAnimation.setInterpolator(new DecelerateInterpolator());//TODO TRY OTHER INTERPOLATORS !!!!
+    cssAnimation.setInterpolator(getDefaultInterpolator());
     setSleekAnimView(cssAnimation);
     return cssAnimation;
   }
 
   public SleekCSSanim removeCSSanimated(CSSblock... cssBlockArray) {
     SleekCSSanim cssAnimation = new SleekCSSanim(this, SleekCSSanim.REMOVE_CSS, cssBlockArray);
-    cssAnimation.setInterpolator(new DecelerateInterpolator());//TODO TRY OTHER INTERPOLATORS !!!!
+    cssAnimation.setInterpolator(getDefaultInterpolator());
     setSleekAnimView(cssAnimation);
     return cssAnimation;
   }
