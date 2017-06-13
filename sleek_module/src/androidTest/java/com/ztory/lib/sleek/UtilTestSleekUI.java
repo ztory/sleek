@@ -106,7 +106,7 @@ public class UtilTestSleekUI {
         new SleekElement(SleekParam.DEFAULT_TOUCHABLE.newPriority(SleekCanvas.STICKY_TOUCH_PRIO
             + 10));
     sleekElement.setElementString(elementString);
-    sleekElement.addCSSblock(cssBlock);
+    sleekElement.addCSS(cssBlock);
     sleekElement.getLayout()
         .x(SL.X.PERCENT_CANVAS, 0, null, screenPercentX)
         .y(SL.Y.PERCENT_CANVAS, 0, null, screenPercentY)

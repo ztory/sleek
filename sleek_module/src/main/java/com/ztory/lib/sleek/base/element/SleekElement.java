@@ -332,22 +332,22 @@ public class SleekElement extends SleekBaseComposite {
     return cssAnimation;
   }
 
-  public SleekElement addCSSblockRaw(CSSblock cssBlock) {
+  public SleekElement addCSSnoRefresh(CSSblock cssBlock) {
     elementCSSlist.add(cssBlock);
     return this;
   }
 
-  public SleekElement addCSSblock(CSSblock cssBlock) {
+  public SleekElement addCSS(CSSblock cssBlock) {
     elementCSSlist.add(cssBlock);
     refreshCSS();
     return this;
   }
 
-  public boolean removeCSSblockRaw(CSSblock cssBlock) {
+  public boolean removeCSSnoRefresh(CSSblock cssBlock) {
     return elementCSSlist.remove(cssBlock);
   }
 
-  public boolean removeCSSblock(CSSblock cssBlock) {
+  public boolean removeCSS(CSSblock cssBlock) {
     boolean removedItem = elementCSSlist.remove(cssBlock);
     refreshCSS();
     return removedItem;
@@ -356,7 +356,7 @@ public class SleekElement extends SleekBaseComposite {
   public int removeCSSblocksRaw(CSSblock... cssBlock) {
     int removedBlocks = 0;
     for (CSSblock iterBlock : cssBlock) {
-      if (removeCSSblockRaw(iterBlock)) {
+      if (removeCSSnoRefresh(iterBlock)) {
         removedBlocks++;
       }
     }

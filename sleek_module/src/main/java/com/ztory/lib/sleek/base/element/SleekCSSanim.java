@@ -75,13 +75,13 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
     // Add CSSblocks before animStateCSS is added
     if (!removeTargetCSS) {
       for (CSSblock iterBlock : targetCSSlist) {
-        sleekElement.addCSSblockRaw(iterBlock);
+        sleekElement.addCSSnoRefresh(iterBlock);
       }
     }
 
     animStateCSS = new CSSblockBase(sleekElementCSS.size());
     animStateCSS.put(SleekElement.CSS_BLOCK_ANIMATION_KEY, "true");// Mark as animation CSS block
-    sleekElement.addCSSblockRaw(animStateCSS);
+    sleekElement.addCSSnoRefresh(animStateCSS);
   }
 
   public SleekCSSanim setGoalX(float theGoalX) {
@@ -211,7 +211,7 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
       }
 
       // Remove animation CSSblock
-      sleekElement.removeCSSblockRaw(animStateCSS);
+      sleekElement.removeCSSnoRefresh(animStateCSS);
       sleekElement.refreshCSS();
     }
   }

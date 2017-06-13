@@ -474,7 +474,7 @@ public class TestSleekUI {
         new SleekElement(SleekParam.DEFAULT_TOUCHABLE.newPriority(SleekCanvas.STICKY_TOUCH_PRIO
             + 10));
     sleekElement.setElementString("Corner Box");
-    sleekElement.addCSSblock(new CSSblockBase(CSS_STRING_2));
+    sleekElement.addCSS(new CSSblockBase(CSS_STRING_2));
     sleekElement.getLayout()
         .x(SL.X.PERCENT_CANVAS, -200, null, 1.0f)
         .y(SL.Y.PERCENT_CANVAS, -200, null, 1.0f)
@@ -502,7 +502,7 @@ public class TestSleekUI {
         new SleekElement(SleekParam.DEFAULT_TOUCHABLE.newPriority(SleekCanvas.STICKY_TOUCH_PRIO
             + 10));
     sleekElementAddRemove.setElementString("Add Remove Box");
-    sleekElementAddRemove.addCSSblock(new CSSblockBase(CSS_STRING_3));
+    sleekElementAddRemove.addCSS(new CSSblockBase(CSS_STRING_3));
     sleekElementAddRemove.getLayout()
         .x(SL.X.PERCENT_CANVAS, 0, null, 1.95f)
         .y(SL.Y.PERCENT_CANVAS, 0, null, 1.95f)
@@ -720,7 +720,7 @@ public class TestSleekUI {
       }
       sleekFeedItem.setElementString(feedItemString);
 
-      sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_DEBUG));
+      sleekFeedItem.addCSS(new CSSblockBase(CSS_FEED_ITEM_DEBUG));
       sleekFeedItem.getLayout()
           .x(SL.X.POS_CENTER, 0, null)
           .y(SL.Y.ABSOLUTE, feedItemTopMargin, null)
@@ -813,7 +813,7 @@ public class TestSleekUI {
       }
       sleekFeedItem.setElementString(feedItemString);
 
-      sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_DEBUG));
+      sleekFeedItem.addCSS(new CSSblockBase(CSS_FEED_ITEM_DEBUG));
       sleekFeedItem.getLayout()
           .x(SL.X.POS_CENTER, 0, null)
           .y(SL.Y.ABSOLUTE, feedItemTopMargin, null)
@@ -924,7 +924,7 @@ public class TestSleekUI {
       }
       sleekFeedItem.setElementString(feedItemString);
 
-      sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_PADDING));
+      sleekFeedItem.addCSS(new CSSblockBase(CSS_FEED_ITEM_PADDING));
       sleekFeedItem.getLayout()
           .x(SL.X.POS_CENTER, 0, null)
           .y(SL.Y.ABSOLUTE, feedItemTopMargin, null)
@@ -1029,7 +1029,7 @@ public class TestSleekUI {
       }
       sleekFeedItem.setElementString(feedItemString);
 
-      sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_PADDING_BOX_SHADOW));
+      sleekFeedItem.addCSS(new CSSblockBase(CSS_FEED_ITEM_PADDING_BOX_SHADOW));
       sleekFeedItem.createText();
       sleekFeedItem.getText().setBackgroundColor(0x990000ff);
       sleekFeedItem.getLayout()
@@ -1142,7 +1142,7 @@ public class TestSleekUI {
       }
       sleekFeedItem.setElementString(feedItemString);
 
-      sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_IMAGE));
+      sleekFeedItem.addCSS(new CSSblockBase(CSS_FEED_ITEM_IMAGE));
       sleekFeedItem.getLayout()
           .x(SL.X.POS_CENTER, 0, null)
           .y(SL.Y.ABSOLUTE, feedItemTopMargin, null)
@@ -1256,9 +1256,9 @@ public class TestSleekUI {
       sleekFeedItem.setElementString(feedItemString);
 
       if (i % 2 == 0) {
-        sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_IMAGE_COVER));
+        sleekFeedItem.addCSS(new CSSblockBase(CSS_FEED_ITEM_IMAGE_COVER));
       } else {
-        sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_IMAGE_CONTAIN));
+        sleekFeedItem.addCSS(new CSSblockBase(CSS_FEED_ITEM_IMAGE_CONTAIN));
       }
 
       sleekFeedItem.getLayout()
@@ -1394,9 +1394,9 @@ public class TestSleekUI {
       sleekFeedItem.setElementString(feedItemString);
 
       if (i % 2 == 0) {
-        sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_IMAGE_COVER));
+        sleekFeedItem.addCSS(new CSSblockBase(CSS_FEED_ITEM_IMAGE_COVER));
       } else {
-        sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_IMAGE_COVER_TWO));
+        sleekFeedItem.addCSS(new CSSblockBase(CSS_FEED_ITEM_IMAGE_COVER_TWO));
       }
 
       sleekFeedItem.getLayout()
@@ -1530,9 +1530,9 @@ public class TestSleekUI {
       sleekFeedItem.setElementString(feedItemString);
 
       if (i % 2 == 0) {
-        sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_IMAGE_COVER));
+        sleekFeedItem.addCSS(new CSSblockBase(CSS_FEED_ITEM_IMAGE_COVER));
       } else {
-        sleekFeedItem.addCSSblock(new CSSblockBase(CSS_FEED_ITEM_IMAGE_COVER_TWO));
+        sleekFeedItem.addCSS(new CSSblockBase(CSS_FEED_ITEM_IMAGE_COVER_TWO));
       }
 
       sleekFeedItem.getLayout()
@@ -1670,11 +1670,11 @@ public class TestSleekUI {
       sleekFeedItem.setElementString(feedItemString);
 
       if (i % 3 == 0) {
-        sleekFeedItem.addCSSblock(new CSSblockBase(CSS_BORDER_3));
+        sleekFeedItem.addCSS(new CSSblockBase(CSS_BORDER_3));
       } else if (i % 2 == 0) {
-        sleekFeedItem.addCSSblock(new CSSblockBase(CSS_BORDER_1));
+        sleekFeedItem.addCSS(new CSSblockBase(CSS_BORDER_1));
       } else {
-        sleekFeedItem.addCSSblock(new CSSblockBase(CSS_BORDER_2));
+        sleekFeedItem.addCSS(new CSSblockBase(CSS_BORDER_2));
       }
 
       sleekFeedItem.getLayout()
@@ -1835,13 +1835,13 @@ public class TestSleekUI {
       sleekFeedItem.setElementString(feedItemString);
 
       if (i % 4 == 0) {
-        sleekFeedItem.addCSSblock(cssBlock1);
+        sleekFeedItem.addCSS(cssBlock1);
       } else if (i % 3 == 0) {
-        sleekFeedItem.addCSSblock(cssBlock2);
+        sleekFeedItem.addCSS(cssBlock2);
       } else if (i % 2 == 0) {
-        sleekFeedItem.addCSSblock(cssBlock3);
+        sleekFeedItem.addCSS(cssBlock3);
       } else {
-        sleekFeedItem.addCSSblock(cssBlock4);
+        sleekFeedItem.addCSS(cssBlock4);
       }
 
       sleekFeedItem.getLayout()
@@ -1966,7 +1966,7 @@ public class TestSleekUI {
 
     final SleekElement toolbar = new SleekElement(FIXED_TOUCHABLE.prio(slkc.getNextPrio()));
     toolbar.setElementString("\u2605 Sleek \u2605");
-    toolbar.addCSSblock(new CSSblockBase(CSS_TOOLBAR));
+    toolbar.addCSS(new CSSblockBase(CSS_TOOLBAR));
     toolbar.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
         .x(X.ABSOLUTE, -UtilPx.getPixels(10), null)
         .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
@@ -1978,7 +1978,7 @@ public class TestSleekUI {
 
     final SleekElement btnSettings = new SleekElement(TOUCHABLE);
     btnSettings.setElementString("α");
-    btnSettings.addCSSblock(new CSSblockBase(CSS_BTN_SETTINGS));
+    btnSettings.addCSS(new CSSblockBase(CSS_BTN_SETTINGS));
     btnSettings.getLayout()
         .x(X.PARENT_RIGHT, toolbar.getPadding().right + btnSpacing, toolbar.getBackground())
 //        .y(Y.POS_CENTER, 0, toolbar.getBackground())
@@ -1988,7 +1988,7 @@ public class TestSleekUI {
     toolbar.addSleek(btnSettings);
 
     final SleekElement btnProfile = new SleekElement(TOUCHABLE);
-    btnProfile.addCSSblock(new CSSblockBase(CSS_BTN_PROFILE));
+    btnProfile.addCSS(new CSSblockBase(CSS_BTN_PROFILE));
     btnProfile.getLayout()
         .x(X.WEST_OF, btnSpacing, btnSettings)
 //        .y(Y.POS_CENTER, 0, toolbar.getBackground())
@@ -1997,9 +1997,9 @@ public class TestSleekUI {
         .h(H.ABSOLUTE, btnSize, null);
     btnProfile.getTouchHandler().setClickAction(
         new Runnable() { @Override public void run() {
-          btnProfile.addCSSblock(activeCSS);
+          btnProfile.addCSS(activeCSS);
         }}, new Runnable() { @Override public void run() {
-          btnProfile.removeCSSblock(activeCSS);
+          btnProfile.removeCSS(activeCSS);
         }}, new Runnable() { @Override public void run() {
 
         }}
@@ -2010,7 +2010,7 @@ public class TestSleekUI {
 //    btnImage.setWrapTextWidth(true);
 //    btnImage.setWrapTextHeight(true);
     btnImage.setElementString("Image");
-    btnImage.addCSSblock(new CSSblockBase(CSS_BTN_IMAGE));
+    btnImage.addCSS(new CSSblockBase(CSS_BTN_IMAGE));
 //    btnImage.createBackgroundImage();
 //    btnImage.getBackgroundImage().setFadeAnimOnLoad(false);
     btnImage.getLayout()
