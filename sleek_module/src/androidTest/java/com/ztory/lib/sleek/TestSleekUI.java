@@ -1972,9 +1972,9 @@ public class TestSleekUI {
         .x(X.ABSOLUTE, -UtilPx.getPixels(10), null)
         .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
         .h(H.ABSOLUTE, UtilPx.getPixels(50), null);
-    toolbar.getTouchHandler().setClickAction(
+    toolbar.getBackground().getTouchHandler().setClickAction(
         new Runnable() { @Override public void run() {
-          toolbar.setElementString("");
+          toolbar.setElementString("\u2605 Sleek \u2605 TOUCH");
 //          toolbar.addCSStransition(activeCSS);
         }}, new Runnable() { @Override public void run() {
           toolbar.setElementString("\u2605 Sleek \u2605");
