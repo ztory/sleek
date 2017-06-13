@@ -130,11 +130,11 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
 //      V - "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
 //      V - "padding: 5px 10px 15px 20px;" +
 //      V - "color: #666;" +
-//      X - "font-size: 10px;" +
-//      X - "line-height: 46px;" +
+//      V - "font-size: 10px;" +
+//      V - "line-height: 46px;" +
 //      V - "text-align: center;" +
 //      V - "vertical-align: middle;" +
-//      X - "text-shadow: 1px 1px 2px black;" +
+//      V - "text-shadow: 1px 1px 2px black;" +
 //          "}",
 
     if (isPropertyUpdated(goalCSS.getColor(), startCSS.getColor())) {
@@ -172,6 +172,24 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
               + " " + getStringPXfromPixels(padding.bottom) +
               " " + getStringPXfromPixels(padding.left)
       );
+    }
+
+    if (isPropertyUpdated(goalCSS.getFontSize(), startCSS.getFontSize())) {
+      int fontSize = getAnimatedInt(
+          percent,
+          getOrDefault(startCSS.getFontSize(), 0),
+          goalCSS.getFontSize()
+      );
+      animStateCSS.put(Property.FONT_SIZE, getStringPXfromPixels(fontSize));
+    }
+
+    if (isPropertyUpdated(goalCSS.getLineHeight(), startCSS.getLineHeight())) {
+      int lineHeight = getAnimatedInt(
+          percent,
+          getOrDefault(startCSS.getLineHeight(), 0),
+          goalCSS.getLineHeight()
+      );
+      animStateCSS.put(Property.LINE_HEIGHT, getStringPXfromPixels(lineHeight));
     }
 
     if (isPropertyUpdated(goalCSS.getBorderRadius(), startCSS.getBorderRadius())) {

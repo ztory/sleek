@@ -533,6 +533,7 @@ public class SleekText implements Sleek {
         int iter = 0;
 
         currDrawLine = posY;
+        float firstLineY = drawLinesY != null && drawLinesY.length > 0 ? drawLinesY[0] : 0;
 
         for (String iterString: stringLines) {
 
@@ -548,7 +549,7 @@ public class SleekText implements Sleek {
             canvas.drawText(
                     iterString,
                     textDrawX,
-                    drawLinesY[iter],
+                    firstLineY + (iter * fixedLineHeight),//drawLinesY[iter],
                     textPaint
             );
 

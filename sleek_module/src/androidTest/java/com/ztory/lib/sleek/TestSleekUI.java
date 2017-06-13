@@ -1891,24 +1891,24 @@ public class TestSleekUI {
           "box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);" +
           "padding: 0px 10px 0px 30px;" +
           "color: #eee;" +
-          "font-size: 20px;" +
+          "font-size: 18px;" +
           "line-height: 20px;" +
           "text-align: left;" +
           "vertical-align: middle;" +
-          "text-shadow: 1px 1px 4px #ff0000;" +
+          "text-shadow: 1px 1px 4px #38B0DE;" +
           "}",
       CSS_TOOLBAR_ACTIVE = "{" +
 //          "padding: 10px 10px 0px 40px;" +
 //          "color: #f00;" +
 //          "font-size: 30px;" +
-//          "line-height: 30px;" +
-          "text-shadow: 1px 1px 8px #38B0DE;" +
+          "line-height: 29px;" +
+          "text-shadow: 1px 1px 8px #ff0000;" +
           "}",
       CSS_BTN_SETTINGS = "{" +
           "background-color: #222;" +
 //          "background-image: url(\"https://example.com/example.png\");" +
 //          "background-size: cover;" +
-          "border-radius: 25px;" +
+          "border-radius: 30px;" +
           "border: 1px solid #38B0DE;" +
           "box-shadow: 0px 0px 4px #38B0DEdd;" +
           "padding: 0px 0px 5px 0px;" +
@@ -1924,7 +1924,7 @@ public class TestSleekUI {
 //          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Arizona.svg/2000px-Flag_of_Arizona.svg.png\");" +
           "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Flag_of_Flanders.svg/1024px-Flag_of_Flanders.svg.png\");" +
           "background-size: cover;" +
-          "border-radius: 25px;" +
+          "border-radius: 30px;" +
           "border: 1px solid #38B0DE;" +
           "box-shadow: 0px 0px 4px #38B0DEdd;" +
 //          "padding: 0px 0px 0px 30px;" +
@@ -1940,7 +1940,7 @@ public class TestSleekUI {
 //          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Arizona.svg/2000px-Flag_of_Arizona.svg.png\");" +
 //          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Flag_of_Flanders.svg/1024px-Flag_of_Flanders.svg.png\");" +
           "background-size: cover;" +
-          "border-radius: 25px;" +
+          "border-radius: 30px;" +
           "border: 1px solid #38B0DE;" +
           "box-shadow: 0px 0px 4px #38B0DEdd;" +
           "padding: 0px 0px 2px 0px;" +
@@ -1974,29 +1974,29 @@ public class TestSleekUI {
     final CSSblock flagBgImgCSS = new CSSblockBase(CSS_FLAG_BG_IMG);
 
     final SleekElement toolbar = new SleekElement(FIXED_TOUCHABLE.prio(slkc.getNextPrio()));
-    toolbar.setElementString("\u2605 Sleek \u2605");
+    toolbar.setElementString("Sleek" + "\nMore power to the UI");
     toolbar.addCSS(new CSSblockBase(CSS_TOOLBAR));
     toolbar.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
         .x(X.ABSOLUTE, -UtilPx.getPixels(10), null)
         .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
-        .h(H.ABSOLUTE, UtilPx.getPixels(50), null);
+        .h(H.ABSOLUTE, UtilPx.getPixels(60), null);
     toolbar.getBackground().getTouchHandler().setClickAction(
         new Runnable() { @Override public void run() {
 //          toolbar.setElementString("\u2605 Sleek \u2605 TOUCH");
           toolbar.addCSStransition(toolbarActiveCSS)
-              .setDuration(1000);
+              .setDuration(SleekCSSanim.ANIM_DURATION_MEDIUM);
         }}, new Runnable() { @Override public void run() {
 //          toolbar.setElementString("\u2605 Sleek \u2605");
           toolbar.removeCSStransition(toolbarActiveCSS)
-              .setDuration(1000);
+              .setDuration(SleekCSSanim.ANIM_DURATION_MEDIUM);
         }}, new Runnable() { @Override public void run() {
 
         }}
     );
     slkc.addSleek(toolbar);
 
-    final int btnSize = UtilPx.getPixels(50);
-    final int btnSpacing = UtilPx.getPixels(15);
+    final int btnSize = UtilPx.getPixels(60);
+    final int btnSpacing = UtilPx.getPixels(20);
 
     final SleekElement btnSettings = new SleekElement(TOUCHABLE);
     btnSettings.setElementString("α");
