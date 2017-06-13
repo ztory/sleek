@@ -1986,6 +1986,15 @@ public class TestSleekUI {
         .y(Y.PARENT_BOTTOM, -Calc.divideToInt(btnSize, 2.0f), toolbar.getBackground())
         .w(W.ABSOLUTE, btnSize, null)
         .h(H.ABSOLUTE, btnSize, null);
+    btnSettings.getTouchHandler().setClickAction(
+        new Runnable() { @Override public void run() {
+          btnSettings.addCSStransition(activeCSS);
+        }}, new Runnable() { @Override public void run() {
+          btnSettings.removeCSStransition(activeCSS);
+        }}, new Runnable() { @Override public void run() {
+
+        }}
+    );
     toolbar.addSleek(btnSettings);
 
     final SleekElement btnProfile = new SleekElement(TOUCHABLE);
