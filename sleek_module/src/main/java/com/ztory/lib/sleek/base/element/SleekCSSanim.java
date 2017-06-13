@@ -234,6 +234,38 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
       );
     }
 
+    if (isPropertyUpdated(goalCSS.getTextShadowBlurRadius(), startCSS.getTextShadowBlurRadius())
+        || isPropertyUpdated(goalCSS.getTextShadowColor(), startCSS.getTextShadowColor())
+        || isPropertyUpdated(goalCSS.getTextShadowOffsetX(), startCSS.getTextShadowOffsetX())
+        || isPropertyUpdated(goalCSS.getTextShadowOffsetY(), startCSS.getTextShadowOffsetY())) {
+      int offsetXpixels = getAnimatedInt(
+          percent,
+          getOrDefault(startCSS.getTextShadowOffsetX(), 0),
+          goalCSS.getTextShadowOffsetX()
+      );
+      int offsetYpixels = getAnimatedInt(
+          percent,
+          getOrDefault(startCSS.getTextShadowOffsetY(), 0),
+          goalCSS.getTextShadowOffsetY()
+      );
+      int blurRadiusPixels = getAnimatedInt(
+          percent,
+          getOrDefault(startCSS.getTextShadowBlurRadius(), 0),
+          goalCSS.getTextShadowBlurRadius()
+      );
+      int textShadowColor = getAnimatedColor(
+          percent,
+          getOrDefault(startCSS.getTextShadowColor(), SleekColorArea.COLOR_TRANSPARENT),
+          goalCSS.getTextShadowColor()
+      );
+      animStateCSS.put(
+          Property.TEXT_SHADOW, getStringPXfromPixels(offsetXpixels)
+              + " " + getStringPXfromPixels(offsetYpixels)
+              + " " + getStringPXfromPixels(blurRadiusPixels) +
+              " " + getStringColorFromInt(textShadowColor)
+      );
+    }
+
     sleekElement.refreshCSS();
   }
 

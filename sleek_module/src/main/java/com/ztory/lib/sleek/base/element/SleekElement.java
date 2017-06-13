@@ -699,7 +699,7 @@ public class SleekElement extends SleekBaseComposite {
   }
 
   public void reloadTextState() {
-    if (elementText != null) {
+    if (elementText != null && elementString != null) {
       elementText.initText();
       reloadTextShadow();
     }

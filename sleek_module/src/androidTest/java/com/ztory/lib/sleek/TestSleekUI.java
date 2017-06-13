@@ -1898,11 +1898,11 @@ public class TestSleekUI {
           "text-shadow: 1px 1px 4px #ff0000;" +
           "}",
       CSS_TOOLBAR_ACTIVE = "{" +
-          "padding: 10px 10px 0px 40px;" +
-          "color: #f00;" +
+//          "padding: 10px 10px 0px 40px;" +
+//          "color: #f00;" +
 //          "font-size: 30px;" +
 //          "line-height: 30px;" +
-          "text-shadow: 1px 1px 4px #0000ff;" +
+          "text-shadow: 1px 1px 8px #38B0DE;" +
           "}",
       CSS_BTN_SETTINGS = "{" +
           "background-color: #222;" +
@@ -1984,11 +1984,11 @@ public class TestSleekUI {
         new Runnable() { @Override public void run() {
 //          toolbar.setElementString("\u2605 Sleek \u2605 TOUCH");
           toolbar.addCSStransition(toolbarActiveCSS)
-              .setDuration(SleekCSSanim.ANIM_DURATION_LONG);
+              .setDuration(1000);
         }}, new Runnable() { @Override public void run() {
 //          toolbar.setElementString("\u2605 Sleek \u2605");
           toolbar.removeCSStransition(toolbarActiveCSS)
-              .setDuration(SleekCSSanim.ANIM_DURATION_LONG);
+              .setDuration(1000);
         }}, new Runnable() { @Override public void run() {
 
         }}
