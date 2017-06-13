@@ -69,6 +69,10 @@ public class SleekElement extends SleekBaseComposite {
       SleekParam.DEFAULT_TOUCHABLE
   );
   protected SleekViewText elementText = null;
+  protected Integer elementTextShadowColor = null;
+  protected Integer elementTextShadowBlurRadius = null;
+  protected Integer elementTextShadowOffsetX = null;
+  protected Integer elementTextShadowOffsetY = null;
 
   protected Paint elementShadowBitmapPaint;
   protected final List<Bitmap> elementShadowBitmapList = new ArrayList<>();
@@ -264,22 +268,16 @@ public class SleekElement extends SleekBaseComposite {
       }
     }
 
-    if (elementString != null) {
-      createText();
-      elementText.setTextString(elementString);
-      elementText.initText();
-
-      Integer textShadowColor = elementCSS.getTextShadowColor();
-      if (textShadowColor != null && textShadowColor != SleekColorArea.COLOR_TRANSPARENT) {
-        elementText.getTextPaint().setShadowLayer(
-            elementCSS.getTextShadowBlurRadius(),
-            elementCSS.getTextShadowOffsetX(),
-            elementCSS.getTextShadowOffsetY(),
-            textShadowColor
-        );
-      } else {
-        elementText.getTextPaint().clearShadowLayer();
-      }
+    elementTextShadowColor = elementCSS.getTextShadowColor();
+    if (elementTextShadowColor != null && elementTextShadowColor != SleekColorArea.COLOR_TRANSPARENT) {
+      elementTextShadowBlurRadius = elementCSS.getTextShadowBlurRadius();
+      elementTextShadowOffsetX = elementCSS.getTextShadowOffsetX();
+      elementTextShadowOffsetY = elementCSS.getTextShadowOffsetY();
+    } else {
+      elementTextShadowColor = null;
+      elementTextShadowBlurRadius = null;
+      elementTextShadowOffsetX = null;
+      elementTextShadowOffsetY = null;
     }
 
     paddingRect = elementCSS.getPadding();
@@ -380,6 +378,10 @@ public class SleekElement extends SleekBaseComposite {
 
   public void setElementString(String theElementString) {
     elementString = theElementString;
+    createText();
+    elementText.setTextString(elementString);
+    elementText.initText();
+    reloadTextShadow();
   }
 
   public String getElementString() {
@@ -696,6 +698,21 @@ public class SleekElement extends SleekBaseComposite {
     canvas.restore();
   }
 
+  protected void reloadTextShadow() {
+    if (elementTextShadowColor != null
+        && elementTextShadowColor != SleekColorArea.COLOR_TRANSPARENT
+        ) {
+      elementText.getTextPaint().setShadowLayer(
+          elementTextShadowBlurRadius,
+          elementTextShadowOffsetX,
+          elementTextShadowOffsetY,
+          elementTextShadowColor
+      );
+    } else {
+      elementText.getTextPaint().clearShadowLayer();
+    }
+  }
+
   public void resetSleekBounds() {
     setSleekBounds(getSleekX(), getSleekY(), getSleekW(), getSleekH());
   }
@@ -727,9 +744,11 @@ public class SleekElement extends SleekBaseComposite {
       if (elementString != null) {
         // Refresh text bounds if size has changed
         if (textOldW != elementText.getSleekW() || textOldH != elementText.getSleekH()) {
+          //Log.d("SleekElement", "SleekElement | Refresh text bounds if size has changed");
           elementText.setMaxWrapWidth(elementText.getSleekW());
           elementText.setMaxWrapHeight(elementText.getSleekH());
           elementText.initText();
+          reloadTextShadow();
         }
       }
     }

@@ -1895,7 +1895,7 @@ public class TestSleekUI {
           "line-height: 20px;" +
           "text-align: left;" +
           "vertical-align: middle;" +
-//          "text-shadow: 0px 0px 2px #38B0DE;" +
+          "text-shadow: 1px 1px 4px #ff0000;" +
           "}",
       CSS_BTN_SETTINGS = "{" +
           "background-color: #222;" +
@@ -1972,6 +1972,17 @@ public class TestSleekUI {
         .x(X.ABSOLUTE, -UtilPx.getPixels(10), null)
         .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
         .h(H.ABSOLUTE, UtilPx.getPixels(50), null);
+    toolbar.getTouchHandler().setClickAction(
+        new Runnable() { @Override public void run() {
+          toolbar.setElementString("");
+//          toolbar.addCSStransition(activeCSS);
+        }}, new Runnable() { @Override public void run() {
+          toolbar.setElementString("\u2605 Sleek \u2605");
+//          toolbar.removeCSStransition(activeCSS);
+        }}, new Runnable() { @Override public void run() {
+
+        }}
+    );
     slkc.addSleek(toolbar);
 
     final int btnSize = UtilPx.getPixels(50);
