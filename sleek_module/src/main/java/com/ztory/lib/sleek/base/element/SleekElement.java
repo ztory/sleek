@@ -138,6 +138,7 @@ public class SleekElement extends SleekBaseComposite {
     if (elementCSSmodifiedTs != elementCSS.getModifiedTimestamp()) {
       elementCSSmodifiedTs = elementCSS.getModifiedTimestamp();
       applyCSS();
+      reloadTextState();
       resetSleekBounds();// refreshes text padding and background-image positioning
       if (addedToParent && loaded) {
         reloadShadowBitmap(false);
@@ -380,8 +381,7 @@ public class SleekElement extends SleekBaseComposite {
     elementString = theElementString;
     createText();
     elementText.setTextString(elementString);
-    elementText.initText();
-    reloadTextShadow();
+    reloadTextState();
   }
 
   public String getElementString() {
@@ -698,6 +698,13 @@ public class SleekElement extends SleekBaseComposite {
     canvas.restore();
   }
 
+  public void reloadTextState() {
+    if (elementText != null) {
+      elementText.initText();
+      reloadTextShadow();
+    }
+  }
+
   protected void reloadTextShadow() {
     if (elementTextShadowColor != null
         && elementTextShadowColor != SleekColorArea.COLOR_TRANSPARENT
@@ -747,8 +754,7 @@ public class SleekElement extends SleekBaseComposite {
           //Log.d("SleekElement", "SleekElement | Refresh text bounds if size has changed");
           elementText.setMaxWrapWidth(elementText.getSleekW());
           elementText.setMaxWrapHeight(elementText.getSleekH());
-          elementText.initText();
-          reloadTextShadow();
+          reloadTextState();
         }
       }
     }

@@ -1897,6 +1897,13 @@ public class TestSleekUI {
           "vertical-align: middle;" +
           "text-shadow: 1px 1px 4px #ff0000;" +
           "}",
+      CSS_TOOLBAR_ACTIVE = "{" +
+          "padding: 0px 10px 0px 30px;" +
+          "color: #f00;" +
+          "font-size: 20px;" +
+          "line-height: 20px;" +
+          "text-shadow: 1px 1px 4px #ff0000;" +
+          "}",
       CSS_BTN_SETTINGS = "{" +
           "background-color: #222;" +
 //          "background-image: url(\"https://example.com/example.png\");" +
@@ -1961,6 +1968,7 @@ public class TestSleekUI {
   private static final void loadUIcompleteAppUIexample1(final SleekCanvas slkc) {
     //TODO Build a simple complete App UI to test and demonstrate how easy Sleek is to use.
 
+    final CSSblock toolbarActiveCSS = new CSSblockBase(CSS_TOOLBAR_ACTIVE);
     final CSSblock activeCSS = new CSSblockBase(CSS_BTN_ACTIVE);
     final CSSblock yellowBgCSS = new CSSblockBase(CSS_YELLOW_BACKGROUND);
     final CSSblock flagBgImgCSS = new CSSblockBase(CSS_FLAG_BG_IMG);
@@ -1974,11 +1982,13 @@ public class TestSleekUI {
         .h(H.ABSOLUTE, UtilPx.getPixels(50), null);
     toolbar.getBackground().getTouchHandler().setClickAction(
         new Runnable() { @Override public void run() {
-          toolbar.setElementString("\u2605 Sleek \u2605 TOUCH");
-//          toolbar.addCSStransition(activeCSS);
+//          toolbar.setElementString("\u2605 Sleek \u2605 TOUCH");
+          toolbar.addCSStransition(toolbarActiveCSS)
+              .setDuration(SleekCSSanim.ANIM_DURATION_LONG);
         }}, new Runnable() { @Override public void run() {
-          toolbar.setElementString("\u2605 Sleek \u2605");
-//          toolbar.removeCSStransition(activeCSS);
+//          toolbar.setElementString("\u2605 Sleek \u2605");
+          toolbar.removeCSStransition(toolbarActiveCSS)
+              .setDuration(SleekCSSanim.ANIM_DURATION_LONG);
         }}, new Runnable() { @Override public void run() {
 
         }}
@@ -2066,6 +2076,8 @@ public class TestSleekUI {
         }}
     );
     toolbar.addSleek(btnImage);
+
+    //TODO Add non-fixed grid/list of content that we can scroll !
   }
 
   @Test
