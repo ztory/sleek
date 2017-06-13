@@ -15,6 +15,7 @@ import com.ztory.lib.sleek.animation.SAVfade;
 import com.ztory.lib.sleek.animation.SAVtransXYWH;
 import com.ztory.lib.sleek.base.SleekBase;
 import com.ztory.lib.sleek.base.SleekParam;
+import com.ztory.lib.sleek.base.element.SleekCSSanim;
 import com.ztory.lib.sleek.base.element.SleekElement;
 import com.ztory.lib.sleek.base.element.css.CSSblock;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
@@ -2032,14 +2033,14 @@ public class TestSleekUI {
               .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing - btnSize)
               .setGoalW(btnProfile.getSleekW() + btnSize)
               .setGoalH(btnProfile.getSleekH() + btnSize)
-              .setDuration(400);
+              .setDuration(SleekCSSanim.ANIM_DURATION_MEDIUM);
         }}, new Runnable() { @Override public void run() {
           btnImage.setElementString("Image");
           btnImage.removeCSSanimated(flagBgImgCSS, activeCSS, yellowBgCSS)
               .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing)
               .setGoalW(btnProfile.getSleekW())
               .setGoalH(btnProfile.getSleekH())
-              .setDuration(400);
+              .setDuration(SleekCSSanim.ANIM_DURATION_MEDIUM);
         }}, new Runnable() { @Override public void run() {
 
         }}
