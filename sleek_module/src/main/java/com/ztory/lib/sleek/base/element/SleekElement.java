@@ -967,7 +967,7 @@ public class SleekElement extends SleekBaseComposite {
     }
 
     if (elementBorderRadius > 0
-        && elementBorderRadius + elementBorderRadius >= sleekW
+        && elementBorderRadius + elementBorderRadius >= sleekW - elementBorderWidth.left - elementBorderWidth.right
         && elementBorderRadius + elementBorderRadius >= sleekH
         ) {// Special case for round SleekElement instances, does not draw WEST and EAST bitmaps.
       //DRAW unscaled Top-Bitmap
@@ -985,7 +985,9 @@ public class SleekElement extends SleekBaseComposite {
           elementShadowBitmapPaint
       );
     } else {
-      if (elementBorderRadius > 0 && elementBorderRadius + elementBorderRadius >= sleekW) {
+      if (elementBorderRadius > 0
+          && elementBorderRadius + elementBorderRadius >= sleekW - elementBorderWidth.left - elementBorderWidth.right
+          ) {
 
         // Draw unscaled TOP and BOTTOM bitmaps, but WEST and EAST will be drawn in regular way.
 
