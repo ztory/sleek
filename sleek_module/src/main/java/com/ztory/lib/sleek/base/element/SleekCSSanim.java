@@ -128,8 +128,8 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
 //      V - "border-radius: 22px;" +
 //      V - "border: 1px solid #0000ff;" +
 //      V - "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
-//      X - "padding: 5px 10px 15px 20px;" +
-//      X - "color: #666;" +
+//      V - "padding: 5px 10px 15px 20px;" +
+//      V - "color: #666;" +
 //      X - "font-size: 10px;" +
 //      X - "line-height: 46px;" +
 //      V - "text-align: center;" +
@@ -158,6 +158,20 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
 //          " | anim.bg: " + animStateCSS.getBackgroundColor() +
 //          " | getStringColorFromInt: " + getStringColorFromInt(backgroundColor)
 //      );
+    }
+
+    if (isPropertyUpdated(goalCSS.getPadding(), startCSS.getPadding())) {
+      Rect padding = getAnimatedRect(
+          percent,
+          getOrDefault(startCSS.getPadding(), new Rect()),
+          goalCSS.getPadding()
+      );
+      animStateCSS.put(
+          Property.PADDING, getStringPXfromPixels(padding.top)
+              + " " + getStringPXfromPixels(padding.right)
+              + " " + getStringPXfromPixels(padding.bottom) +
+              " " + getStringPXfromPixels(padding.left)
+      );
     }
 
     if (isPropertyUpdated(goalCSS.getBorderRadius(), startCSS.getBorderRadius())) {
@@ -261,6 +275,15 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
 
   public static int getAnimatedInt(float percent, int startInt, int goalInt) {
     return startInt + Math.round((goalInt - startInt) * percent);
+  }
+
+  public static Rect getAnimatedRect(float percent, Rect startInt, Rect goalInt) {
+    return new Rect(
+        startInt.left + Math.round((goalInt.left - startInt.left) * percent),
+        startInt.top + Math.round((goalInt.top - startInt.top) * percent),
+        startInt.right + Math.round((goalInt.right - startInt.right) * percent),
+        startInt.bottom + Math.round((goalInt.bottom - startInt.bottom) * percent)
+    );
   }
 
   public static int getAnimatedColor(float percent, int startColor, int goalColor) {

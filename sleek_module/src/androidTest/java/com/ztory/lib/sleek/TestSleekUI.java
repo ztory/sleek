@@ -1898,11 +1898,11 @@ public class TestSleekUI {
           "text-shadow: 1px 1px 4px #ff0000;" +
           "}",
       CSS_TOOLBAR_ACTIVE = "{" +
-          "padding: 0px 10px 0px 30px;" +
+          "padding: 10px 10px 0px 40px;" +
           "color: #f00;" +
-          "font-size: 20px;" +
-          "line-height: 20px;" +
-          "text-shadow: 1px 1px 4px #ff0000;" +
+//          "font-size: 30px;" +
+//          "line-height: 30px;" +
+          "text-shadow: 1px 1px 4px #0000ff;" +
           "}",
       CSS_BTN_SETTINGS = "{" +
           "background-color: #222;" +
