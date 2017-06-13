@@ -318,14 +318,14 @@ public class SleekElement extends SleekBaseComposite {
     }
   }
 
-  public SleekCSSanim addCSSanimated(CSSblock... cssBlockArray) {
+  public SleekCSSanim addCSStransition(CSSblock... cssBlockArray) {
     SleekCSSanim cssAnimation = new SleekCSSanim(this, SleekCSSanim.ADD_CSS, cssBlockArray);
     cssAnimation.setInterpolator(getDefaultInterpolator());
     setSleekAnimView(cssAnimation);
     return cssAnimation;
   }
 
-  public SleekCSSanim removeCSSanimated(CSSblock... cssBlockArray) {
+  public SleekCSSanim removeCSStransition(CSSblock... cssBlockArray) {
     SleekCSSanim cssAnimation = new SleekCSSanim(this, SleekCSSanim.REMOVE_CSS, cssBlockArray);
     cssAnimation.setInterpolator(getDefaultInterpolator());
     setSleekAnimView(cssAnimation);

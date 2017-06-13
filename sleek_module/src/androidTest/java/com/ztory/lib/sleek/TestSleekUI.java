@@ -2029,14 +2029,14 @@ public class TestSleekUI {
           //TODO ...should NOT get a SleekCSSanim-object returned... THINK ABOUT THIS!
 
           btnImage.setElementString("");
-          btnImage.addCSSanimated(flagBgImgCSS, activeCSS, yellowBgCSS)
+          btnImage.addCSStransition(flagBgImgCSS, activeCSS, yellowBgCSS)
               .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing - btnSize)
               .setGoalW(btnProfile.getSleekW() + btnSize)
               .setGoalH(btnProfile.getSleekH() + btnSize)
               .setDuration(SleekCSSanim.ANIM_DURATION_MEDIUM);
         }}, new Runnable() { @Override public void run() {
           btnImage.setElementString("Image");
-          btnImage.removeCSSanimated(flagBgImgCSS, activeCSS, yellowBgCSS)
+          btnImage.removeCSStransition(flagBgImgCSS, activeCSS, yellowBgCSS)
               .setGoalX(btnProfile.getSleekX() - btnProfile.getSleekW() - btnSpacing)
               .setGoalW(btnProfile.getSleekW())
               .setGoalH(btnProfile.getSleekH())
