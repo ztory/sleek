@@ -63,6 +63,7 @@ public class SleekText implements Sleek {
     protected boolean sleekLoadable, sleekLoaded;
 
     public FontMetrics fontMetrics = null;
+    public int minTopDrawPos;
 
     public SleekText() {
         this(false);
@@ -150,6 +151,11 @@ public class SleekText implements Sleek {
         textPaint.setColor(textColor);
 
         fontMetrics = textPaint.getFontMetrics();
+
+        int topAscentDiff = Math.round(Math.abs(fontMetrics.top) - Math.abs(fontMetrics.ascent));
+        minTopDrawPos = Math.round(
+            Math.round(fixedLineHeight / 2.0f) + fontMetrics.bottom + topAscentDiff
+        );
     }
 
     protected boolean isLegalDimension(int dimension) {
@@ -541,16 +547,9 @@ public class SleekText implements Sleek {
 
             drawLineY = firstLineY + (iter * fixedLineHeight);
 
-//            Log.d("SleekText", "SleekText"
-//                + " | drawLineY: " + drawLineY
-//                + " | maxHeight: " + maxHeight
-//                + " | relativeMaxHeight: " + relativeMaxHeight
-//                + " | Paint.bottom: " + textPaintBottom
-//            );
-
-            if (textDrawCheckHeight && drawLineY >= maxHeight) {
+            if (textDrawCheckHeight && drawLineY > maxHeight) {
                 break;
-            } else if (textDrawCheckHeight && drawLineY < -fontMetrics.ascent) {
+            } else if (textDrawCheckHeight && drawLineY < minTopDrawPos) {
                 iter++;
                 continue;
             }

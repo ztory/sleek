@@ -150,21 +150,24 @@ public class SleekViewText extends SleekBase {
         }
 
 //        Log.d("SleekViewText",
-//                "SleekViewText" +
-//                " | textTop: " + textTop +
-//                " | textBottom: " + textBottom
+//            "SleekViewText" +
+//                " | top: " + fontMetrics.top +
+//                " | ascent: " + fontMetrics.ascent +
+//                " | descent: " + fontMetrics.descent +
+//                " | bottom: " + fontMetrics.bottom
 //        );
+
+        //NOTE: check SleekText.drawRaw() for logic on not drawing lines that are out-of-bounds
 
         //________________ -START- calc Y ________________
         float calcTextY;
         if (textAlignVertInt == ALIGN_TOP) {
-            int topAscentDiff = Math.round(Math.abs(fontMetrics.top) - Math.abs(fontMetrics.ascent));
-            calcTextY = sleekY + (textLineHeight / 2.0f) + fontMetrics.bottom + topAscentDiff;
+            calcTextY = sleekY + mSleekText.minTopDrawPos;
         }
         else if (textAlignVertInt == ALIGN_BOTTOM) {
-            int topAscentDiff = Math.round(Math.abs(fontMetrics.top) - Math.abs(fontMetrics.ascent));
-            calcTextY = sleekY + sleekH + (textLineHeight / 2.0f) + fontMetrics.bottom + topAscentDiff;
-            calcTextY -= (textLineHeight) * mSleekText.getLineCount();
+            calcTextY = sleekY + mSleekText.minTopDrawPos;
+            calcTextY += sleekH;
+            calcTextY -= textLineHeight * mSleekText.getLineCount();
         }
         else {// center text inside of sleekH
             int linesAboveOne = mSleekText.getLineCount() - 1;

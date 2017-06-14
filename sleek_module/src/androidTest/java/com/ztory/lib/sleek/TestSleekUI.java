@@ -1894,7 +1894,7 @@ public class TestSleekUI {
           "font-size: 20px;" +
           "line-height: 20px;" +
           "text-align: left;" +
-          "vertical-align: bottom;" +
+          "vertical-align: top;" +
           "text-shadow: 1px 1px 4px #38B0DE;" +
           "}",
       CSS_TOOLBAR_ACTIVE = "{" +
@@ -1976,7 +1976,10 @@ public class TestSleekUI {
 
     final SleekElement toolbar = new SleekElement(FIXED_TOUCHABLE.prio(slkc.getNextPrio()));
     //toolbar.setElementString("Sleek" + "\nMore power to the UI");
-    toolbar.setElementString("Sleek" + "\nMore power to the UI" + "\n+1" + "\n+2" + "\n+3" + "\n+4");
+    toolbar.setElementString("Sleek" + "\nMore power to the UI"
+        + "\n1 DP = " + UtilPx.getPixels(1) + " px"
+        + "\n+1" + "\n+2" + "\n+3" + "\n+4"
+    );
     toolbar.addCSS(toolbarCSS);
     toolbar.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
         .x(X.ABSOLUTE, -UtilPx.getPixels(10), null)
@@ -2085,20 +2088,40 @@ public class TestSleekUI {
     dummyElement1.addCSS(toolbarCSS);
     dummyElement1.setElementString("ÅÄÖyjq\n123456\nHej!\nDetta är ett SleekElement!\n+1\n+2\n+3\n+4");
     dummyElement1.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
-        .x(X.ABSOLUTE, -UtilPx.getPixels(10), null)
+        .x(X.ABSOLUTE, 0, null)
         .y(Y.ABSOLUTE, UtilPx.getPixels(300), null)
-        .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
+        .w(W.PERCENT_CANVAS, 0, null, 0.5f)
         .h(H.ABSOLUTE, UtilPx.getPixels(102), null);
     dummyElement1.getBackground().getTouchHandler().setClickAction(
         new Runnable() { @Override public void run() {
-          dummyElement1.addCSStransition(toolbarActiveCSS).setDuration(1000);
+          dummyElement1.addCSStransition(toolbarActiveCSS).setDuration(600);
         }}, new Runnable() { @Override public void run() {
-          dummyElement1.removeCSStransition(toolbarActiveCSS).setDuration(1000);
+          dummyElement1.removeCSStransition(toolbarActiveCSS).setDuration(600);
         }}, new Runnable() { @Override public void run() {
 
         }}
     );
     slkc.addSleek(dummyElement1);
+
+    final SleekElement dummyElement2 = new SleekElement(TOUCHABLE.prio(slkc.getNextPrio()));
+    dummyElement2.addCSS(toolbarCSS);
+    dummyElement2.addCSS(new CSSblockBase("{vertical-align: bottom;}"));
+    dummyElement2.setElementString("ÅÄÖyjq\n123456\nHej!\nDetta är ett SleekElement!\n+1\n+2\n+3\n+4");
+    dummyElement2.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
+        .x(X.EAST_OF, 0, dummyElement1)
+        .y(Y.ABSOLUTE, UtilPx.getPixels(300), null)
+        .w(W.PERCENT_CANVAS, 0, null, 0.5f)
+        .h(H.ABSOLUTE, UtilPx.getPixels(102), null);
+    dummyElement2.getBackground().getTouchHandler().setClickAction(
+        new Runnable() { @Override public void run() {
+          dummyElement2.addCSStransition(toolbarActiveCSS).setDuration(600);
+        }}, new Runnable() { @Override public void run() {
+          dummyElement2.removeCSStransition(toolbarActiveCSS).setDuration(600);
+        }}, new Runnable() { @Override public void run() {
+
+        }}
+    );
+    slkc.addSleek(dummyElement2);
   }
 
   @Test
