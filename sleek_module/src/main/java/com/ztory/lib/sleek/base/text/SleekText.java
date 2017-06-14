@@ -154,7 +154,7 @@ public class SleekText implements Sleek {
 
         int topAscentDiff = Math.round(Math.abs(fontMetrics.top) - Math.abs(fontMetrics.ascent));
         minTopDrawPos = Math.round(
-            Math.round(fixedLineHeight / 2.0f) + fontMetrics.bottom + topAscentDiff
+            (int) (fixedLineHeight / 2.0f) + fontMetrics.bottom + topAscentDiff
         );
     }
 
@@ -519,7 +519,7 @@ public class SleekText implements Sleek {
     public int getLineCount() {
         if (textDrawCheckHeight) {
             return Math.min(//returns whichever is LEAST, total lines or total lines that fit.
-                    (int) (maxHeight / lineHeight),
+                    Math.round(maxHeight / lineHeight),
                     drawLinesY.length
             );
         }
