@@ -1894,7 +1894,7 @@ public class TestSleekUI {
           "font-size: 20px;" +
           "line-height: 20px;" +
           "text-align: left;" +
-          "vertical-align: top;" +
+          "vertical-align: middle;" +
           "text-shadow: 1px 1px 4px #38B0DE;" +
           "}",
       CSS_TOOLBAR_ACTIVE = "{" +
@@ -1976,8 +1976,9 @@ public class TestSleekUI {
 
     final SleekElement toolbar = new SleekElement(FIXED_TOUCHABLE.prio(slkc.getNextPrio()));
     //toolbar.setElementString("Sleek" + "\nMore power to the UI");
-    toolbar.setElementString("Sleek" + "\nMore power to the UI"
-        + "\n1 DP = " + UtilPx.getPixels(1) + " px"
+    toolbar.setElementString(
+        "1 DP = " + (UtilPx.getDefaultContext().getResources().getDisplayMetrics().density) + " px"
+        + "\nSleek" + "\nMore power to the UI"
         + "\n+1" + "\n+2" + "\n+3" + "\n+4"
     );
     toolbar.addCSS(toolbarCSS);
@@ -2086,6 +2087,7 @@ public class TestSleekUI {
     //TODO Add non-fixed grid/list of content that we can scroll !
     final SleekElement dummyElement1 = new SleekElement(TOUCHABLE);
     dummyElement1.addCSS(toolbarCSS);
+    dummyElement1.addCSS(new CSSblockBase("{vertical-align: top;}"));
     dummyElement1.setElementString("ÅÄÖyjq\n123456\nHej!\nDetta är ett SleekElement!\n+1\n+2\n+3\n+4");
     dummyElement1.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
         .x(X.ABSOLUTE, 0, null)
