@@ -1891,17 +1891,17 @@ public class TestSleekUI {
           "box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);" +
           "padding: 0px 10px 0px 30px;" +
           "color: #eee;" +
-          "font-size: 18px;" +
+          "font-size: 20px;" +
           "line-height: 20px;" +
           "text-align: left;" +
-          "vertical-align: middle;" +
+          "vertical-align: top;" +
           "text-shadow: 1px 1px 4px #38B0DE;" +
           "}",
       CSS_TOOLBAR_ACTIVE = "{" +
 //          "padding: 10px 10px 0px 40px;" +
 //          "color: #f00;" +
 //          "font-size: 30px;" +
-          "line-height: 29px;" +
+          "line-height: 50px;" +
           "text-shadow: 1px 1px 8px #ff0000;" +
           "}",
       CSS_BTN_SETTINGS = "{" +
@@ -1968,18 +1968,21 @@ public class TestSleekUI {
   private static final void loadUIcompleteAppUIexample1(final SleekCanvas slkc) {
     //TODO Build a simple complete App UI to test and demonstrate how easy Sleek is to use.
 
+    final CSSblock toolbarCSS = new CSSblockBase(CSS_TOOLBAR);
     final CSSblock toolbarActiveCSS = new CSSblockBase(CSS_TOOLBAR_ACTIVE);
     final CSSblock activeCSS = new CSSblockBase(CSS_BTN_ACTIVE);
     final CSSblock yellowBgCSS = new CSSblockBase(CSS_YELLOW_BACKGROUND);
     final CSSblock flagBgImgCSS = new CSSblockBase(CSS_FLAG_BG_IMG);
 
     final SleekElement toolbar = new SleekElement(FIXED_TOUCHABLE.prio(slkc.getNextPrio()));
-    toolbar.setElementString("Sleek" + "\nMore power to the UI");
-    toolbar.addCSS(new CSSblockBase(CSS_TOOLBAR));
+    //toolbar.setElementString("Sleek" + "\nMore power to the UI");
+    toolbar.setElementString("Sleek" + "\nMore power to the UI" + "\n+1" + "\n+2" + "\n+3" + "\n+4");
+    toolbar.addCSS(toolbarCSS);
     toolbar.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
         .x(X.ABSOLUTE, -UtilPx.getPixels(10), null)
+        .y(Y.ABSOLUTE, UtilPx.getPixels(100), null)
         .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
-        .h(H.ABSOLUTE, UtilPx.getPixels(60), null);
+        .h(H.ABSOLUTE, UtilPx.getPixels(102), null);
     toolbar.getBackground().getTouchHandler().setClickAction(
         new Runnable() { @Override public void run() {
 //          toolbar.setElementString("\u2605 Sleek \u2605 TOUCH");
@@ -2078,6 +2081,24 @@ public class TestSleekUI {
     toolbar.addSleek(btnImage);
 
     //TODO Add non-fixed grid/list of content that we can scroll !
+    final SleekElement dummyElement1 = new SleekElement(TOUCHABLE);
+    dummyElement1.addCSS(toolbarCSS);
+    dummyElement1.setElementString("ÅÄÖyjq\n123456\nHej!\nDetta är ett SleekElement!\n+1\n+2\n+3\n+4");
+    dummyElement1.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
+        .x(X.ABSOLUTE, -UtilPx.getPixels(10), null)
+        .y(Y.ABSOLUTE, UtilPx.getPixels(300), null)
+        .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
+        .h(H.ABSOLUTE, UtilPx.getPixels(102), null);
+    dummyElement1.getBackground().getTouchHandler().setClickAction(
+        new Runnable() { @Override public void run() {
+          dummyElement1.addCSStransition(toolbarActiveCSS).setDuration(1000);
+        }}, new Runnable() { @Override public void run() {
+          dummyElement1.removeCSStransition(toolbarActiveCSS).setDuration(1000);
+        }}, new Runnable() { @Override public void run() {
+
+        }}
+    );
+    slkc.addSleek(dummyElement1);
   }
 
   @Test

@@ -2,6 +2,7 @@ package com.ztory.lib.sleek.base.text;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Paint.FontMetrics;
 import android.graphics.Typeface;
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvasInfo;
@@ -45,6 +46,8 @@ public class SleekViewText extends SleekBase {
     protected Typeface textTypeface = Typeface.DEFAULT;
     protected int textAlignInt = ALIGN_LEFT;
     protected int textAlignVertInt = ALIGN_CENTER;
+
+    protected FontMetrics fontMetrics = null;
 
 //    public SleekViewText() {
 //        this(
@@ -138,8 +141,8 @@ public class SleekViewText extends SleekBase {
         }
 
         //http://stackoverflow.com/questions/27631736/meaning-of-top-ascent-baseline-descent-bottom-and-leading-in-androids-font
-        float textTop = mSleekText.getTextPaint().getFontMetrics().top;
-        float textBottom = mSleekText.getTextPaint().getFontMetrics().bottom;
+        float textTop = fontMetrics.top;
+        float textBottom = fontMetrics.bottom;
 
         //Fallback textLineHeight to be equal to textSize
         if (textLineHeight == SleekText.LINE_HEIGHT_DYNAMIC) {
@@ -156,7 +159,8 @@ public class SleekViewText extends SleekBase {
         float calcTextY;
         int linesAboveOne = mSleekText.getLineCount() - 1;
         if (textAlignVertInt == ALIGN_TOP) {
-            calcTextY = sleekY - textTop;
+            int topAscentDiff = Math.round(Math.abs(fontMetrics.top) - Math.abs(fontMetrics.ascent));
+            calcTextY = sleekY + (textLineHeight / 2.0f) + fontMetrics.bottom + topAscentDiff;
         }
         else if (textAlignVertInt == ALIGN_BOTTOM) {
             calcTextY = sleekY + sleekH - textBottom;
@@ -278,6 +282,8 @@ public class SleekViewText extends SleekBase {
                 SleekText.ANTI_ALIAS_ON,
                 SleekText.BITMAP_CACHE_OFF
         );
+
+        fontMetrics = mSleekText.getTextPaint().getFontMetrics();
 
         textInitialized = true;
 

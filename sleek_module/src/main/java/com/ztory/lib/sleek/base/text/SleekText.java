@@ -8,14 +8,12 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.view.MotionEvent;
-
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvas;
 import com.ztory.lib.sleek.SleekCanvasInfo;
 import com.ztory.lib.sleek.SleekParent;
 import com.ztory.lib.sleek.contract.ISleekResize;
 import com.ztory.lib.sleek.layout.SleekLayout;
-
 import java.util.ArrayList;
 
 /**
@@ -140,7 +138,9 @@ public class SleekText implements Sleek {
         fixedLineHeight = theFixedLineHeight;
 
         textPaint = new Paint();
-        if (tf != null) textPaint.setTypeface(tf);
+        if (tf != null) {
+            textPaint.setTypeface(tf);
+        }
         textPaint.setAntiAlias(antiAlias);
         textPaint.setTextAlign(getAlign(textAlignInt));
         textPaint.setTextSize(textSize);
@@ -229,12 +229,12 @@ public class SleekText implements Sleek {
                 textDrawY = (float) Math.floor((posY - bounds.top) + 0.5);
             }
             else {
-                textDrawX = posX;
-                textDrawY = posY;
+                textDrawX = Math.round(posX);
+                textDrawY = Math.round(posY);
             }
 
             for (int i = 0; i < drawLinesY.length; i++) {
-                drawLinesY[i] = textDrawY + (float) Math.floor((lineHeight * i) + 0.5);
+                drawLinesY[i] = textDrawY + (int) (lineHeight * i);
             }
         }
     }
@@ -517,8 +517,6 @@ public class SleekText implements Sleek {
         }
     }
 
-    protected float currDrawLine;
-
     /**
      * Used in SleekViewText class.
      * @param canvas
@@ -531,25 +529,30 @@ public class SleekText implements Sleek {
         }
 
         int iter = 0;
-
-        currDrawLine = posY;
         float firstLineY = drawLinesY != null && drawLinesY.length > 0 ? drawLinesY[0] : 0;
+        float drawLineY;
 
         for (String iterString: stringLines) {
 
-            currDrawLine += fixedLineHeight;
+            drawLineY = firstLineY + (iter * fixedLineHeight);
 
-            if (
-                    textDrawCheckHeight &&
-                    currDrawLine > relativeMaxHeight
-                    ) {
+//            Log.d("SleekText", "SleekText"
+//                + " | drawLineY: " + drawLineY
+//                + " | maxHeight: " + maxHeight
+//                + " | relativeMaxHeight: " + relativeMaxHeight
+//                + " | Paint.bottom: " + textPaintBottom
+//            );
+
+            //TODO ADD check for drawLineY that is outside of top-bound for bottom-aligned text in SleekViewText !!!!
+
+            if (textDrawCheckHeight && drawLineY >= maxHeight) {
                 break;
             }
 
             canvas.drawText(
                     iterString,
                     textDrawX,
-                    firstLineY + (iter * fixedLineHeight),//drawLinesY[iter],
+                    drawLineY,
                     textPaint
             );
 
