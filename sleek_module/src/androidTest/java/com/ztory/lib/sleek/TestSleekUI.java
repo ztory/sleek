@@ -1894,7 +1894,7 @@ public class TestSleekUI {
           "font-size: 20px;" +
           "line-height: 20px;" +
           "text-align: left;" +
-          "vertical-align: top;" +
+          "vertical-align: bottom;" +
           "text-shadow: 1px 1px 4px #38B0DE;" +
           "}",
       CSS_TOOLBAR_ACTIVE = "{" +

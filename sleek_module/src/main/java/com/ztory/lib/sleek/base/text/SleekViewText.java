@@ -157,19 +157,17 @@ public class SleekViewText extends SleekBase {
 
         //________________ -START- calc Y ________________
         float calcTextY;
-        int linesAboveOne = mSleekText.getLineCount() - 1;
         if (textAlignVertInt == ALIGN_TOP) {
             int topAscentDiff = Math.round(Math.abs(fontMetrics.top) - Math.abs(fontMetrics.ascent));
             calcTextY = sleekY + (textLineHeight / 2.0f) + fontMetrics.bottom + topAscentDiff;
         }
         else if (textAlignVertInt == ALIGN_BOTTOM) {
-            calcTextY = sleekY + sleekH - textBottom;
-
-            if (linesAboveOne > 0) {
-                calcTextY -= (textLineHeight) * linesAboveOne;
-            }
+            int topAscentDiff = Math.round(Math.abs(fontMetrics.top) - Math.abs(fontMetrics.ascent));
+            calcTextY = sleekY + sleekH + (textLineHeight / 2.0f) + fontMetrics.bottom + topAscentDiff;
+            calcTextY -= (textLineHeight) * mSleekText.getLineCount();
         }
         else {// center text inside of sleekH
+            int linesAboveOne = mSleekText.getLineCount() - 1;
             calcTextY = sleekY + Math.round((sleekH - textTop - textBottom) / 2.0f);
 
             if (linesAboveOne > 0) {
@@ -283,7 +281,7 @@ public class SleekViewText extends SleekBase {
                 SleekText.BITMAP_CACHE_OFF
         );
 
-        fontMetrics = mSleekText.getTextPaint().getFontMetrics();
+        fontMetrics = mSleekText.fontMetrics;
 
         textInitialized = true;
 

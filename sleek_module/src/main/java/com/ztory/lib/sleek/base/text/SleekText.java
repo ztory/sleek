@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Paint.FontMetrics;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -60,6 +61,8 @@ public class SleekText implements Sleek {
     protected float lineHeight;
 
     protected boolean sleekLoadable, sleekLoaded;
+
+    public FontMetrics fontMetrics = null;
 
     public SleekText() {
         this(false);
@@ -145,6 +148,8 @@ public class SleekText implements Sleek {
         textPaint.setTextAlign(getAlign(textAlignInt));
         textPaint.setTextSize(textSize);
         textPaint.setColor(textColor);
+
+        fontMetrics = textPaint.getFontMetrics();
     }
 
     protected boolean isLegalDimension(int dimension) {
@@ -543,10 +548,11 @@ public class SleekText implements Sleek {
 //                + " | Paint.bottom: " + textPaintBottom
 //            );
 
-            //TODO ADD check for drawLineY that is outside of top-bound for bottom-aligned text in SleekViewText !!!!
-
             if (textDrawCheckHeight && drawLineY >= maxHeight) {
                 break;
+            } else if (textDrawCheckHeight && drawLineY < -fontMetrics.ascent) {
+                iter++;
+                continue;
             }
 
             canvas.drawText(

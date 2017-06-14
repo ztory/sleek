@@ -243,6 +243,9 @@ public class SleekElement extends SleekBaseComposite {
     if (lineHeight != null) {
       createText();
       elementText.setTextLineHeight(lineHeight);
+    } else if (fontSize != null) {
+      //if fontSize is set then use that as line-height if line-height is not specified
+      elementText.setTextLineHeight(fontSize);
     }
 
     String textAlign = elementCSS.getTextAlign();
