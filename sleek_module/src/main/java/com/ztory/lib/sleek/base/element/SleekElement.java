@@ -54,7 +54,6 @@ public class SleekElement extends SleekBaseComposite {
   protected final List<CSSblock> elementCSSlist = new ArrayList<>(4);
 
   protected final CSSblock elementCSS = new CSSblockBase(12);
-  protected long elementCSSmodifiedTs;
 
   protected String elementString = null;
 
@@ -134,15 +133,11 @@ public class SleekElement extends SleekBaseComposite {
       elementCSS.putAll(iterBlock);//will overwrite existing keys
     }
 
-    // Apply new CSS if state in elementCSS has changed
-    if (elementCSSmodifiedTs != elementCSS.getModifiedTimestamp()) {
-      elementCSSmodifiedTs = elementCSS.getModifiedTimestamp();
-      applyCSS();
-      reloadTextState();
-      resetSleekBounds();// refreshes text padding and background-image positioning
-      if (addedToParent && loaded) {
-        reloadShadowBitmap(false);
-      }
+    applyCSS();
+    reloadTextState();
+    resetSleekBounds();// refreshes text padding and background-image positioning
+    if (addedToParent && loaded) {
+      reloadShadowBitmap(false);
     }
   }
 

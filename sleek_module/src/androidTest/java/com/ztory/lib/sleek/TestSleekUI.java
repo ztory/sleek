@@ -14,12 +14,14 @@ import android.support.test.runner.AndroidJUnit4;
 import com.ztory.lib.sleek.animation.SAVfade;
 import com.ztory.lib.sleek.animation.SAVtransXYWH;
 import com.ztory.lib.sleek.base.SleekBase;
+import com.ztory.lib.sleek.base.SleekColorArea;
 import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.base.element.SleekCSSanim;
 import com.ztory.lib.sleek.base.element.SleekElement;
 import com.ztory.lib.sleek.base.element.css.CSSblock;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
 import com.ztory.lib.sleek.contract.ISleekDrawView;
+import com.ztory.lib.sleek.layout.IComputeInt;
 import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.layout.SL.H;
 import com.ztory.lib.sleek.layout.SL.W;
@@ -1976,15 +1978,17 @@ public class TestSleekUI {
 
     final SleekElement toolbar = new SleekElement(FIXED_TOUCHABLE.prio(slkc.getNextPrio()));
     //toolbar.setElementString("Sleek" + "\nMore power to the UI");
-    toolbar.setElementString(
-        "1 DP = " + (UtilPx.getDefaultContext().getResources().getDisplayMetrics().density) + " px"
-        + "\nSleek" + "\nMore power to the UI"
-        + "\n+1" + "\n+2" + "\n+3" + "\n+4"
-    );
+//    toolbar.setElementString(
+//        "1 DP = " + (UtilPx.getDefaultContext().getResources().getDisplayMetrics().density) + " px"
+//        + "\nSleek" + "\nMore power to the UI"
+//        + "\n+1" + "\n+2" + "\n+3" + "\n+4"
+//    );
+//    toolbar.setElementString("First Line ÅÄÖyjq\nMiddle Line ÅÄÖyjq\nLast Line ÅÄÖyjq");
+    toolbar.setElementString("\nSleek" + "\nMore power to the UI" + "\n+1");
     toolbar.addCSS(toolbarCSS);
     toolbar.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
         .x(X.ABSOLUTE, -UtilPx.getPixels(10), null)
-        .y(Y.ABSOLUTE, UtilPx.getPixels(100), null)
+//        .y(Y.ABSOLUTE, UtilPx.getPixels(100), null)
         .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
         .h(H.ABSOLUTE, UtilPx.getPixels(102), null);
     toolbar.getBackground().getTouchHandler().setClickAction(
@@ -2091,7 +2095,7 @@ public class TestSleekUI {
     dummyElement1.setElementString("ÅÄÖyjq\n123456\nHej!\nDetta är ett SleekElement!\n+1\n+2\n+3\n+4");
     dummyElement1.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
         .x(X.ABSOLUTE, 0, null)
-        .y(Y.ABSOLUTE, UtilPx.getPixels(300), null)
+        .y(Y.ABSOLUTE, UtilPx.getPixels(140), null)
         .w(W.PERCENT_CANVAS, 0, null, 0.5f)
         .h(H.ABSOLUTE, UtilPx.getPixels(102), null);
     dummyElement1.getBackground().getTouchHandler().setClickAction(
@@ -2111,7 +2115,7 @@ public class TestSleekUI {
     dummyElement2.setElementString("ÅÄÖyjq\n123456\nHej!\nDetta är ett SleekElement!\n+1\n+2\n+3\n+4");
     dummyElement2.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
         .x(X.EAST_OF, 0, dummyElement1)
-        .y(Y.ABSOLUTE, UtilPx.getPixels(300), null)
+        .y(Y.ABSOLUTE, UtilPx.getPixels(140), null)
         .w(W.PERCENT_CANVAS, 0, null, 0.5f)
         .h(H.ABSOLUTE, UtilPx.getPixels(102), null);
     dummyElement2.getBackground().getTouchHandler().setClickAction(
@@ -2124,6 +2128,62 @@ public class TestSleekUI {
         }}
     );
     slkc.addSleek(dummyElement2);
+
+    SleekColorArea referenceArea = new SleekColorArea(
+        0xff4860E3,
+        true,
+        TOUCHABLE.prio(slkc.getNextPrio())
+    );
+    referenceArea.getLayout()
+        .x(X.ABSOLUTE, UtilPx.getPixels(50), null)
+        .y(Y.SOUTH_OF, UtilPx.getPixels(50), dummyElement2)
+        .w(W.PERCENT_CANVAS, UtilPx.getPixels(100), null, 1.0f)
+        .h(H.COMPUTE, 0, null, 0, new IComputeInt() {
+          @Override
+          public int compute(SleekCanvasInfo info) {
+            return info.width - UtilPx.getPixels(100);
+          }
+        });
+    slkc.addSleek(referenceArea);
+
+    final SleekElement referenceElement = new SleekElement(TOUCHABLE.prio(slkc.getNextPrio()));
+    referenceElement.addCSS(toolbarCSS);
+    referenceElement.addCSS(new CSSblockBase("{padding: 0px;}"));
+    //referenceElement.addCSS(new CSSblockBase("{vertical-align: top;}"));// Works
+    referenceElement.addCSS(new CSSblockBase("{vertical-align: bottom;}"));//TODO Does NOT work
+    //referenceElement.addCSS(new CSSblockBase("{vertical-align: middle;}"));//TODO Does NOT work
+    referenceElement.setElementString(FEED_ITEM_STRING_4);
+//    referenceElement.setElementString(
+//        "Padding: " + referenceElement.getPadding().left + "\nTjenna!" + "\nHalloj!"
+//    );
+    referenceElement.getLayout()
+        .x(X.PARENT_LEFT, 0, referenceArea)
+        .y(Y.SOUTH_OF, UtilPx.getPixels(50), referenceArea)
+        .w(W.MATCH_PARENT, 0, referenceArea)
+        .h(H.MATCH_PARENT, 0, referenceArea);
+    referenceElement.getBackground().getTouchHandler().setClickAction(
+        new Runnable() { @Override public void run() {
+          referenceElement.addCSStransition(toolbarActiveCSS).setDuration(500);
+        }}, new Runnable() { @Override public void run() {
+          referenceElement.removeCSStransition(toolbarActiveCSS).setDuration(500);
+        }}, new Runnable() { @Override public void run() {
+
+        }}
+    );
+    slkc.addSleek(referenceElement);
+
+    SleekColorArea bottomArea = new SleekColorArea(
+        0xffFF5B38,
+        true,
+        TOUCHABLE.prio(slkc.getNextPrio())
+    );
+    bottomArea.getLayout()
+        .x(X.ABSOLUTE, UtilPx.getPixels(50), null)
+        .y(Y.SOUTH_OF, UtilPx.getPixels(50), referenceElement)
+        .w(W.PERCENT_CANVAS, UtilPx.getPixels(100), null, 1.0f)
+        .h(H.ABSOLUTE, UtilPx.getPixels(50), null);
+    slkc.addSleek(bottomArea);
+
   }
 
   @Test
