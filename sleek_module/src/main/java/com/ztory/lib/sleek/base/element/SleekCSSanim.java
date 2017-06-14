@@ -120,22 +120,7 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
       );
     }
 
-//      CSS_STRING = "{" +
-//      V - "background: #d8d8d8;" +
-//      V - "background-color: #d8d8d8;" +
-//      V - "background-image: url(\"https://example.com/example.png\");" +
-//      V - "background-size: cover;" +
-//      V - "border-radius: 22px;" +
-//      V - "border: 1px solid #0000ff;" +
-//      V - "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
-//      V - "padding: 5px 10px 15px 20px;" +
-//      V - "color: #666;" +
-//      V - "font-size: 10px;" +
-//      V - "line-height: 46px;" +
-//      V - "text-align: center;" +
-//      V - "vertical-align: middle;" +
-//      V - "text-shadow: 1px 1px 2px black;" +
-//          "}",
+    //TODO Would be nice to animate on pixel-precision instead of DP-precision
 
     if (isPropertyUpdated(goalCSS.getColor(), startCSS.getColor())) {
       int color = getAnimatedColor(
