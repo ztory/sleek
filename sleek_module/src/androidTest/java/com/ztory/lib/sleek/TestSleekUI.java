@@ -1966,6 +1966,35 @@ public class TestSleekUI {
           "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Arizona.svg/2000px-Flag_of_Arizona.svg.png\");" +
           "}";
 
+  private static final void loadUIcompleteAppUIexample2(final SleekCanvas slkc) {
+    final CSSblock toolbarCSS = new CSSblockBase(CSS_TOOLBAR);
+    final CSSblock toolbarActiveCSS = new CSSblockBase(CSS_TOOLBAR_ACTIVE);
+
+    final SleekElement toolbar = new SleekElement(FIXED_TOUCHABLE.prio(slkc.getNextPrio()));
+    toolbar.setElementString("Sleek" + "\nMore power to the UI");
+    toolbar.addCSS(toolbarCSS);
+    toolbar.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
+        .x(X.ABSOLUTE, -UtilPx.getPixels(10), null)
+        .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
+        .h(H.ABSOLUTE, UtilPx.getPixels(102), null);
+    toolbar.getBackground().getTouchHandler().setClickAction(
+        new Runnable() { @Override public void run() {
+          toolbar.addCSStransition(toolbarActiveCSS);
+        }}, new Runnable() { @Override public void run() {
+          toolbar.removeCSStransition(toolbarActiveCSS);
+        }}, new Runnable() { @Override public void run() {
+
+        }}
+    );
+    slkc.addSleek(toolbar);
+
+    //TODO CONTINUE BUILD APP UI HERE !!!!
+
+    //TODO FIX LIST/GRID OF SCROLLABLE VIEWS, MAKE SURE AS LITTLE+CLEAR CODE AS POSSIBLE !!!!
+
+    //TODO FIX TOP-/BOTTOM-MARGIN FOR SleekScrollXY so that EdgeEffects are drawn on correct pos !!
+  }
+
   private static final void loadUIcompleteAppUIexample1(final SleekCanvas slkc) {
     //TODO Build a simple complete App UI to test and demonstrate how easy Sleek is to use.
 
@@ -2087,7 +2116,6 @@ public class TestSleekUI {
     );
     toolbar.addSleek(btnImage);
 
-    //TODO Add non-fixed grid/list of content that we can scroll !
     final SleekElement dummyElement1 = new SleekElement(TOUCHABLE);
     dummyElement1.addCSS(toolbarCSS);
     dummyElement1.addCSS(new CSSblockBase("{vertical-align: top;}"));
@@ -2200,7 +2228,8 @@ public class TestSleekUI {
     mActivityRule.getActivity().getUiHandler().post(new Runnable() {
       @Override
       public void run() {
-        loadUIcompleteAppUIexample1(mActivityRule.getActivity().getSleekCanvas());
+        //loadUIcompleteAppUIexample1(mActivityRule.getActivity().getSleekCanvas());
+        loadUIcompleteAppUIexample2(mActivityRule.getActivity().getSleekCanvas());
       }
     });
 
