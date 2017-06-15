@@ -170,12 +170,8 @@ public class SleekViewText extends SleekBase {
             calcTextY -= textLineHeight * mSleekText.getLineCount();
         }
         else {// center text inside of sleekH
-            int linesAboveOne = mSleekText.getLineCount() - 1;
             calcTextY = sleekY + Math.round((sleekH - textTop - textBottom) / 2.0f);
-
-            if (linesAboveOne > 0) {
-                calcTextY -= Math.round((textLineHeight / 2.0f) * linesAboveOne);
-            }
+            calcTextY -= (textLineHeight / 2.0f) * (mSleekText.getLineCount() - 1);
         }
         //________________ - END - calc Y ________________
 

@@ -519,7 +519,7 @@ public class SleekText implements Sleek {
     public int getLineCount() {
         if (textDrawCheckHeight) {
             return Math.min(//returns whichever is LEAST, total lines or total lines that fit.
-                    Math.round(maxHeight / lineHeight),
+                    (int) (maxHeight / lineHeight),
                     drawLinesY.length
             );
         }

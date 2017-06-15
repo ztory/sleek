@@ -21,7 +21,6 @@ import com.ztory.lib.sleek.base.element.SleekElement;
 import com.ztory.lib.sleek.base.element.css.CSSblock;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
 import com.ztory.lib.sleek.contract.ISleekDrawView;
-import com.ztory.lib.sleek.layout.IComputeInt;
 import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.layout.SL.H;
 import com.ztory.lib.sleek.layout.SL.W;
@@ -1978,13 +1977,13 @@ public class TestSleekUI {
 
     final SleekElement toolbar = new SleekElement(FIXED_TOUCHABLE.prio(slkc.getNextPrio()));
     //toolbar.setElementString("Sleek" + "\nMore power to the UI");
-//    toolbar.setElementString(
-//        "1 DP = " + (UtilPx.getDefaultContext().getResources().getDisplayMetrics().density) + " px"
-//        + "\nSleek" + "\nMore power to the UI"
-//        + "\n+1" + "\n+2" + "\n+3" + "\n+4"
-//    );
+    toolbar.setElementString(
+        "1 DP = " + (UtilPx.getDefaultContext().getResources().getDisplayMetrics().density) + " px"
+        + "\nSleek" + "\nMore power to the UI"
+        + "\n+1" + "\n+2" + "\n+3" + "\n+4"
+    );
 //    toolbar.setElementString("First Line ÅÄÖyjq\nMiddle Line ÅÄÖyjq\nLast Line ÅÄÖyjq");
-    toolbar.setElementString("\nSleek" + "\nMore power to the UI" + "\n+1");
+//    toolbar.setElementString("Sleek" + "\nMore power to the UI" + "\n+1");
     toolbar.addCSS(toolbarCSS);
     toolbar.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
         .x(X.ABSOLUTE, -UtilPx.getPixels(10), null)
@@ -2129,38 +2128,26 @@ public class TestSleekUI {
     );
     slkc.addSleek(dummyElement2);
 
-    SleekColorArea referenceArea = new SleekColorArea(
-        0xff4860E3,
-        true,
-        TOUCHABLE.prio(slkc.getNextPrio())
-    );
-    referenceArea.getLayout()
-        .x(X.ABSOLUTE, UtilPx.getPixels(50), null)
-        .y(Y.SOUTH_OF, UtilPx.getPixels(50), dummyElement2)
-        .w(W.PERCENT_CANVAS, UtilPx.getPixels(100), null, 1.0f)
-        .h(H.COMPUTE, 0, null, 0, new IComputeInt() {
-          @Override
-          public int compute(SleekCanvasInfo info) {
-            return info.width - UtilPx.getPixels(100);
-          }
-        });
-    slkc.addSleek(referenceArea);
-
     final SleekElement referenceElement = new SleekElement(TOUCHABLE.prio(slkc.getNextPrio()));
     referenceElement.addCSS(toolbarCSS);
     referenceElement.addCSS(new CSSblockBase("{padding: 0px;}"));
-    //referenceElement.addCSS(new CSSblockBase("{vertical-align: top;}"));// Works
-    referenceElement.addCSS(new CSSblockBase("{vertical-align: bottom;}"));//TODO Does NOT work
-    //referenceElement.addCSS(new CSSblockBase("{vertical-align: middle;}"));//TODO Does NOT work
-    referenceElement.setElementString(FEED_ITEM_STRING_4);
-//    referenceElement.setElementString(
-//        "Padding: " + referenceElement.getPadding().left + "\nTjenna!" + "\nHalloj!"
-//    );
+//    referenceElement.addCSS(new CSSblockBase("{vertical-align: top;}"));
+//    referenceElement.addCSS(new CSSblockBase("{vertical-align: bottom;}"));
+    referenceElement.addCSS(new CSSblockBase("{vertical-align: middle;}"));
+    referenceElement.setElementString(FEED_ITEM_STRING_3);
+//    referenceElement.setElementString("Padding: " + referenceElement.getPadding().left);
     referenceElement.getLayout()
-        .x(X.PARENT_LEFT, 0, referenceArea)
-        .y(Y.SOUTH_OF, UtilPx.getPixels(50), referenceArea)
-        .w(W.MATCH_PARENT, 0, referenceArea)
-        .h(H.MATCH_PARENT, 0, referenceArea);
+        .x(X.POS_CENTER, 0, toolbar)
+        .y(Y.SOUTH_OF, UtilPx.getPixels(50), dummyElement2)
+        .w(W.ABSOLUTE, UtilPx.getPixels(300), null)
+        .h(H.ABSOLUTE, UtilPx.getPixels(300), null);
+//        .w(W.PERCENT_CANVAS, UtilPx.getPixels(100), null, 1.0f)
+//        .h(H.COMPUTE, 0, null, 0, new IComputeInt() {
+//          @Override
+//          public int compute(SleekCanvasInfo info) {
+//            return info.width - UtilPx.getPixels(100);
+//          }
+//        });
     referenceElement.getBackground().getTouchHandler().setClickAction(
         new Runnable() { @Override public void run() {
           referenceElement.addCSStransition(toolbarActiveCSS).setDuration(500);
@@ -2172,6 +2159,18 @@ public class TestSleekUI {
     );
     slkc.addSleek(referenceElement);
 
+    SleekColorArea referenceArea = new SleekColorArea(
+        0xff4860E3,
+        true,
+        TOUCHABLE.prio(slkc.getNextPrio())
+    );
+    referenceArea.getLayout()
+        .x(X.PARENT_LEFT, 0, referenceElement)
+        .y(Y.SOUTH_OF, UtilPx.getPixels(50), referenceElement)
+        .w(W.MATCH_PARENT, 0, referenceElement)
+        .h(H.MATCH_PARENT, 0, referenceElement);
+    slkc.addSleek(referenceArea);
+
     SleekColorArea bottomArea = new SleekColorArea(
         0xffFF5B38,
         true,
@@ -2179,7 +2178,7 @@ public class TestSleekUI {
     );
     bottomArea.getLayout()
         .x(X.ABSOLUTE, UtilPx.getPixels(50), null)
-        .y(Y.SOUTH_OF, UtilPx.getPixels(50), referenceElement)
+        .y(Y.SOUTH_OF, UtilPx.getPixels(50), referenceArea)
         .w(W.PERCENT_CANVAS, UtilPx.getPixels(100), null, 1.0f)
         .h(H.ABSOLUTE, UtilPx.getPixels(50), null);
     slkc.addSleek(bottomArea);
