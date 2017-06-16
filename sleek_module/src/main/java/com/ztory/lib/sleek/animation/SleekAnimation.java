@@ -18,6 +18,8 @@ public class SleekAnimation implements ISleekAnimView, PercentDrawView {
   public final static int
       ANIM_DURATION_SHORT =
       UtilPx.getDefaultContext().getResources().getInteger(android.R.integer.config_shortAnimTime),
+      ANIM_DURATION_SHORT_HALF =
+      (int) (ANIM_DURATION_SHORT / 2.0f),
       ANIM_DURATION_MEDIUM =
       UtilPx.getDefaultContext().getResources().getInteger(android.R.integer.config_mediumAnimTime),
       ANIM_DURATION_LONG =

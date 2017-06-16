@@ -1966,46 +1966,46 @@ public class TestSleekUI {
           "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Arizona.svg/2000px-Flag_of_Arizona.svg.png\");" +
           "}",
       CSS_CELL_BASIC = "{" +
-          "background-color: #00ff00;" +
+          "background-color: #e8e8e8;" +
 //          "background-image: url(\"https://example.com/example.png\");" +
           "background-size: cover;" +
-          "border-radius: 4px;" +
+          "border-radius: 6px;" +
           "border: 1px solid #121212;" +
 //          "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
-//          "padding: 5px 10px 15px 20px;" +
+          "padding: 10px;" +
           "color: #121212;" +
-          "font-size: 12px;" +
-          "line-height: 14px;" +
+          "font-size: 16px;" +
+          "line-height: 20px;" +
           "text-align: left;" +
           "vertical-align: top;" +
 //          "text-shadow: 1px 1px 2px black;" +
           "}",
       CSS_CELL_BASIC_PRESSED = "{" +
-          "background-color: #ff0000;" +
+          "background-color: #FFC638;" +
 //          "background-image: url(\"https://example.com/example.png\");" +
 //          "background-size: cover;" +
 //          "border-radius: 22px;" +
 //          "border: 1px solid #0000ff;" +
 //          "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
-//          "padding: 5px 10px 15px 20px;" +
+//          "padding: 20px;" +
 //          "color: #666;" +
-//          "font-size: 10px;" +
+          "font-size: 20px;" +
 //          "line-height: 46px;" +
 //          "text-align: center;" +
 //          "vertical-align: middle;" +
 //          "text-shadow: 1px 1px 2px black;" +
           "}",
       CSS_CELL_BASIC_CLICKED = "{" +
-          "background-color: #0000ff;" +
+//          "background-color: #e8e8e8;" +
 //          "background-image: url(\"https://example.com/example.png\");" +
 //          "background-size: cover;" +
 //          "border-radius: 22px;" +
-//          "border: 1px solid #0000ff;" +
+//          "border: 1px solid #FFC638;" +
 //          "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
-//          "padding: 5px 10px 15px 20px;" +
-//          "color: #666;" +
-//          "font-size: 10px;" +
-//          "line-height: 46px;" +
+//          "padding: 30px;" +
+//          "color: #FFC638;" +
+          "font-size: 24px;" +
+//          "line-height: 40px;" +
 //          "text-align: center;" +
 //          "vertical-align: middle;" +
 //          "text-shadow: 1px 1px 2px black;" +
@@ -2041,7 +2041,8 @@ public class TestSleekUI {
     SleekBase prevSleek = null;
     SleekElement iterElement;
     for (int i = 0; i < 10; i++) {
-      iterElement = getSleekElementCellBasic(prevSleek);
+      iterElement = getSleekElementCellBasic();
+      setSleekElementCellBasicLayout(prevSleek, iterElement);
       iterElement.setElementString("Cell #" + i + "\nThis cell is mucho cool!\nCell Basic FTW!");
       slkc.addSleek(iterElement);
       prevSleek = iterElement;
@@ -2073,7 +2074,7 @@ public class TestSleekUI {
     }
   }
 
-  private static SleekElement getSleekElementCellBasic(SleekBase layoutParent) {
+  private static SleekElement getSleekElementCellBasic() {
     final SleekElement sleekElement = new SleekElement();
     sleekElement.addCSS(cellBasicCSS);
     sleekElement.getTouchHandler().setClickAction(
@@ -2086,17 +2087,16 @@ public class TestSleekUI {
         }}, new Runnable() { @Override public void run() {
           sleekElement.addCSS(cellBasicPressedCSS);
           sleekElement.addCSStransition(cellBasicClickedCSS)
-              //.setDuration(1000)
+              .setDuration(SleekCSSanim.ANIM_DURATION_SHORT_HALF)
               .setDoneListener(new ISleekDrawView() {
                 @Override
                 public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
-                  sleekElement.removeCSStransition(cellBasicPressedCSS, cellBasicClickedCSS);
-                      //.setDuration(1000);
+                  sleekElement.removeCSStransition(cellBasicPressedCSS, cellBasicClickedCSS)
+                      .setDuration(SleekCSSanim.ANIM_DURATION_SHORT_HALF);
                 }
               });
         }}
     );
-    setSleekElementCellBasicLayout(layoutParent, sleekElement);
     return sleekElement;
   }
 
