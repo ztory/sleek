@@ -1964,7 +1964,57 @@ public class TestSleekUI {
       CSS_FLAG_BG_IMG = "{" +
           "background-size: cover;" +
           "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Arizona.svg/2000px-Flag_of_Arizona.svg.png\");" +
+          "}",
+      CSS_CELL_BASIC = "{" +
+          "background-color: #00ff00;" +
+//          "background-image: url(\"https://example.com/example.png\");" +
+          "background-size: cover;" +
+          "border-radius: 4px;" +
+          "border: 1px solid #121212;" +
+//          "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
+//          "padding: 5px 10px 15px 20px;" +
+          "color: #121212;" +
+          "font-size: 12px;" +
+          "line-height: 14px;" +
+          "text-align: left;" +
+          "vertical-align: top;" +
+//          "text-shadow: 1px 1px 2px black;" +
+          "}",
+      CSS_CELL_BASIC_PRESSED = "{" +
+          "background-color: #ff0000;" +
+//          "background-image: url(\"https://example.com/example.png\");" +
+//          "background-size: cover;" +
+//          "border-radius: 22px;" +
+//          "border: 1px solid #0000ff;" +
+//          "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
+//          "padding: 5px 10px 15px 20px;" +
+//          "color: #666;" +
+//          "font-size: 10px;" +
+//          "line-height: 46px;" +
+//          "text-align: center;" +
+//          "vertical-align: middle;" +
+//          "text-shadow: 1px 1px 2px black;" +
+          "}",
+      CSS_CELL_BASIC_CLICKED = "{" +
+          "background-color: #0000ff;" +
+//          "background-image: url(\"https://example.com/example.png\");" +
+//          "background-size: cover;" +
+//          "border-radius: 22px;" +
+//          "border: 1px solid #0000ff;" +
+//          "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
+//          "padding: 5px 10px 15px 20px;" +
+//          "color: #666;" +
+//          "font-size: 10px;" +
+//          "line-height: 46px;" +
+//          "text-align: center;" +
+//          "vertical-align: middle;" +
+//          "text-shadow: 1px 1px 2px black;" +
           "}";
+
+  private static final CSSblock
+      cellBasicCSS = new CSSblockBase(CSS_CELL_BASIC),
+      cellBasicPressedCSS = new CSSblockBase(CSS_CELL_BASIC_PRESSED),
+      cellBasicClickedCSS = new CSSblockBase(CSS_CELL_BASIC_CLICKED);
 
   private static final void loadUIcompleteAppUIexample2(final SleekCanvas slkc) {
     final CSSblock toolbarCSS = new CSSblockBase(CSS_TOOLBAR);
@@ -1988,11 +2038,66 @@ public class TestSleekUI {
     );
     slkc.addSleek(toolbar);
 
+    SleekBase prevSleek = null;
+    SleekElement iterElement;
+    for (int i = 0; i < 10; i++) {
+      iterElement = getSleekElementCellBasic(prevSleek);
+      iterElement.setElementString("Cell #" + i + "\nThis cell is mucho cool!\nCell Basic FTW!");
+      slkc.addSleek(iterElement);
+      prevSleek = iterElement;
+    }
+
     //TODO CONTINUE BUILD APP UI HERE !!!!
 
     //TODO FIX LIST/GRID OF SCROLLABLE VIEWS, MAKE SURE AS LITTLE+CLEAR CODE AS POSSIBLE !!!!
 
     //TODO FIX TOP-/BOTTOM-MARGIN FOR SleekScrollXY so that EdgeEffects are drawn on correct pos !!
+  }
+
+  private static void setSleekElementCellBasicLayout(
+      SleekBase layoutParent,
+      SleekElement sleekElement
+  ) {
+    if (layoutParent == null) {// First view
+      sleekElement.getLayout()
+          .x(X.POS_CENTER, 0, null)
+          .y(Y.ABSOLUTE, UtilPx.getPixels(140), null)
+          .w(W.ABSOLUTE, UtilPx.getPixels(400), null)
+          .h(H.ABSOLUTE, UtilPx.getPixels(300), null);
+    } else {
+      sleekElement.getLayout()
+          .x(X.POS_CENTER, 0, layoutParent)
+          .y(Y.SOUTH_OF, UtilPx.getPixels(40), layoutParent)
+          .w(W.MATCH_PARENT, 0, layoutParent)
+          .h(H.MATCH_PARENT, 0, layoutParent);
+    }
+  }
+
+  private static SleekElement getSleekElementCellBasic(SleekBase layoutParent) {
+    final SleekElement sleekElement = new SleekElement();
+    sleekElement.addCSS(cellBasicCSS);
+    sleekElement.getTouchHandler().setClickAction(
+        new Runnable() { @Override public void run() {
+          sleekElement.removeCSSnoRefresh(cellBasicPressedCSS);//clear previous click animation CSS
+          sleekElement.removeCSSnoRefresh(cellBasicClickedCSS);//clear previous click animation CSS
+          sleekElement.addCSStransition(cellBasicPressedCSS);
+        }}, new Runnable() { @Override public void run() {
+          sleekElement.removeCSStransition(cellBasicPressedCSS);
+        }}, new Runnable() { @Override public void run() {
+          sleekElement.addCSS(cellBasicPressedCSS);
+          sleekElement.addCSStransition(cellBasicClickedCSS)
+              //.setDuration(1000)
+              .setDoneListener(new ISleekDrawView() {
+                @Override
+                public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+                  sleekElement.removeCSStransition(cellBasicPressedCSS, cellBasicClickedCSS);
+                      //.setDuration(1000);
+                }
+              });
+        }}
+    );
+    setSleekElementCellBasicLayout(layoutParent, sleekElement);
+    return sleekElement;
   }
 
   private static final void loadUIcompleteAppUIexample1(final SleekCanvas slkc) {

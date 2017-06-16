@@ -17,6 +17,7 @@ import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvas;
 import com.ztory.lib.sleek.SleekCanvasInfo;
 import com.ztory.lib.sleek.SleekParent;
+import com.ztory.lib.sleek.SleekPrioCounter;
 import com.ztory.lib.sleek.base.SleekBaseComposite;
 import com.ztory.lib.sleek.base.SleekColorArea;
 import com.ztory.lib.sleek.base.SleekParam;
@@ -98,8 +99,20 @@ public class SleekElement extends SleekBaseComposite {
 
   protected boolean wrapTextWidth = false, wrapTextHeight = false;
 
+  public SleekElement() {
+    this(false, SleekPrioCounter.next());
+  }
+
+  public SleekElement(boolean isFixedPosition) {
+    this(isFixedPosition, SleekPrioCounter.next());
+  }
+
   public SleekElement(SleekParam sleekParam) {
-    super(sleekParam);
+    this(sleekParam.fixed, sleekParam.priority);
+  }
+
+  public SleekElement(boolean isFixedPosition, int theTouchPrio) {
+    super(isFixedPosition, theTouchPrio);
     setDimensionIgnoreBounds(true);
   }
 
