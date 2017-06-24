@@ -18,6 +18,7 @@ import com.ztory.lib.sleek.SleekCanvas;
 import com.ztory.lib.sleek.SleekCanvasInfo;
 import com.ztory.lib.sleek.SleekParent;
 import com.ztory.lib.sleek.SleekPrioCounter;
+import com.ztory.lib.sleek.assumption.Assumeable;
 import com.ztory.lib.sleek.base.SleekBaseComposite;
 import com.ztory.lib.sleek.base.SleekColorArea;
 import com.ztory.lib.sleek.base.SleekParam;
@@ -29,6 +30,7 @@ import com.ztory.lib.sleek.base.text.SleekViewText;
 import com.ztory.lib.sleek.contract.ISleekAnimRun;
 import com.ztory.lib.sleek.contract.ISleekCallback;
 import com.ztory.lib.sleek.contract.ISleekData;
+import com.ztory.lib.sleek.contract.ISleekDrawView;
 import com.ztory.lib.sleek.layout.IComputeInt;
 import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.util.Calc;
@@ -114,6 +116,36 @@ public class SleekElement extends SleekBaseComposite {
   public SleekElement(boolean isFixedPosition, int theTouchPrio) {
     super(isFixedPosition, theTouchPrio);
     setDimensionIgnoreBounds(true);
+  }
+
+  public void setClickAction(
+      final CSSblock pressedCSS,
+      final CSSblock clickedCSS,
+      final Assumeable<SleekCSSanim> clickAction
+  ) {
+    getBackground().getTouchHandler().setClickAction(
+        false,
+        new Runnable() { @Override public void run() {
+          removeCSSnoRefresh(pressedCSS);//clear previous click animation CSS
+          removeCSSnoRefresh(clickedCSS);//clear previous click animation CSS
+          addCSStransition(pressedCSS);
+        }}, new Runnable() { @Override public void run() {
+          removeCSStransition(pressedCSS);
+        }}, new Runnable() { @Override public void run() {
+          SleekCSSanim clickCSSanim = addCSStransition(clickedCSS);
+          clickCSSanim.setDuration(SleekCSSanim.ANIM_DURATION_SHORT_HALF)
+              .setDoneListener(new ISleekDrawView() {
+                @Override
+                public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+                  removeCSStransition(pressedCSS, clickedCSS)
+                      .setDuration(SleekCSSanim.ANIM_DURATION_SHORT_HALF);
+                }
+              });
+          if (clickAction != null) {
+            clickAction.assume(clickCSSanim);
+          }
+        }}
+    );
   }
 
   public void setWrapTextWidth(boolean shouldWrapTextWidth) {

@@ -13,6 +13,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import com.ztory.lib.sleek.animation.SAVfade;
 import com.ztory.lib.sleek.animation.SAVtransXYWH;
+import com.ztory.lib.sleek.assumption.Assumeable;
 import com.ztory.lib.sleek.base.SleekBase;
 import com.ztory.lib.sleek.base.SleekColorArea;
 import com.ztory.lib.sleek.base.SleekParam;
@@ -1971,7 +1972,7 @@ public class TestSleekUI {
           "background-size: cover;" +
           "border-radius: 6px;" +
           "border: 1px solid #121212;" +
-//          "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
+          "box-shadow: 0px 0px 20px rgba(30, 68, 210, 0.7);" +
           "padding: 10px;" +
           "color: #121212;" +
           "font-size: 16px;" +
@@ -1984,27 +1985,27 @@ public class TestSleekUI {
           "background-color: #FFC638;" +
 //          "background-image: url(\"https://example.com/example.png\");" +
 //          "background-size: cover;" +
-//          "border-radius: 22px;" +
+          "border-radius: 2px;" +
 //          "border: 1px solid #0000ff;" +
-//          "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
+          "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
 //          "padding: 20px;" +
 //          "color: #666;" +
-          "font-size: 20px;" +
+//          "font-size: 20px;" +
 //          "line-height: 46px;" +
 //          "text-align: center;" +
 //          "vertical-align: middle;" +
 //          "text-shadow: 1px 1px 2px black;" +
           "}",
       CSS_CELL_BASIC_CLICKED = "{" +
-//          "background-color: #e8e8e8;" +
+//          "background-color: #4860E3;" +
 //          "background-image: url(\"https://example.com/example.png\");" +
 //          "background-size: cover;" +
-//          "border-radius: 22px;" +
+          "border-radius: 40px;" +
 //          "border: 1px solid #FFC638;" +
-//          "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
+          "box-shadow: 1px 2px 14px rgba(255, 0, 0, 0.9);" +//"box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
 //          "padding: 30px;" +
 //          "color: #FFC638;" +
-          "font-size: 24px;" +
+//          "font-size: 24px;" +
 //          "line-height: 40px;" +
 //          "text-align: center;" +
 //          "vertical-align: middle;" +
@@ -2040,7 +2041,7 @@ public class TestSleekUI {
 
     SleekBase prevSleek = null;
     SleekElement iterElement;
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 20; i++) {
       iterElement = getSleekElementCellBasic();
       setSleekElementCellBasicLayout(prevSleek, iterElement);
       iterElement.setElementString("Cell #" + i + "\nThis cell is mucho cool!\nCell Basic FTW!");
@@ -2077,28 +2078,36 @@ public class TestSleekUI {
   private static SleekElement getSleekElementCellBasic() {
     final SleekElement sleekElement = new SleekElement();
     sleekElement.addCSS(cellBasicCSS);
-    sleekElement.getTouchHandler().setClickAction(
-        new Runnable() { @Override public void run() {
-          sleekElement.removeCSSnoRefresh(cellBasicPressedCSS);//clear previous click animation CSS
-          sleekElement.removeCSSnoRefresh(cellBasicClickedCSS);//clear previous click animation CSS
-          sleekElement.addCSStransition(cellBasicPressedCSS);
-        }}, new Runnable() { @Override public void run() {
-          sleekElement.removeCSStransition(cellBasicPressedCSS);
-        }}, new Runnable() { @Override public void run() {
-          //TODO On fast click the styles are not applied correctly, how to handle ?!
-          //TODO On fast click the styles are not applied correctly, how to handle ?!
-          //TODO On fast click the styles are not applied correctly, how to handle ?!
-          //TODO On fast click the styles are not applied correctly, how to handle ?!
-          sleekElement.addCSS(cellBasicPressedCSS);
-          sleekElement.addCSStransition(cellBasicClickedCSS)
-              .setDuration(SleekCSSanim.ANIM_DURATION_SHORT_HALF)
-              .setDoneListener(new ISleekDrawView() {
-                @Override
-                public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
-                  sleekElement.removeCSStransition(cellBasicPressedCSS, cellBasicClickedCSS)
-                      .setDuration(SleekCSSanim.ANIM_DURATION_SHORT_HALF);
-                }
-              });
+//    sleekElement.getTouchHandler().setClickAction(
+//        false,
+//        new Runnable() { @Override public void run() {
+//          sleekElement.removeCSSnoRefresh(cellBasicPressedCSS);//clear previous click animation CSS
+//          sleekElement.removeCSSnoRefresh(cellBasicClickedCSS);//clear previous click animation CSS
+//          sleekElement.addCSStransition(cellBasicPressedCSS);
+//        }}, new Runnable() { @Override public void run() {
+//          sleekElement.removeCSStransition(cellBasicPressedCSS);
+//        }}, new Runnable() { @Override public void run() {
+//          sleekElement.addCSStransition(cellBasicClickedCSS)
+//              .setDuration(SleekCSSanim.ANIM_DURATION_SHORT_HALF)
+//              .setDoneListener(new ISleekDrawView() {
+//                @Override
+//                public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
+//                  sleekElement.removeCSStransition(cellBasicPressedCSS, cellBasicClickedCSS)
+//                      .setDuration(SleekCSSanim.ANIM_DURATION_SHORT_HALF);
+//                }
+//              });
+//        }}
+//    );
+    sleekElement.setClickAction(
+        cellBasicPressedCSS,
+        cellBasicClickedCSS,
+        new Assumeable<SleekCSSanim>() { @Override public void assume(SleekCSSanim cssAnimation) {
+          cssAnimation.setDuration(1000);
+          if (sleekElement.getSleekW() != UtilPx.getPixels(400)) {
+            cssAnimation.setGoalW(UtilPx.getPixels(400));
+          } else {
+            cssAnimation.setGoalW(sleekElement.getSleekW() + UtilPx.getPixels(100));
+          }
         }}
     );
     return sleekElement;

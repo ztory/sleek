@@ -164,8 +164,17 @@ public class SleekTouchHandler {
         setTouchPointerUpRun(SleekTouchHandler.TOUCH_RUN_RETURN_TRUE);
     }
 
+    public void setClickAction(
+        final Runnable downAction,
+        final Runnable upAction,
+        final Runnable clickAction
+    ) {
+        setClickAction(true, downAction, upAction, clickAction);
+    }
+
     /** Helper metod that sets setCheckWantsTouch(true) and sets actions for DOWN, MOVE, CANCEL and UP */
     public void setClickAction(
+            final boolean execUpActionOnClick,
             final Runnable downAction,
             final Runnable upAction,
             final Runnable clickAction
@@ -229,7 +238,9 @@ public class SleekTouchHandler {
             @Override
             public int onTouch(Sleek view, SleekTouchHandler handler, MotionEvent event, SleekCanvasInfo info) {
 
-                runSafeRunnable(upAction);
+                if (execUpActionOnClick) {
+                    runSafeRunnable(upAction);
+                }
 
                 if (UtilSleekTouch.isTouchInside(event, sleekView)) {
                     runSafeRunnable(clickAction);
