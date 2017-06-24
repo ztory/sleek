@@ -36,13 +36,13 @@ public class SleekTest {
 
     final CountDownLatch countDownLatch = new CountDownLatch(3);
 
-    Assumption<String> chainAssumption = new SimpleAssumption<>(
+    Assumption<Integer> chainAssumption = new SimpleAssumption<>(
         UtilExecutor.CPU_EXECUTOR_MULTI,
-        new AssumptionResolver<String>() {
+        new AssumptionResolver<Integer>() {
           @Override
-          public String resolve() throws Exception {
+          public Integer resolve() throws Exception {
             countDownLatch.countDown();
-            return "hoho";
+            return 44;
           }
         }
     );
@@ -79,7 +79,7 @@ public class SleekTest {
     Assert.assertEquals(true, assumption.isDone());
     Assert.assertEquals(true, assumption.isCorrect());
     Assert.assertEquals(null, assumption.getException());
-    Assert.assertEquals("hoho", chainAssumption.get());
+    Assert.assertEquals(Integer.valueOf(44), chainAssumption.get());
     Assert.assertEquals(false, chainAssumption.isCancelled());
     Assert.assertEquals(true, chainAssumption.isDone());
     Assert.assertEquals(true, chainAssumption.isCorrect());
