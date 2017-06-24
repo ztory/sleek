@@ -8,11 +8,12 @@ import java.util.concurrent.Future;
 public interface Assumption<T> extends Future<T> {
 
   //Assumption.correct().wrong()
-  Assumption<T> validate();
+  boolean isCorrect();
   Exception getException() throws InterruptedException;
-  void correct(Assumeable<T> onResult);
-  void wrong(Assumeable<Exception> onError);
-  void done(Assumeable<Assumption<T>> onDone);
-  void more(Assumption assumption);
+  Assumption<T> validate();
+  Assumption<T> correct(Assumeable<T> onResult);
+  Assumption<T> wrong(Assumeable<Exception> onError);
+  Assumption<T> done(Assumeable<Assumption<T>> onDone);
+  Assumption<T> next(Assumption assumption);
 
 }

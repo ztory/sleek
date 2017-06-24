@@ -103,6 +103,11 @@ public class SimpleAssumption<T> implements Assumption<T> {
   }
 
   @Override
+  public boolean isCorrect() {
+    return assumptionCorrect;
+  }
+
+  @Override
   public Exception getException() throws InterruptedException {
 
     countDownLatch.await();
@@ -111,10 +116,10 @@ public class SimpleAssumption<T> implements Assumption<T> {
   }
 
   @Override
-  public void correct(Assumeable<T> onCorrect) {
+  public Assumption<T> correct(Assumeable<T> onCorrect) {
 
     if (onCorrect == null) {
-      return;
+      return this;
     }
 
     synchronized (this) {
@@ -124,13 +129,15 @@ public class SimpleAssumption<T> implements Assumption<T> {
         onCorrect.assume(assumptionResult);
       }
     }
+
+    return this;
   }
 
   @Override
-  public void wrong(Assumeable<Exception> onWrong) {
+  public Assumption<T> wrong(Assumeable<Exception> onWrong) {
 
     if (onWrong == null) {
-      return;
+      return this;
     }
 
     synchronized (this) {
@@ -140,13 +147,15 @@ public class SimpleAssumption<T> implements Assumption<T> {
         onWrong.assume(assumptionException);
       }
     }
+
+    return this;
   }
 
   @Override
-  public void done(Assumeable<Assumption<T>> onDone) {
+  public Assumption<T> done(Assumeable<Assumption<T>> onDone) {
 
     if (onDone == null) {
-      return;
+      return this;
     }
 
     synchronized (this) {
@@ -156,13 +165,15 @@ public class SimpleAssumption<T> implements Assumption<T> {
         onDone.assume(this);
       }
     }
+
+    return this;
   }
 
   @Override
-  public void more(Assumption assumption) {
+  public Assumption<T> next(Assumption assumption) {
 
     if (assumption == null) {
-      return;
+      return this;
     }
 
     synchronized (this) {
@@ -172,6 +183,8 @@ public class SimpleAssumption<T> implements Assumption<T> {
         assumption.validate();
       }
     }
+
+    return this;
   }
 
   @Override
