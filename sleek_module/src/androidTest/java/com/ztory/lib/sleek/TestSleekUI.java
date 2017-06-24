@@ -2085,6 +2085,10 @@ public class TestSleekUI {
         }}, new Runnable() { @Override public void run() {
           sleekElement.removeCSStransition(cellBasicPressedCSS);
         }}, new Runnable() { @Override public void run() {
+          //TODO On fast click the styles are not applied correctly, how to handle ?!
+          //TODO On fast click the styles are not applied correctly, how to handle ?!
+          //TODO On fast click the styles are not applied correctly, how to handle ?!
+          //TODO On fast click the styles are not applied correctly, how to handle ?!
           sleekElement.addCSS(cellBasicPressedCSS);
           sleekElement.addCSStransition(cellBasicClickedCSS)
               .setDuration(SleekCSSanim.ANIM_DURATION_SHORT_HALF)

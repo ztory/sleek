@@ -2,6 +2,11 @@ package com.ztory.lib.sleek;
 
 //import junit.framework.TestCase;
 
+import com.ztory.lib.sleek.assumption.Assumeable;
+import com.ztory.lib.sleek.assumption.Assumption;
+import com.ztory.lib.sleek.assumption.AssumptionResolver;
+import com.ztory.lib.sleek.assumption.SimpleAssumption;
+import com.ztory.lib.sleek.util.UtilExecutor;
 import com.ztory.lib.sleek.val.Val;
 import com.ztory.lib.sleek.val.ValAction;
 import java.util.concurrent.CountDownLatch;
@@ -22,6 +27,40 @@ public class SleekTest {
 
   @AfterClass
   public static void tearDownAfterClass() throws Exception {
+
+  }
+
+  @Test
+  public void testAssumption() throws Exception {
+    Assumption<String> assumption = new SimpleAssumption<>(
+        UtilExecutor.CPU_EXECUTOR_MULTI,
+        new AssumptionResolver<String>() {
+          @Override
+          public String resolve() throws Exception {
+            return null;
+          }
+        }
+    );
+    assumption.correct(new Assumeable<String>() {
+      @Override
+      public void assume(String result) {
+
+      }
+    });
+    assumption.wrong(new Assumeable<Exception>() {
+      @Override
+      public void assume(Exception result) {
+
+      }
+    });
+    assumption.done(new Assumeable<Assumption<String>>() {
+      @Override
+      public void assume(Assumption<String> result) {
+
+      }
+    });
+
+    //TODO TEST Assumption functionalty, with all listeners and also chaining Assumptions !!!!
 
   }
 
