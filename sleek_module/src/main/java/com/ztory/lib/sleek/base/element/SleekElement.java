@@ -576,7 +576,7 @@ public class SleekElement extends SleekBaseComposite {
       elementBackgroundImage.setBitmapFetcher(null, null, null);//clear fetcher
     } else {
       elementBackgroundImage.setBitmapFetcher(mSlkCanvas != null ? mSlkCanvas.getHandler() : null,
-          UtilExecutor.NETWORK_EXECUTOR,
+          UtilExecutor.NETWORK,
           new ISleekData<Bitmap>() {
             @Override
             public Bitmap getData(Sleek sleek) {
@@ -839,7 +839,7 @@ public class SleekElement extends SleekBaseComposite {
 
         //TODO Maybe exeute on UI-thread if view is within viewport when this method is called ?
 
-        UtilExecutor.CPU_EXECUTOR_MULTI.execute(new Runnable() {
+        UtilExecutor.CPU_MULTI.execute(new Runnable() {
           @Override
           public void run() {
             final List<Bitmap> shadowBitmapList = generateShadowBitmap();

@@ -2451,7 +2451,7 @@ public class TestSleekUI {
     // Attempt download on bg-thread
     UtilDownload.downloadUrl(imageUrl,
         customFileName,
-        UtilExecutor.NETWORK_EXECUTOR,
+        UtilExecutor.NETWORK,
         new UtilDownload.FileDownload() {
           @Override
           public void downloadProgress(float percent) {
@@ -2468,7 +2468,7 @@ public class TestSleekUI {
     // Attempt download on bg-thread
     UtilDownload.downloadUrl(imageUrl,
         customFileName,
-        UtilExecutor.NETWORK_EXECUTOR,
+        UtilExecutor.NETWORK,
         new UtilDownload.FileDownload() {
           @Override
           public void downloadProgress(float percent) {
@@ -2485,7 +2485,7 @@ public class TestSleekUI {
     // Attempt download on bg-thread
     UtilDownload.downloadUrl(imageUrl,
         customFileName,
-        UtilExecutor.NETWORK_EXECUTOR,
+        UtilExecutor.NETWORK,
         new UtilDownload.FileDownload() {
           @Override
           public void downloadProgress(float percent) {
