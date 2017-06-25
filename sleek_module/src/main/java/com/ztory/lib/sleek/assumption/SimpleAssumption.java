@@ -13,10 +13,10 @@ import java.util.concurrent.TimeoutException;
  */
 public class SimpleAssumption<T> implements Assumption<T> {
 
-  protected final List<Assumeable<T>> correctListeners = new ArrayList<>(4);
-  protected final List<Assumeable<Exception>> wrongListeners = new ArrayList<>(4);
-  protected final List<Assumeable<Assumption<T>>> doneListeners = new ArrayList<>(4);
-  protected final List<Assumption> chainAssumptionList = new ArrayList<>(4);
+  protected final List<Assumeable<T>> correctListeners = new ArrayList<>();
+  protected final List<Assumeable<Exception>> wrongListeners = new ArrayList<>();
+  protected final List<Assumeable<Assumption<T>>> doneListeners = new ArrayList<>();
+  protected final List<Assumption> chainAssumptionList = new ArrayList<>();
   protected final CountDownLatch countDownLatch = new CountDownLatch(1);
   protected final Executor executor;
   protected final AssumptionResolver<T> assumptionResolver;
