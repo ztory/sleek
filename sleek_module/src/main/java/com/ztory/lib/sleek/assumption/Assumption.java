@@ -9,6 +9,8 @@ public interface Assumption<T> extends Future<T> {
 
   //Assumption.correct().wrong()
   boolean isCorrect();
+  boolean isSet();//means that get() will return non-null object
+  boolean isNull();//means that get() will return null object
   Exception getException() throws InterruptedException;
   Assumption<T> validate();
   Assumption<T> correct(Assumeable<T> onResult);

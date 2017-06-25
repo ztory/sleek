@@ -108,6 +108,16 @@ public class SimpleAssumption<T> implements Assumption<T> {
   }
 
   @Override
+  public boolean isSet() {
+    return assumptionResult != null;
+  }
+
+  @Override
+  public boolean isNull() {
+    return assumptionResult == null;
+  }
+
+  @Override
   public Exception getException() throws InterruptedException {
 
     countDownLatch.await();
