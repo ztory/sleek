@@ -2348,6 +2348,38 @@ public class TestSleekUI {
       throw new IllegalStateException("mActivityRule.getActivity() == null");
     }
 
+    // Load App UI
+    mActivityRule.getActivity().getUiHandler().post(new Runnable() {
+      @Override
+      public void run() {
+
+        UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
+
+        // Load SleekCanvas subclass
+        SleekCanvas sleekCanvas = new SleekCanvasExampleOne(mActivityRule.getActivity());
+
+        mActivityRule.getActivity().setSleekCanvas(sleekCanvas);
+        mActivityRule.getActivity().setContentView(sleekCanvas);
+      }
+    });
+
+    final CountDownLatch activityPauseLatch = new CountDownLatch(1);
+    mActivityRule.getActivity().setPauseListener(new Runnable() {
+      @Override
+      public void run() {
+        activityPauseLatch.countDown();
+      }
+    });
+    activityPauseLatch.await();
+  }
+
+  //@Test
+  public void testCompleteAppUI_OLD() throws Exception {
+
+    if (mActivityRule.getActivity() == null) {
+      throw new IllegalStateException("mActivityRule.getActivity() == null");
+    }
+
     UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
     UtilTestSleekUI.setSleekActivitySleekCanvasScrollerY(mActivityRule.getActivity());
     UtilTestSleekUI.addUIframeRate(mActivityRule.getActivity().getSleekCanvas());
