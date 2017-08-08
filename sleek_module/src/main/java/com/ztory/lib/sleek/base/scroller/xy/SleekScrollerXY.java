@@ -69,6 +69,7 @@ public class SleekScrollerXY implements SleekCanvasScroller {
   protected int mCanvasWidth, mCanvasHeight;
 
   protected Rect mContentRect = new Rect();
+  protected Rect mMarginRect = new Rect();
 
   protected OverScroller mScroller;
 
@@ -274,10 +275,10 @@ public class SleekScrollerXY implements SleekCanvasScroller {
     mCanvasHeight = info.height;
 
     mContentRect.set(
-        getPaddingLeft(),
-        getPaddingTop(),
-        mCanvasWidth - getPaddingRight(),
-        mCanvasHeight - getPaddingBottom()
+        getMarginLeft(),
+        getMarginTop(),
+        mCanvasWidth - getMarginRight(),
+        mCanvasHeight - getMarginBottom()
     );
 
     constrainPosXY();
@@ -673,42 +674,42 @@ public class SleekScrollerXY implements SleekCanvasScroller {
 
   @Override
   public void setMarginTop(int marginTop) {
-
+    mMarginRect.top = marginTop;
   }
 
   @Override
   public void setMarginBottom(int marginBottom) {
-
+    mMarginRect.bottom = marginBottom;
   }
 
   @Override
   public void setMarginLeft(int marginLeft) {
-
+    mMarginRect.left = marginLeft;
   }
 
   @Override
   public void setMarginRight(int marginRight) {
-
+    mMarginRect.right = marginRight;
   }
 
   @Override
   public int getMarginTop() {
-    return 0;
+    return mMarginRect.top;
   }
 
   @Override
   public int getMarginBottom() {
-    return 0;
+    return mMarginRect.bottom;
   }
 
   @Override
   public int getMarginLeft() {
-    return 0;
+    return mMarginRect.left;
   }
 
   @Override
   public int getMarginRight() {
-    return 0;
+    return mMarginRect.right;
   }
 
   @Override

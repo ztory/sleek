@@ -11,7 +11,6 @@ import com.ztory.lib.sleek.base.scroller.xy.SleekScrollerXY;
 import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.layout.SL.H;
 import com.ztory.lib.sleek.layout.SL.W;
-import com.ztory.lib.sleek.layout.SL.X;
 import com.ztory.lib.sleek.util.UtilPx;
 import com.ztory.lib.sleek.util.UtilSleekLayout;
 import java.util.ArrayList;
@@ -104,7 +103,15 @@ public class SleekCanvasExampleOne extends SleekCanvas {
     super(context);
 
     setBackgroundColor(0xffcccccc);
-    setSleekScroller(new SleekScrollerXY(false, true));
+
+    final int toolbarHeight = UtilPx.getPixels(102);
+
+    SleekScrollerXY sleekScrollerXY = new SleekScrollerXY(false, true);
+    sleekScrollerXY.setMarginTop(toolbarHeight);// + 10);
+    //sleekScrollerXY.setMarginBottom(10);
+    //sleekScrollerXY.setMarginLeft(10);
+    //sleekScrollerXY.setMarginRight(10);
+    setSleekScroller(sleekScrollerXY);
 
     SleekFrameRate frameRate = new SleekFrameRate(0xff38B0DE);
     frameRate.getLayout()
@@ -123,7 +130,7 @@ public class SleekCanvasExampleOne extends SleekCanvas {
     toolbar.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
         .x(SL.X.ABSOLUTE, -UtilPx.getPixels(10), null)
         .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
-        .h(H.ABSOLUTE, UtilPx.getPixels(102), null);
+        .h(H.ABSOLUTE, toolbarHeight, null);
     toolbar.getBackground().getTouchHandler().setClickAction(
         new Runnable() {
           @Override
@@ -168,26 +175,6 @@ public class SleekCanvasExampleOne extends SleekCanvas {
   private static SleekElement getSleekElementCellBasic() {
     final SleekElement sleekElement = new SleekElement();
     sleekElement.addCSS(cellBasicCSS);
-//    sleekElement.getTouchHandler().setClickAction(
-//        false,
-//        new Runnable() { @Override public void run() {
-//          sleekElement.removeCSSnoRefresh(cellBasicPressedCSS);//clear previous click animation CSS
-//          sleekElement.removeCSSnoRefresh(cellBasicClickedCSS);//clear previous click animation CSS
-//          sleekElement.addCSStransition(cellBasicPressedCSS);
-//        }}, new Runnable() { @Override public void run() {
-//          sleekElement.removeCSStransition(cellBasicPressedCSS);
-//        }}, new Runnable() { @Override public void run() {
-//          sleekElement.addCSStransition(cellBasicClickedCSS)
-//              .setDuration(SleekCSSanim.ANIM_DURATION_SHORT_HALF)
-//              .setDoneListener(new ISleekDrawView() {
-//                @Override
-//                public void drawView(Sleek sleek, Canvas canvas, SleekCanvasInfo info) {
-//                  sleekElement.removeCSStransition(cellBasicPressedCSS, cellBasicClickedCSS)
-//                      .setDuration(SleekCSSanim.ANIM_DURATION_SHORT_HALF);
-//                }
-//              });
-//        }}
-//    );
     sleekElement.setClickAction(
         cellBasicPressedCSS,
         cellBasicClickedCSS,
