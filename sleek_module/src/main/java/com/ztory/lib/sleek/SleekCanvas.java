@@ -18,6 +18,7 @@ import com.ztory.lib.sleek.util.UtilSleekTouch;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -346,6 +347,22 @@ public class SleekCanvas extends RelativeLayout {
         invalidateSafe();
     }
 
+    public void addSleek(List<? extends Sleek> sleekList) {
+
+        if (sleekList == null) {
+            return;
+        }
+
+        synchronized (canvasLockObj) {
+            for (Sleek iterSleek : sleekList) {
+                if (iterSleek == null) {
+                    continue;
+                }
+                addSleek(iterSleek);
+            }
+        }
+    }
+
     public void addSleek(Sleek sleek) {
         synchronized (canvasLockObj) {
 
@@ -482,6 +499,56 @@ public class SleekCanvas extends RelativeLayout {
 
             if (sleekScroller.isAutoLoading()) {
                 reloadScrollEdges();
+            }
+        }
+
+        invalidateSafe();
+    }
+
+    public void removeSleek(List<? extends Sleek> sleekList) {
+
+        if (sleekList == null) {
+            return;
+        }
+
+        synchronized (canvasLockObj) {
+
+            for (Sleek iterSleek : sleekList) {
+
+                if (iterSleek == null) {
+                    continue;
+                }
+
+                if (iterSleek.isSleekFixedPosition()) {
+                    drawFixedItemList.remove(iterSleek);
+                    if (iterSleek.isSleekTouchable()) {
+                        touchFixedItemList.remove(iterSleek);
+                    }
+                }
+                else {
+                    drawItemList.remove(iterSleek);
+                    if (iterSleek.isSleekTouchable()) {
+                        touchItemList.remove(iterSleek);
+                    }
+                }
+
+                iterSleek.onSleekUnload();
+
+                iterSleek.onSleekParentRemove(SleekCanvas.this, null);
+            }
+
+            float scrollLeft = getSleekScroller().getPosLeft();
+            float scrollTop = getSleekScroller().getPosTop();
+
+            // Reload scroll edges so that removed view is no longer taken in to account
+            reloadScrollEdges();
+
+            // If removed view modified scroll position then also load/unload new viewport
+            if (
+                scrollLeft != getSleekScroller().getPosLeft()
+                    || scrollTop != getSleekScroller().getPosTop()
+                ) {
+                loadAndUnloadSleekLists(false);
             }
         }
 

@@ -32,7 +32,10 @@ import com.ztory.lib.sleek.util.Calc;
 import com.ztory.lib.sleek.util.UtilDownload;
 import com.ztory.lib.sleek.util.UtilExecutor;
 import com.ztory.lib.sleek.util.UtilPx;
+import com.ztory.lib.sleek.util.UtilSleekLayout;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.junit.AfterClass;
@@ -1975,7 +1978,7 @@ public class TestSleekUI {
           "box-shadow: 0px 0px 20px rgba(30, 68, 210, 0.7);" +
           "padding: 10px;" +
           "color: #121212;" +
-          "font-size: 16px;" +
+          "font-size: 26px;" +
           "line-height: 20px;" +
           "text-align: left;" +
           "vertical-align: top;" +
@@ -2018,10 +2021,13 @@ public class TestSleekUI {
       cellBasicClickedCSS = new CSSblockBase(CSS_CELL_BASIC_CLICKED);
 
   private static final void loadUIcompleteAppUIexample2(final SleekCanvas slkc) {
+
+    final List<SleekElement> sleekElementList = new ArrayList<>(20);
+
     final CSSblock toolbarCSS = new CSSblockBase(CSS_TOOLBAR);
     final CSSblock toolbarActiveCSS = new CSSblockBase(CSS_TOOLBAR_ACTIVE);
 
-    final SleekElement toolbar = new SleekElement(FIXED_TOUCHABLE.prio(slkc.getNextPrio()));
+    final SleekElement toolbar = new SleekElement(SleekElement.FIXED_POSITION_TRUE);
     toolbar.setElementString("Sleek" + "\nMore power to the UI");
     toolbar.addCSS(toolbarCSS);
     toolbar.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
@@ -2034,20 +2040,24 @@ public class TestSleekUI {
         }}, new Runnable() { @Override public void run() {
           toolbar.removeCSStransition(toolbarActiveCSS);
         }}, new Runnable() { @Override public void run() {
-
+          if (sleekElementList.get(0).isAddedToParent()) {
+            slkc.removeSleek(sleekElementList);
+          } else {
+            slkc.addSleek(sleekElementList);
+          }
         }}
     );
     slkc.addSleek(toolbar);
 
-    SleekBase prevSleek = null;
     SleekElement iterElement;
     for (int i = 0; i < 20; i++) {
       iterElement = getSleekElementCellBasic();
-      setSleekElementCellBasicLayout(prevSleek, iterElement);
       iterElement.setElementString("Cell #" + i + "\nThis cell is mucho cool!\nCell Basic FTW!");
-      slkc.addSleek(iterElement);
-      prevSleek = iterElement;
+      sleekElementList.add(iterElement);
     }
+
+    UtilSleekLayout.initVerticalListLayout(sleekElementList);
+    slkc.addSleek(sleekElementList);
 
     //TODO CONTINUE BUILD APP UI HERE !!!!
 
