@@ -30,7 +30,7 @@ public class SleekCanvasExampleOne extends SleekCanvas {
     //          "background-size: cover;" +
     //          "border-radius: 22px;" +
           //"border: 1px solid #202020;" +//TODO border does not work with transparent background !
-          //"box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);" +
+          "box-shadow: 0px 0px 8px rgba(255, 0, 0, 1.0);" +
           "padding: 0px 10px 0px 30px;" +
           "color: #eee;" +
           "font-size: 20px;" +
@@ -43,6 +43,8 @@ public class SleekCanvasExampleOne extends SleekCanvas {
 //          "padding: 10px 10px 0px 40px;" +
 //          "color: #f00;" +
 //          "font-size: 30px;" +
+          //"border: 1px solid #202020;" +
+          //"box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);" +
           "line-height: 50px;" +
           "text-shadow: 1px 1px 8px #ff0000;" +
           "}",
