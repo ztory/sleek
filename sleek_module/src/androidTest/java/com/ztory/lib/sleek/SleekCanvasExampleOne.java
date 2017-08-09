@@ -166,7 +166,11 @@ public class SleekCanvasExampleOne extends SleekCanvas {
       iterElement.setElementString("Cell #" + i + "\nThis cell is mucho cool!\nCell Basic FTW!");
       sleekElementList.add(iterElement);
     }
-    UtilSleekLayout.initVerticalListLayout(sleekElementList);
+    UtilSleekLayout.initVerticalListLayout(
+        sleekElementList,
+        UtilPx.getPixels(40),
+        UtilPx.getPixels(40)
+    );
     addSleek(sleekElementList);
 
     //TODO FIX LIST and GRID OF SCROLLABLE VIEWS, MAKE SURE AS LITTLE+CLEAR CODE AS POSSIBLE !!!!
@@ -191,6 +195,9 @@ public class SleekCanvasExampleOne extends SleekCanvas {
           }
         }
     );
+    sleekElement.getLayout()
+        .w(W.ABSOLUTE, UtilPx.getPixels(400), null)
+        .h(H.ABSOLUTE, UtilPx.getPixels(300), null);
     return sleekElement;
   }
 

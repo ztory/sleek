@@ -17,24 +17,17 @@ import java.util.List;
  */
 public class UtilSleekLayout {
 
-  public static void initVerticalListLayout(List<? extends SleekBase> sleekBaseList) {
-
-    //TODO need params for spacing between views, width and height im unsure of how to declare...
-
+  public static void initVerticalListLayout(List<? extends SleekBase> sleekBaseList, int topSpacing, int spacing) {
     SleekBase layoutParent = null;
     for (SleekBase iterSleekBase : sleekBaseList) {
       if (layoutParent == null) {// First view
         iterSleekBase.getLayout()
             .x(X.POS_CENTER, 0, null)
-            .y(Y.ABSOLUTE, UtilPx.getPixels(140), null)
-            .w(W.ABSOLUTE, UtilPx.getPixels(400), null)
-            .h(H.ABSOLUTE, UtilPx.getPixels(300), null);
+            .y(Y.ABSOLUTE, topSpacing, null);
       } else {
         iterSleekBase.getLayout()
             .x(X.POS_CENTER, 0, layoutParent)
-            .y(Y.SOUTH_OF, UtilPx.getPixels(40), layoutParent)
-            .w(W.MATCH_PARENT, 0, layoutParent)
-            .h(H.MATCH_PARENT, 0, layoutParent);
+            .y(Y.SOUTH_OF, spacing, layoutParent);
       }
       layoutParent = iterSleekBase;
     }

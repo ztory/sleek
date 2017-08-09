@@ -2056,7 +2056,11 @@ public class TestSleekUI {
       sleekElementList.add(iterElement);
     }
 
-    UtilSleekLayout.initVerticalListLayout(sleekElementList);
+    UtilSleekLayout.initVerticalListLayout(
+        sleekElementList,
+        UtilPx.getPixels(140),
+        UtilPx.getPixels(40)
+    );
     slkc.addSleek(sleekElementList);
 
     //TODO CONTINUE BUILD APP UI HERE !!!!
@@ -2120,6 +2124,9 @@ public class TestSleekUI {
           }
         }}
     );
+    sleekElement.getLayout()
+        .w(W.ABSOLUTE, UtilPx.getPixels(400), null)
+        .h(H.ABSOLUTE, UtilPx.getPixels(300), null);
     return sleekElement;
   }
 
