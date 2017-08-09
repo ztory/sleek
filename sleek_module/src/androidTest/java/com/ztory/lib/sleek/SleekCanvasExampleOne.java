@@ -25,11 +25,11 @@ public class SleekCanvasExampleOne extends SleekCanvas {
 
   private static final String
       CSS_TOOLBAR = "{" +
-          "background-color: rgba(30, 68, 210, 0.5);" +
+          "background-color: rgba(30, 68, 210, 0.7);" +
     //          "background-image: url(\"https://example.com/example.png\");" +
     //          "background-size: cover;" +
     //          "border-radius: 22px;" +
-          //"border: 1px solid #202020;" +//TODO border does not work with transparent background !
+          //"border: 2px solid #0f0;" +//TODO border does not work with transparent background !
           "box-shadow: 0px 0px 8px rgba(255, 0, 0, 1.0);" +
           "padding: 0px 10px 0px 30px;" +
           "color: #eee;" +
