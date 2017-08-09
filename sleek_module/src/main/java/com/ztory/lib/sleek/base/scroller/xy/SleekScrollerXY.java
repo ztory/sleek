@@ -70,6 +70,7 @@ public class SleekScrollerXY implements SleekCanvasScroller {
 
   protected Rect mContentRect = new Rect();
   protected Rect mMarginRect = new Rect();
+  protected Rect mPaddingRect = new Rect();
 
   protected OverScroller mScroller;
 
@@ -141,7 +142,7 @@ public class SleekScrollerXY implements SleekCanvasScroller {
         0,//minX
         Math.round(mRightScrollEdge - mCanvasWidth),//maxX
         0,//minY
-        Math.round(mBottomScrollEdge - mCanvasHeight),//maxY
+        Math.round(mBottomScrollEdge - mCanvasHeight + getPaddingBottom() + getMarginBottom()),//maxYto
         mOverflingX,//overX
         mOverflingY//overY
     );
@@ -314,6 +315,8 @@ public class SleekScrollerXY implements SleekCanvasScroller {
 
   protected void constrainPosXY() {
 
+    //TODO FIX so that RIGHT padding and margin are handled the same that that BOTTOM are !!!!
+
     if (mShouldScrollX) {
       if (mRightScrollEdge <= mCanvasWidth) {
         setPosLeft(0);
@@ -352,7 +355,7 @@ public class SleekScrollerXY implements SleekCanvasScroller {
     }
 
     if (mShouldScrollY) {
-      if (mBottomScrollEdge <= mCanvasHeight) {
+      if (mBottomScrollEdge <= mCanvasHeight - getPaddingBottom() - getMarginBottom()) {
         setPosTop(0);
         if (Math.abs(mTouchMoveTravelY) > mMoveDistanceThreshold) {
           if (mTouchMoveTravelY > 0) {
@@ -377,14 +380,14 @@ public class SleekScrollerXY implements SleekCanvasScroller {
         mEdgeEffectTopActive = true;
 
         setPosTop(0);
-      } else if (mPosTop < -mBottomScrollEdge + mCanvasHeight) {
+      } else if (mPosTop < -mBottomScrollEdge + mCanvasHeight - getPaddingBottom() - getMarginBottom()) {
         mEdgeEffectBottom.onPull(
-            (Math.abs(mPosTop) + mCanvasHeight - mBottomScrollEdge) / mCanvasHeight,
+            (Math.abs(mPosTop) + mCanvasHeight - mBottomScrollEdge - getPaddingBottom() - getMarginBottom()) / mCanvasHeight,
             1 - (mTouchCurrX / mCanvasWidth)
         );
         mEdgeEffectBottomActive = true;
 
-        setPosTop(-mBottomScrollEdge + mCanvasHeight);
+        setPosTop(-mBottomScrollEdge + mCanvasHeight - getPaddingBottom() - getMarginBottom());
       }
     }
   }
@@ -634,42 +637,42 @@ public class SleekScrollerXY implements SleekCanvasScroller {
 
   @Override
   public void setPaddingTop(int paddingTop) {
-
+    mPaddingRect.top = paddingTop;
   }
 
   @Override
   public void setPaddingBottom(int paddingBottom) {
-
+    mPaddingRect.bottom = paddingBottom;
   }
 
   @Override
   public void setPaddingLeft(int paddingLeft) {
-
+    mPaddingRect.left = paddingLeft;
   }
 
   @Override
   public void setPaddingRight(int paddingRight) {
-
+    mPaddingRect.right = paddingRight;
   }
 
   @Override
   public int getPaddingTop() {
-    return 0;
+    return mPaddingRect.top;
   }
 
   @Override
   public int getPaddingBottom() {
-    return 0;
+    return mPaddingRect.bottom;
   }
 
   @Override
   public int getPaddingLeft() {
-    return 0;
+    return mPaddingRect.left;
   }
 
   @Override
   public int getPaddingRight() {
-    return 0;
+    return mPaddingRect.right;
   }
 
   @Override

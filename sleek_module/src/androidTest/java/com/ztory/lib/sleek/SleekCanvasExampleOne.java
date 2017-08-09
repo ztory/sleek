@@ -11,6 +11,7 @@ import com.ztory.lib.sleek.base.scroller.xy.SleekScrollerXY;
 import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.layout.SL.H;
 import com.ztory.lib.sleek.layout.SL.W;
+import com.ztory.lib.sleek.layout.SL.Y;
 import com.ztory.lib.sleek.util.UtilPx;
 import com.ztory.lib.sleek.util.UtilSleekLayout;
 import java.util.ArrayList;
@@ -24,12 +25,12 @@ public class SleekCanvasExampleOne extends SleekCanvas {
 
   private static final String
       CSS_TOOLBAR = "{" +
-          "background-color: #101010;" +
+          "background-color: rgba(30, 68, 210, 0.5);" +
     //          "background-image: url(\"https://example.com/example.png\");" +
     //          "background-size: cover;" +
     //          "border-radius: 22px;" +
-          "border: 1px solid #202020;" +
-          "box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);" +
+          //"border: 1px solid #202020;" +//TODO border does not work with transparent background !
+          //"box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);" +
           "padding: 0px 10px 0px 30px;" +
           "color: #eee;" +
           "font-size: 20px;" +
@@ -107,10 +108,11 @@ public class SleekCanvasExampleOne extends SleekCanvas {
     final int toolbarHeight = UtilPx.getPixels(102);
 
     SleekScrollerXY sleekScrollerXY = new SleekScrollerXY(false, true);
-    sleekScrollerXY.setMarginTop(toolbarHeight);// + 10);
-    //sleekScrollerXY.setMarginBottom(10);
+    //sleekScrollerXY.setMarginTop(toolbarHeight);// + 10);
+    sleekScrollerXY.setMarginBottom(toolbarHeight);
     //sleekScrollerXY.setMarginLeft(10);
     //sleekScrollerXY.setMarginRight(10);
+    sleekScrollerXY.setPaddingBottom(UtilPx.getPixels(40));
     setSleekScroller(sleekScrollerXY);
 
     SleekFrameRate frameRate = new SleekFrameRate(0xff38B0DE);
@@ -129,6 +131,7 @@ public class SleekCanvasExampleOne extends SleekCanvas {
     toolbar.addCSS(toolbarCSS);
     toolbar.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
         .x(SL.X.ABSOLUTE, -UtilPx.getPixels(10), null)
+        .y(SL.Y.PERCENT_CANVAS, -toolbarHeight, null, 1.0f)
         .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
         .h(H.ABSOLUTE, toolbarHeight, null);
     toolbar.getBackground().getTouchHandler().setClickAction(
@@ -166,10 +169,8 @@ public class SleekCanvasExampleOne extends SleekCanvas {
     UtilSleekLayout.initVerticalListLayout(sleekElementList);
     addSleek(sleekElementList);
 
-    //TODO FIX LIST/GRID OF SCROLLABLE VIEWS, MAKE SURE AS LITTLE+CLEAR CODE AS POSSIBLE !!!!
+    //TODO FIX LIST and GRID OF SCROLLABLE VIEWS, MAKE SURE AS LITTLE+CLEAR CODE AS POSSIBLE !!!!
 
-    //TODO FIX TOP-/BOTTOM-MARGIN FOR SleekScrollXY so that EdgeEffects are drawn on correct pos !!
-    //TODO   - BONUS POINTS if we can solve margin for bottom-view in a vertiacal list as well !!
   }
 
   private static SleekElement getSleekElementCellBasic() {

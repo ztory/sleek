@@ -18,6 +18,9 @@ import java.util.List;
 public class UtilSleekLayout {
 
   public static void initVerticalListLayout(List<? extends SleekBase> sleekBaseList) {
+
+    //TODO need params for spacing between views, width and height im unsure of how to declare...
+
     SleekBase layoutParent = null;
     for (SleekBase iterSleekBase : sleekBaseList) {
       if (layoutParent == null) {// First view
