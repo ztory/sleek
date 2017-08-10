@@ -213,8 +213,8 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
     );
     sleekElement.getLayout()
         .w(W.ABSOLUTE, CELL_WIDTH, null)
-        .h(H.ABSOLUTE, UtilPx.getPixels(300), null);
-        //.h(H.ABSOLUTE, UtilPx.getPixels(100) + (int) (UtilPx.getPixels(100) * Math.random()), null);
+        //.h(H.ABSOLUTE, UtilPx.getPixels(300), null);
+        .h(H.ABSOLUTE, UtilPx.getPixels(100) + (int) (UtilPx.getPixels(100) * Math.random()), null);
     return sleekElement;
   }
 

@@ -29,6 +29,7 @@ public class UtilSleekLayout {
   ) {
     int index = 0;
     SleekBase layoutParent = null;
+    final AtomicInteger rowMaxHeight = new AtomicInteger(0);
     for (SleekBase iterSleekBase : sleekBaseList) {
       final int iterIndex = index;
       final SleekBase iterParent = layoutParent;
@@ -60,16 +61,24 @@ public class UtilSleekLayout {
                 realVerticalSpacing = realHorizontalSpacing;
               }
 
+              if (iterParent != null) {
+                if (rowMaxHeight.get() < iterParent.getSleekH()) {
+                  rowMaxHeight.set(iterParent.getSleekH());
+                }
+              }
+
               if (colIndex == 0) {
                 if (iterParent == null) {
                   posY = topSpacing;//first SleekBase instance
                 } else {
-                  posY = iterParent.getSleekY() + iterParent.getSleekH() + realVerticalSpacing;
+                  posY = iterParent.getSleekY() + rowMaxHeight.get() + realVerticalSpacing;
+                  rowMaxHeight.set(0);
                 }
               } else {
                 //TODO HOW TO BOTTOM ALIGN PREVIOUS VIEWS IN ROW ????
                 posY = iterParent.getSleekY();
               }
+
               return posY;
             }
           });
