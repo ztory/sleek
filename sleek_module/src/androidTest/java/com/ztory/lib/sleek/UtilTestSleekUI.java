@@ -5,7 +5,6 @@ import android.view.MotionEvent;
 import com.ztory.lib.sleek.animation.SAVpercent;
 import com.ztory.lib.sleek.animation.SAVtransXY;
 import com.ztory.lib.sleek.base.SleekColorArea;
-import com.ztory.lib.sleek.base.SleekFrameRate;
 import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.base.element.SleekElement;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;

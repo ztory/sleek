@@ -19,7 +19,7 @@ import java.util.List;
  * Created by root on 2017-08-08.
  */
 
-public class SleekCanvasExampleOne extends SleekCanvas {
+public class SleekCanvasExampleTwo extends SleekCanvas {
 
   private static final String
       CSS_TOOLBAR = "{" +
@@ -100,7 +100,7 @@ public class SleekCanvasExampleOne extends SleekCanvas {
 
   private final List<SleekElement> sleekElementList = new ArrayList<>(20);
 
-  public SleekCanvasExampleOne(Context context) {
+  public SleekCanvasExampleTwo(Context context) {
     super(context);
 
     setBackgroundColor(0xffcccccc);
@@ -119,8 +119,8 @@ public class SleekCanvasExampleOne extends SleekCanvas {
     frameRate.getLayout()
         .x(SL.X.POS_CENTER, 0, null)
         .y(SL.Y.PERCENT_CANVAS, -100, null, 1.0f)
-        .w(SL.W.ABSOLUTE, 120, null)
-        .h(SL.H.ABSOLUTE, 60, null);
+        .w(W.ABSOLUTE, 120, null)
+        .h(H.ABSOLUTE, 60, null);
     addSleek(frameRate);
 
     final CSSblock toolbarCSS = new CSSblockBase(CSS_TOOLBAR);
@@ -173,7 +173,7 @@ public class SleekCanvasExampleOne extends SleekCanvas {
     );
     addSleek(sleekElementList);
 
-    //TODO FIX LIST and GRID OF SCROLLABLE VIEWS, MAKE SURE AS LITTLE+CLEAR CODE AS POSSIBLE !!!!
+    //TODO FIX GRID OF SCROLLABLE VIEWS, MAKE SURE AS LITTLE+CLEAR CODE AS POSSIBLE !!!!
 
   }
 

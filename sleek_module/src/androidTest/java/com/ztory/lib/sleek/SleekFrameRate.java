@@ -1,4 +1,4 @@
-package com.ztory.lib.sleek.base;
+package com.ztory.lib.sleek;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import com.ztory.lib.sleek.Sleek;
 import com.ztory.lib.sleek.SleekCanvas;
 import com.ztory.lib.sleek.SleekCanvasInfo;
+import com.ztory.lib.sleek.base.SleekColorArea;
 
 /**
  * Created by jonruna on 2017-04-06.
