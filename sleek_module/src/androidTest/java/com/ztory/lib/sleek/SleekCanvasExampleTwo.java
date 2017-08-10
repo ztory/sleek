@@ -98,23 +98,55 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
       cellBasicPressedCSS = new CSSblockBase(CSS_CELL_BASIC_PRESSED),
       cellBasicClickedCSS = new CSSblockBase(CSS_CELL_BASIC_CLICKED);
 
+  private static final int CELL_WIDTH = UtilPx.getPixels(200);
+
+  private final int toolbarHeight = UtilPx.getPixels(102);
+
   private final List<SleekElement> sleekElementList = new ArrayList<>(20);
 
   public SleekCanvasExampleTwo(Context context) {
     super(context);
 
-    setBackgroundColor(0xffcccccc);
-
-    final int toolbarHeight = UtilPx.getPixels(102);
+    setBackgroundColor(0xffccccff);
 
     SleekScrollerXY sleekScrollerXY = new SleekScrollerXY(false, true);
-    //sleekScrollerXY.setMarginTop(toolbarHeight);// + 10);
     sleekScrollerXY.setMarginBottom(toolbarHeight);
-    //sleekScrollerXY.setMarginLeft(10);
-    //sleekScrollerXY.setMarginRight(10);
     sleekScrollerXY.setPaddingBottom(UtilPx.getPixels(40));
     setSleekScroller(sleekScrollerXY);
 
+    addFrameRate();
+
+    addToolbar();
+
+    addChildElements();
+  }
+
+  private void addChildElements() {
+    SleekElement iterElement;
+    for (int i = 0; i < 20; i++) {
+      iterElement = getSleekElementCellBasic();
+      iterElement.setElementString("Cell #" + i + "\nThis cell is mucho cool!\nCell Basic FTW!");
+      sleekElementList.add(iterElement);
+    }
+//    UtilSleekLayout.initVerticalListLayout(
+//        sleekElementList,
+//        UtilPx.getPixels(40),
+//        UtilPx.getPixels(40)
+//    );
+    UtilSleekLayout.initVerticalGridLayout(
+        sleekElementList,
+        CELL_WIDTH,//columnWidth
+        UtilPx.getPixels(40),//topSpacing
+        UtilPx.getPixels(20),//horizontalSpacing
+        true,//verticalSpacingMatchHorizontalSpacing
+        0//verticalSpacing
+    );
+    addSleek(sleekElementList);
+
+    //TODO FIX GRID OF SCROLLABLE VIEWS, MAKE SURE AS LITTLE+CLEAR CODE AS POSSIBLE !!!!
+  }
+
+  private void addFrameRate() {
     SleekFrameRate frameRate = new SleekFrameRate(0xff38B0DE);
     frameRate.getLayout()
         .x(SL.X.POS_CENTER, 0, null)
@@ -122,7 +154,9 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
         .w(W.ABSOLUTE, 120, null)
         .h(H.ABSOLUTE, 60, null);
     addSleek(frameRate);
+  }
 
+  private void addToolbar() {
     final CSSblock toolbarCSS = new CSSblockBase(CSS_TOOLBAR);
     final CSSblock toolbarActiveCSS = new CSSblockBase(CSS_TOOLBAR_ACTIVE);
 
@@ -157,24 +191,6 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
         }
     );
     addSleek(toolbar);
-
-
-
-    SleekElement iterElement;
-    for (int i = 0; i < 20; i++) {
-      iterElement = getSleekElementCellBasic();
-      iterElement.setElementString("Cell #" + i + "\nThis cell is mucho cool!\nCell Basic FTW!");
-      sleekElementList.add(iterElement);
-    }
-    UtilSleekLayout.initVerticalListLayout(
-        sleekElementList,
-        UtilPx.getPixels(40),
-        UtilPx.getPixels(40)
-    );
-    addSleek(sleekElementList);
-
-    //TODO FIX GRID OF SCROLLABLE VIEWS, MAKE SURE AS LITTLE+CLEAR CODE AS POSSIBLE !!!!
-
   }
 
   private static SleekElement getSleekElementCellBasic() {
@@ -187,17 +203,18 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
           @Override
           public void assume(SleekCSSanim cssAnimation) {
             cssAnimation.setDuration(1000);
-            if (sleekElement.getSleekW() != UtilPx.getPixels(400)) {
-              cssAnimation.setGoalW(UtilPx.getPixels(400));
+            if (sleekElement.getSleekW() != CELL_WIDTH) {
+              cssAnimation.setGoalW(CELL_WIDTH);
             } else {
-              cssAnimation.setGoalW(sleekElement.getSleekW() + UtilPx.getPixels(100));
+              cssAnimation.setGoalW(sleekElement.getSleekW() + UtilPx.getPixels(20));
             }
           }
         }
     );
     sleekElement.getLayout()
-        .w(W.ABSOLUTE, UtilPx.getPixels(400), null)
+        .w(W.ABSOLUTE, CELL_WIDTH, null)
         .h(H.ABSOLUTE, UtilPx.getPixels(300), null);
+        //.h(H.ABSOLUTE, UtilPx.getPixels(100) + (int) (UtilPx.getPixels(100) * Math.random()), null);
     return sleekElement;
   }
 

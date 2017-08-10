@@ -2363,7 +2363,8 @@ public class TestSleekUI {
         UtilPx.setDefaultContext(mActivityRule.getActivity().getApplicationContext());
 
         // Load SleekCanvas subclass
-        SleekCanvas sleekCanvas = new SleekCanvasExampleOne(mActivityRule.getActivity());
+        //SleekCanvas sleekCanvas = new SleekCanvasExampleOne(mActivityRule.getActivity());
+        SleekCanvas sleekCanvas = new SleekCanvasExampleTwo(mActivityRule.getActivity());
 
         mActivityRule.getActivity().setSleekCanvas(sleekCanvas);
         mActivityRule.getActivity().setContentView(sleekCanvas);
