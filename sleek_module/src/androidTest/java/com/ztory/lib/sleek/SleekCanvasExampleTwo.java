@@ -49,6 +49,7 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
       CSS_CELL_BASIC = "{" +
           "background-color: #e8e8e8;" +
 //          "background-image: url(\"https://example.com/example.png\");" +
+//          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");" +
           "background-size: cover;" +
           "border-radius: 6px;" +
           "border: 1px solid #121212;" +

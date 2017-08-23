@@ -8,24 +8,35 @@ import android.graphics.BitmapFactory;
  */
 public class UtilResources {
 
-    public static Bitmap getBitmap(int resourceId) {
-        return BitmapFactory.decodeResource(
-                UtilPx.getDefaultContext().getResources(),
-                resourceId,
-                null
-        );
-    }
+  public static Bitmap getBitmap(int resourceId) {
+    return BitmapFactory.decodeResource(
+        UtilPx.getDefaultContext().getResources(),
+        resourceId,
+        null
+    );
+  }
 
-    public static String getString(int resourceId) {
-        return UtilPx.getDefaultContext().getResources().getString(resourceId);
-    }
+  public static String getString(int resourceId) {
+    return UtilPx.getDefaultContext().getResources().getString(resourceId);
+  }
 
-    public static int getResourceIdDrawable(String resourceName) {
-        return UtilPx.getDefaultContext().getResources().getIdentifier(
-                resourceName,
-                "drawable",
-                UtilPx.getDefaultContext().getPackageName()
-        );
+  public static int getResourceIdDrawable(String resourceName) {
+    return UtilPx.getDefaultContext().getResources().getIdentifier(
+        resourceName,
+        "drawable",
+        UtilPx.getDefaultContext().getPackageName()
+    );
+  }
+
+  private static String getRawResourceString(int rawResourceId) {
+    try {
+      return UtilDownload.inputStreamToString(
+          UtilPx.getDefaultContext().getResources().openRawResource(rawResourceId)
+      );
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
     }
+  }
 
 }

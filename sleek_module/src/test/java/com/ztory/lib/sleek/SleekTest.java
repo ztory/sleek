@@ -6,9 +6,11 @@ import com.ztory.lib.sleek.assumption.Assumeable;
 import com.ztory.lib.sleek.assumption.Assumption;
 import com.ztory.lib.sleek.assumption.AssumptionResolver;
 import com.ztory.lib.sleek.assumption.SimpleAssumption;
+import com.ztory.lib.sleek.util.UtilDownload;
 import com.ztory.lib.sleek.util.UtilExecutor;
 import com.ztory.lib.sleek.val.Val;
 import com.ztory.lib.sleek.val.ValAction;
+import java.io.ByteArrayInputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import org.junit.AfterClass;
@@ -29,6 +31,16 @@ public class SleekTest {
   @AfterClass
   public static void tearDownAfterClass() throws Exception {
 
+  }
+
+  @Test
+  public void testInputStreamToString() throws Exception {
+    String textString = "Hello SleekTest World!";
+    byte[] textStringBytes = textString.getBytes("UTF-8");
+    String textString2 = UtilDownload.inputStreamToString(
+        new ByteArrayInputStream(textStringBytes)
+    );
+    Assert.assertEquals(textString, textString2);
   }
 
   @Test

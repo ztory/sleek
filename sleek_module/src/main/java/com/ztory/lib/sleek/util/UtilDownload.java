@@ -1,6 +1,7 @@
 package com.ztory.lib.sleek.util;
 
 import android.util.Log;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -281,30 +282,44 @@ public class UtilDownload {
         return URLEncoder.encode(urlString, "UTF-8");
     }
 
-    public static boolean copyFile(File source, File destination) {
-        InputStream in = null;
-        OutputStream out = null;
-        boolean success = false;
-        try {
-            in = new FileInputStream(source);
-            out = new FileOutputStream(destination);
+    public static String inputStreamToString(InputStream in) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        write(in, byteArrayOutputStream);
+        return new String(byteArrayOutputStream.toByteArray(), "UTF-8");
+    }
 
-            // Transfer bytes from in to out
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
+    public static void write(InputStream in, OutputStream out) throws IOException {
+        if (in == null) {
+            throw new IOException("in == null");
+        } else if (out == null) {
+            throw new IOException("out == null");
+        }
+        byte[] buff = new byte[1024];
+        int read;
+        try {
+            while ((read = in.read(buff)) > 0) {
+                out.write(buff, 0, read);
             }
             in.close();
             out.close();
-            success = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
+        } catch (IOException e) {
             closeSafe(in);
             closeSafe(out);
+            throw e;
         }
-        return success;
+    }
+
+    public static boolean copyFile(File source, File destination) {
+        try {
+            write(
+                new FileInputStream(source),
+                new FileOutputStream(destination)
+            );
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static void closeSafe(Closeable closeable) {
