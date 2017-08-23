@@ -344,14 +344,6 @@ public class SleekElement extends SleekBaseComposite {
     elementBackgroundSizeIsCover = CSS.Value.COVER.equals(elementBackgroundSize);
   }
 
-  //TODO If we add below methods then we can call checkCSS(forced==true) if addedToParent==true
-  //TODO checkCSS can always be forced i think setCSSneedsUpdate is not needed anymore i think?
-  //TODO elementCSSruntimeUpdate in checkCSS can be replaced with checking addedToParent && loaded
-
-  //TODO WHAT should be the return type ?
-  //public ??? addCSS(CSSblock... cssBlockArray) { }
-  //public ??? removeCSS(CSSblock... cssBlockArray) { }
-
   public Interpolator getDefaultInterpolator() {
     if (VERSION.SDK_INT >= 21) {
       return new PathInterpolator(0.785f, 0.135f, 0.150f, 0.860f);// easeInOutCirc
