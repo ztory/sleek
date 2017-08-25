@@ -124,7 +124,7 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
 
   private void addChildElements() {
     SleekElement iterElement;
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 40; i++) {
       iterElement = getSleekElementCellBasic();
       iterElement.setElementString("Cell #" + i + "\nThis cell is mucho cool!\nCell Basic FTW!");
       sleekElementList.add(iterElement);

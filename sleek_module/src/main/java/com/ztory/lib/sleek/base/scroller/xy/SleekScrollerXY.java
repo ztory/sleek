@@ -405,6 +405,10 @@ public class SleekScrollerXY implements SleekCanvasScroller {
           loadNonFixedSleekInstances();
         }
 
+        if (!mScroller.isFinished()) {
+          mTouchEventHandled = true;
+        }
+
         //mSleekCanvas.setScrollerAnimView(ISleekAnimView.NO_ANIMATION);
         releaseEdgeEffects();
         mScroller.forceFinished(true);
