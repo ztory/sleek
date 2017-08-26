@@ -47,15 +47,17 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
           "text-shadow: 1px 1px 8px #ff0000;" +
           "}",
       CSS_CELL_BASIC = "{" +
-          "background-color: #e8e8e8;" +
+          "background-color: #121212;" +
 //          "background-image: url(\"https://example.com/example.png\");" +
-//          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/e/e5/Beach_View_of_the_Saint_Martin%27s_Island.jpg\");" +
+          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Ms._magazine_Cover_-_Winter_2009.jpg/577px-Ms._magazine_Cover_-_Winter_2009.jpg\");" +
+//          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/3/39/Alexander_Meiklejohn_Time_magazine_cover%2C_October_1%2C_1928.jpg\");" +
+//          "background-image: url(\"http://lorempixel.com/320/320/people/\");" +
           "background-size: cover;" +
           "border-radius: 6px;" +
           "border: 1px solid #121212;" +
-          "box-shadow: 0px 0px 20px rgba(30, 68, 210, 0.7);" +
+//          "box-shadow: 0px 0px 20px rgba(30, 68, 210, 0.7);" +
           "padding: 10px;" +
-          "color: #121212;" +
+          "color: #e8e8e8;" +
           "font-size: 26px;" +
           "line-height: 20px;" +
           "text-align: left;" +
@@ -68,7 +70,7 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
 //          "background-size: cover;" +
           "border-radius: 2px;" +
 //          "border: 1px solid #0000ff;" +
-          "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
+//          "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
 //          "padding: 20px;" +
 //          "color: #666;" +
 //          "font-size: 20px;" +
@@ -83,7 +85,7 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
 //          "background-size: cover;" +
           "border-radius: 40px;" +
 //          "border: 1px solid #FFC638;" +
-          "box-shadow: 1px 2px 14px rgba(255, 0, 0, 0.9);" +
+//          "box-shadow: 1px 2px 14px rgba(255, 0, 0, 0.9);" +
 //"box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
 //          "padding: 30px;" +
 //          "color: #FFC638;" +
@@ -99,7 +101,7 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
       cellBasicPressedCSS = new CSSblockBase(CSS_CELL_BASIC_PRESSED),
       cellBasicClickedCSS = new CSSblockBase(CSS_CELL_BASIC_CLICKED);
 
-  private static final int CELL_WIDTH = UtilPx.getPixels(200);
+  private static final int CELL_WIDTH = UtilPx.getPixels(120);
 
   private final int toolbarHeight = UtilPx.getPixels(102);
 
@@ -115,6 +117,10 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
     sleekScrollerXY.setPaddingBottom(UtilPx.getPixels(40));
     setSleekScroller(sleekScrollerXY);
 
+    //setLoadPaddingEqualToSize(false);
+    //setHeightLoadPadding(UtilPx.getPixels(1000));
+    //setHeightLoadPadding(0);
+
     addFrameRate();
 
     addToolbar();
@@ -124,9 +130,9 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
 
   private void addChildElements() {
     SleekElement iterElement;
-    for (int i = 0; i < 40; i++) {
+    for (int i = 0; i < 400; i++) {
       iterElement = getSleekElementCellBasic();
-      iterElement.setElementString("Cell #" + i + "\nThis cell is mucho cool!\nCell Basic FTW!");
+      iterElement.setElementString("Cell #" + i);
       sleekElementList.add(iterElement);
     }
 //    UtilSleekLayout.initVerticalListLayout(

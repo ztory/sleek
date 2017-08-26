@@ -202,7 +202,9 @@ public class UtilDownload {
             String contentLengthString = cn.getHeaderField("Content-Length");
             long contentLength = 0;
             try {
-                contentLength = Long.parseLong(contentLengthString);
+                if (contentLengthString != null) {
+                    contentLength = Long.parseLong(contentLengthString);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -241,6 +243,8 @@ public class UtilDownload {
 
                 tempFileOutputStream.write(buf, 0, numread);
             } while (true);
+
+            tempFileOutputStream.flush();
 
             if (!copyFile(tempDownloadFile, downloadFile)) {
                 throw new IOException(
@@ -282,6 +286,12 @@ public class UtilDownload {
         return URLEncoder.encode(urlString, "UTF-8");
     }
 
+    public static long getAvailableMemory() {
+        return Runtime.getRuntime().maxMemory()
+            - Runtime.getRuntime().totalMemory()
+            + Runtime.getRuntime().freeMemory();
+    }
+
     public static String inputStreamToString(InputStream in) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         write(in, byteArrayOutputStream);
@@ -300,6 +310,7 @@ public class UtilDownload {
             while ((read = in.read(buff)) > 0) {
                 out.write(buff, 0, read);
             }
+            out.flush();
             in.close();
             out.close();
         } catch (IOException e) {

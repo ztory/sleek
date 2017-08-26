@@ -1,6 +1,7 @@
 package com.ztory.lib.sleek.base.element;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -36,6 +37,7 @@ import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.util.Calc;
 import com.ztory.lib.sleek.util.UtilDownload;
 import com.ztory.lib.sleek.util.UtilExecutor;
+import com.ztory.lib.sleek.util.UtilPx;
 import com.ztory.lib.sleek.util.UtilResources;
 import java.io.File;
 import java.io.FileInputStream;
@@ -100,6 +102,8 @@ public class SleekElement extends SleekBaseComposite {
   protected SleekBaseImage elementBackgroundImage = null;
 
   protected boolean wrapTextWidth = false, wrapTextHeight = false;
+
+  private Bitmap.Config defaultBitmapConfig = Config.ARGB_8888;
 
   public SleekElement() {
     this(false, SleekPrioCounter.next());
@@ -595,6 +599,14 @@ public class SleekElement extends SleekBaseComposite {
     }
   }
 
+  public void setDefaultBitmapConfig(Bitmap.Config config) {
+    defaultBitmapConfig = config;
+  }
+
+  public Bitmap.Config getDefaultBitmapConfig() {
+    return defaultBitmapConfig;
+  }
+
   public void initBackgroundImageBitmapFetcher() {
     if (elementBackgroundImageUrl == null || localElementBackgroundImageUrl) {
       elementBackgroundImage.setBitmapFetcher(null, null, null);//clear fetcher
@@ -604,15 +616,65 @@ public class SleekElement extends SleekBaseComposite {
           new ISleekData<Bitmap>() {
             @Override
             public Bitmap getData(Sleek sleek) {
+
+              if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
+                return null;
+              }
+
               File bmFile = UtilDownload.downloadUrl(elementBackgroundImageUrl);
+
+              if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
+                return null;
+              }
+
+              //TODO minAvailabelMemory maybe should be calculated based on device-screen-resolution ?
+              int minAvailableMemory = 1024 * 1024 * 10;
+              while (UtilDownload.getAvailableMemory() < minAvailableMemory) {
+
+                Log.d("SleekElement memstats",
+                    "memstats WAITING | avail: " + UtilDownload.getAvailableMemory()
+                );
+
+                synchronized (this) {
+                  try {
+                    System.gc();
+                    wait(1000);
+                  } catch (InterruptedException e) {
+                    e.printStackTrace();
+                  }
+                }
+
+                if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
+                  return null;
+                }
+              }
+
               Bitmap bm = null;
               if (bmFile != null) {
+                FileInputStream fis = null;
                 try {
-                  bm = BitmapFactory.decodeStream(new FileInputStream(bmFile));
+                  fis = new FileInputStream(bmFile);
+                  BitmapFactory.Options options = new BitmapFactory.Options();
+                  options.inPreferredConfig = getDefaultBitmapConfig();
+                  bm = BitmapFactory.decodeStream(fis, null, options);
+                  if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
+                    bm.recycle();
+                    bm = null;
+                  }
+                  fis.close();
                 } catch (Exception e) {
+                  UtilDownload.closeSafe(fis);
                   e.printStackTrace();
                 }
               }
+
+              Log.d("SleekElement memstats",
+                  "memstats | avail: " + UtilDownload.getAvailableMemory() +
+                  " | max: " + Runtime.getRuntime().maxMemory() +
+                  " | free: " + Runtime.getRuntime().freeMemory() +
+                  " | total: " + Runtime.getRuntime().totalMemory()
+              );
+
               return bm;
             }
           });
@@ -631,8 +693,12 @@ public class SleekElement extends SleekBaseComposite {
 //      );
 //      elementBackgroundImage.setBitmap(UtilResources.getBitmap(resId));
 
-      Bitmap bitmapResource = UtilResources.getBitmap(
-          UtilResources.getResourceIdDrawable(elementBackgroundImageUrl)
+      BitmapFactory.Options options = new BitmapFactory.Options();
+      options.inPreferredConfig = getDefaultBitmapConfig();
+      Bitmap bitmapResource = BitmapFactory.decodeResource(
+          UtilPx.getDefaultContext().getResources(),
+          UtilResources.getResourceIdDrawable(elementBackgroundImageUrl),
+          options
       );
       elementBackgroundImage.setBitmap(bitmapResource);
     }
