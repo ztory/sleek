@@ -607,6 +607,10 @@ public class SleekElement extends SleekBaseComposite {
     return defaultBitmapConfig;
   }
 
+  protected File getDownloadedBitmapFile() {
+    return UtilDownload.downloadUrl(elementBackgroundImageUrl);
+  }
+
   public void initBackgroundImageBitmapFetcher() {
     if (elementBackgroundImageUrl == null || localElementBackgroundImageUrl) {
       elementBackgroundImage.setBitmapFetcher(null, null, null);//clear fetcher
@@ -621,7 +625,7 @@ public class SleekElement extends SleekBaseComposite {
                 return null;
               }
 
-              File bmFile = UtilDownload.downloadUrl(elementBackgroundImageUrl);
+              File bmFile = getDownloadedBitmapFile();
 
               if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
                 return null;
