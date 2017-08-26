@@ -627,12 +627,13 @@ public class SleekElement extends SleekBaseComposite {
                 return null;
               }
 
-              //TODO minAvailabelMemory maybe should be calculated based on device-screen-resolution ?
-              int minAvailableMemory = 1024 * 1024 * 10;
-              while (UtilDownload.getAvailableMemory() < minAvailableMemory) {
+              // Ensure one fullscreen ARGB_8888 bitmap can be loaded into memory
+              int minRequiredMemory = getCanvasWidth() * getCanvasHeight() * 8;
+              while (UtilDownload.getAvailableMemory() < minRequiredMemory) {
 
                 Log.d("SleekElement memstats",
-                    "memstats WAITING | avail: " + UtilDownload.getAvailableMemory()
+                    "memstats WAITING | avail: " + UtilDownload.getAvailableMemory() +
+                    " | minRequiredMemory: " + minRequiredMemory
                 );
 
                 synchronized (this) {
@@ -668,12 +669,12 @@ public class SleekElement extends SleekBaseComposite {
                 }
               }
 
-              Log.d("SleekElement memstats",
-                  "memstats | avail: " + UtilDownload.getAvailableMemory() +
-                  " | max: " + Runtime.getRuntime().maxMemory() +
-                  " | free: " + Runtime.getRuntime().freeMemory() +
-                  " | total: " + Runtime.getRuntime().totalMemory()
-              );
+//              Log.d("SleekElement memstats",
+//                  "memstats | avail: " + UtilDownload.getAvailableMemory() +
+//                  " | max: " + Runtime.getRuntime().maxMemory() +
+//                  " | free: " + Runtime.getRuntime().freeMemory() +
+//                  " | total: " + Runtime.getRuntime().totalMemory()
+//              );
 
               return bm;
             }
@@ -1508,7 +1509,9 @@ public class SleekElement extends SleekBaseComposite {
     shadowViewSizeH = shadowSleekH;
 
     Log.d("SleekElement",
-        "SleekElement | took: " + (System.currentTimeMillis() - timestamp) + "ms");
+        "SleekElement | generateShadowBitmap() took: "
+            + (System.currentTimeMillis() - timestamp) + "ms"
+    );
 
     return returnList;
   }

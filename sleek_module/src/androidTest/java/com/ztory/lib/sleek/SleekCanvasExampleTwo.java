@@ -55,7 +55,7 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
           "background-size: cover;" +
           "border-radius: 6px;" +
           "border: 1px solid #121212;" +
-//          "box-shadow: 0px 0px 20px rgba(30, 68, 210, 0.7);" +
+          "box-shadow: 0px 0px 20px rgba(30, 68, 210, 0.7);" +
           "padding: 10px;" +
           "color: #e8e8e8;" +
           "font-size: 26px;" +
@@ -70,7 +70,7 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
 //          "background-size: cover;" +
           "border-radius: 2px;" +
 //          "border: 1px solid #0000ff;" +
-//          "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
+          "box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
 //          "padding: 20px;" +
 //          "color: #666;" +
 //          "font-size: 20px;" +
@@ -85,7 +85,7 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
 //          "background-size: cover;" +
           "border-radius: 40px;" +
 //          "border: 1px solid #FFC638;" +
-//          "box-shadow: 1px 2px 14px rgba(255, 0, 0, 0.9);" +
+          "box-shadow: 1px 2px 14px rgba(255, 0, 0, 0.9);" +
 //"box-shadow: 1px 2px 4px rgba(120, 130, 140, 0.5);" +
 //          "padding: 30px;" +
 //          "color: #FFC638;" +
