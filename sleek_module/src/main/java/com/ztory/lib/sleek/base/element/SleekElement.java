@@ -43,6 +43,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * NOTE:
@@ -53,6 +54,10 @@ import java.util.List;
  * Created by jonruna on 2017-04-07.
  */
 public class SleekElement extends SleekBaseComposite {
+
+  public static final Executor SHADOW_EXECUTOR = UtilExecutor.createExecutor(
+      SleekElement.class.getName() + "_SHADOW_EXECUTOR", 1
+  );
 
   public static final String CSS_BLOCK_ANIMATION_KEY = "SleekElement.isAnimationCSSblock";
 
@@ -169,7 +174,21 @@ public class SleekElement extends SleekBaseComposite {
   @Override
   public void onSleekParentAdd(SleekCanvas sleekCanvas, SleekParent composite) {
     super.onSleekParentAdd(sleekCanvas, composite);
+
+    if (elementBackgroundImage != null) {
+      elementBackgroundImage.onSleekParentAdd(sleekCanvas, SleekElement.this);
+    }
+
     requestLayout();// Needs to be called in order for children to call their onSleekCanvasResize().
+  }
+
+  @Override
+  public void onSleekParentRemove(SleekCanvas sleekCanvas, SleekParent composite) {
+    super.onSleekParentRemove(sleekCanvas, composite);
+
+    if (elementBackgroundImage != null) {
+      elementBackgroundImage.onSleekParentRemove(sleekCanvas, SleekElement.this);
+    }
   }
 
   public void refreshCSS() {
@@ -611,78 +630,82 @@ public class SleekElement extends SleekBaseComposite {
     return UtilDownload.downloadUrl(elementBackgroundImageUrl);
   }
 
+  protected ISleekData<Bitmap> bitmapFetcher = new ISleekData<Bitmap>() {
+    @Override
+    public Bitmap getData(Sleek sleek) {
+
+      if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
+        return null;
+      }
+
+      File bmFile = getDownloadedBitmapFile();
+
+      if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
+        return null;
+      }
+
+      // Ensure one fullscreen ARGB_8888 bitmap can be loaded into memory
+      int minRequiredMemory = getCanvasWidth() * getCanvasHeight() * 8;
+      while (UtilDownload.getAvailableMemory() < minRequiredMemory) {
+
+        Log.d("SleekElement memstats",
+            "memstats WAITING | avail: " + UtilDownload.getAvailableMemory() +
+                " | minRequiredMemory: " + minRequiredMemory
+        );
+
+        synchronized (this) {
+          try {
+            System.gc();
+            wait(1000);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        }
+
+        if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
+          return null;
+        }
+      }
+
+      Bitmap bm = null;
+      if (bmFile != null) {
+        FileInputStream fis = null;
+        try {
+          fis = new FileInputStream(bmFile);
+          BitmapFactory.Options options = new BitmapFactory.Options();
+          options.inPreferredConfig = getDefaultBitmapConfig();
+          bm = BitmapFactory.decodeStream(fis, null, options);
+          if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
+            bm.recycle();
+            bm = null;
+          }
+          fis.close();
+        } catch (Exception e) {
+          UtilDownload.closeSafe(fis);
+          e.printStackTrace();
+        }
+      }
+
+//      Log.d("SleekElement memstats",
+//          "memstats | avail: " + UtilDownload.getAvailableMemory() +
+//          " | max: " + Runtime.getRuntime().maxMemory() +
+//          " | free: " + Runtime.getRuntime().freeMemory() +
+//          " | total: " + Runtime.getRuntime().totalMemory()
+//      );
+
+      return bm;
+    }
+  };
+
   public void initBackgroundImageBitmapFetcher() {
     if (elementBackgroundImageUrl == null || localElementBackgroundImageUrl) {
       elementBackgroundImage.setBitmapFetcher(null, null, null);//clear fetcher
     } else {
-      elementBackgroundImage.setBitmapFetcher(mSlkCanvas != null ? mSlkCanvas.getHandler() : null,
-          UtilExecutor.NETWORK,
-          new ISleekData<Bitmap>() {
-            @Override
-            public Bitmap getData(Sleek sleek) {
-
-              if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
-                return null;
-              }
-
-              File bmFile = getDownloadedBitmapFile();
-
-              if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
-                return null;
-              }
-
-              // Ensure one fullscreen ARGB_8888 bitmap can be loaded into memory
-              int minRequiredMemory = getCanvasWidth() * getCanvasHeight() * 8;
-              while (UtilDownload.getAvailableMemory() < minRequiredMemory) {
-
-                Log.d("SleekElement memstats",
-                    "memstats WAITING | avail: " + UtilDownload.getAvailableMemory() +
-                    " | minRequiredMemory: " + minRequiredMemory
-                );
-
-                synchronized (this) {
-                  try {
-                    System.gc();
-                    wait(1000);
-                  } catch (InterruptedException e) {
-                    e.printStackTrace();
-                  }
-                }
-
-                if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
-                  return null;
-                }
-              }
-
-              Bitmap bm = null;
-              if (bmFile != null) {
-                FileInputStream fis = null;
-                try {
-                  fis = new FileInputStream(bmFile);
-                  BitmapFactory.Options options = new BitmapFactory.Options();
-                  options.inPreferredConfig = getDefaultBitmapConfig();
-                  bm = BitmapFactory.decodeStream(fis, null, options);
-                  if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
-                    bm.recycle();
-                    bm = null;
-                  }
-                  fis.close();
-                } catch (Exception e) {
-                  UtilDownload.closeSafe(fis);
-                  e.printStackTrace();
-                }
-              }
-
-//              Log.d("SleekElement memstats",
-//                  "memstats | avail: " + UtilDownload.getAvailableMemory() +
-//                  " | max: " + Runtime.getRuntime().maxMemory() +
-//                  " | free: " + Runtime.getRuntime().freeMemory() +
-//                  " | total: " + Runtime.getRuntime().totalMemory()
-//              );
-
-              return bm;
-            }
-          });
+      elementBackgroundImage.setBitmapFetcher(
+          null,//mSlkCanvas != null ? mSlkCanvas.getHandler() : null,
+          UtilExecutor.CPU_DOUBLE,//UtilExecutor.NETWORK,//TODO TEST OTHER EXECUTOR !!!!
+          bitmapFetcher
+      );
     }
   }
 
@@ -934,10 +957,20 @@ public class SleekElement extends SleekBaseComposite {
 
         //TODO Maybe exeute on UI-thread if view is within viewport when this method is called ?
 
-        UtilExecutor.CPU_MULTI.execute(new Runnable() {
+        SHADOW_EXECUTOR.execute(new Runnable() {
           @Override
           public void run() {
+
+            if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
+              return;
+            }
+
             final List<Bitmap> shadowBitmapList = generateShadowBitmap();
+
+            if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
+              return;
+            }
+
             addPreDrawSafe(mSlkCanvas, new ISleekAnimRun() {
               @Override
               public void run(SleekCanvasInfo info) {

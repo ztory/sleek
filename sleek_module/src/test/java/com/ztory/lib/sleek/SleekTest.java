@@ -49,7 +49,7 @@ public class SleekTest {
     final CountDownLatch countDownLatch = new CountDownLatch(3);
 
     Assumption<Integer> chainAssumption = new SimpleAssumption<>(
-        UtilExecutor.CPU_MULTI,
+        UtilExecutor.CPU_QUAD,
         new AssumptionResolver<Integer>() {
           @Override
           public Integer resolve() throws Exception {
@@ -60,7 +60,7 @@ public class SleekTest {
     );
 
     Assumption<String> assumption = new SimpleAssumption<>(
-        UtilExecutor.CPU_MULTI,
+        UtilExecutor.CPU_QUAD,
         new AssumptionResolver<String>() {
           @Override
           public String resolve() throws Exception {

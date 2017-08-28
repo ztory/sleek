@@ -17,7 +17,9 @@ public class UtilExecutor {
 
   public static final Executor
       NETWORK = createExecutor(UtilExecutor.class.getName() + "_NETWORK_EXECUTOR", 8),
-      CPU_MULTI = createExecutor(UtilExecutor.class.getName() + "_CPU_EXECUTOR_MULTI", 4),
+      CPU_QUAD = createExecutor(UtilExecutor.class.getName() + "_CPU_EXECUTOR_QUAD", 4),
+      CPU_TRIPLE = createExecutor(UtilExecutor.class.getName() + "_CPU_EXECUTOR_TRIPLE", 3),
+      CPU_DOUBLE = createExecutor(UtilExecutor.class.getName() + "_CPU_EXECUTOR_DOUBLE", 2),
       CPU_SINGLE = createExecutor(UtilExecutor.class.getName() + "_CPU_EXECUTOR_SINGLE", 1);
 
   public static ThreadPoolExecutor createExecutor(

@@ -10,6 +10,7 @@ import com.ztory.lib.sleek.base.scroller.xy.SleekScrollerXY;
 import com.ztory.lib.sleek.layout.SL;
 import com.ztory.lib.sleek.layout.SL.H;
 import com.ztory.lib.sleek.layout.SL.W;
+import com.ztory.lib.sleek.util.Calc;
 import com.ztory.lib.sleek.util.UtilPx;
 import com.ztory.lib.sleek.util.UtilSleekLayout;
 import java.util.ArrayList;
@@ -49,7 +50,8 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
       CSS_CELL_BASIC = "{" +
           "background-color: #121212;" +
 //          "background-image: url(\"https://example.com/example.png\");" +
-          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Ms._magazine_Cover_-_Winter_2009.jpg/577px-Ms._magazine_Cover_-_Winter_2009.jpg\");" +
+          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Marriott_Falls.jpg/400px-Marriott_Falls.jpg\");" +
+//          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Ms._magazine_Cover_-_Winter_2009.jpg/577px-Ms._magazine_Cover_-_Winter_2009.jpg\");" +
 //          "background-image: url(\"https://upload.wikimedia.org/wikipedia/commons/3/39/Alexander_Meiklejohn_Time_magazine_cover%2C_October_1%2C_1928.jpg\");" +
 //          "background-image: url(\"http://lorempixel.com/320/320/people/\");" +
           "background-size: cover;" +
@@ -101,7 +103,7 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
       cellBasicPressedCSS = new CSSblockBase(CSS_CELL_BASIC_PRESSED),
       cellBasicClickedCSS = new CSSblockBase(CSS_CELL_BASIC_CLICKED);
 
-  private static final int CELL_WIDTH = UtilPx.getPixels(120);
+  private static final int CELL_WIDTH = UtilPx.getPixels(200);
 
   private final int toolbarHeight = UtilPx.getPixels(102);
 
@@ -218,10 +220,11 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
           }
         }
     );
+    int halvCellWidth = Calc.divideToInt(CELL_WIDTH, 2);
     sleekElement.getLayout()
         .w(W.ABSOLUTE, CELL_WIDTH, null)
         //.h(H.ABSOLUTE, UtilPx.getPixels(300), null);
-        .h(H.ABSOLUTE, UtilPx.getPixels(100) + (int) (UtilPx.getPixels(100) * Math.random()), null);
+        .h(H.ABSOLUTE, halvCellWidth + (int) ((halvCellWidth + halvCellWidth) * Math.random()), null);
     return sleekElement;
   }
 

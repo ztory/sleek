@@ -15,6 +15,7 @@ import com.ztory.lib.sleek.animation.SAVfade;
 import com.ztory.lib.sleek.animation.SleekAnimation;
 import com.ztory.lib.sleek.base.SleekBase;
 import com.ztory.lib.sleek.base.SleekParam;
+import com.ztory.lib.sleek.contract.ISleekAnimRun;
 import com.ztory.lib.sleek.contract.ISleekCallback;
 import com.ztory.lib.sleek.contract.ISleekData;
 import com.ztory.lib.sleek.contract.ISleekDrawView;
@@ -109,7 +110,13 @@ public class SleekBaseImage extends SleekBase {
                         );
                     }
                     else {
-                        setBitmap(fetchedBitmap);
+                        // If mSlkCanvas == null then we do NOT call setBitmap()
+                        addPreDrawSafe(mSlkCanvas, new ISleekAnimRun() {
+                            @Override
+                            public void run(SleekCanvasInfo info) {
+                                setBitmap(fetchedBitmap);
+                            }
+                        });
                     }
                 }
             };
@@ -154,45 +161,43 @@ public class SleekBaseImage extends SleekBase {
 
     public void setBitmap(Bitmap newBitmap) {
 
-        synchronized (SleekBaseImage.this) {
-            mBitmapLoaded = false;
+        mBitmapLoaded = false;
 
-            if (loaded) {
-                mBitmap = newBitmap;
-            }
-            else {
-                mBitmap = null;
-            }
+        if (loaded) {
+            mBitmap = newBitmap;
+        }
+        else {
+            mBitmap = null;
+        }
 
-            if (mBitmap != null) {
-                mSourceRect.set(0, 0, mBitmap.getWidth(), mBitmap.getHeight());
-                setShaderMatrix();
-                mBitmapLoaded = true;
-            }
-            else {
-                // NEED to instantiate new Paint so that old Paint-instance gets released,
-                // otherwise BitmapShader will cause memory-leak!!!!
-                mPaint.setShader(null);
-                mPaint = new Paint();
-                mPaint.setAntiAlias(true);
-                mShader = null;
-            }
+        if (mBitmap != null) {
+            mSourceRect.set(0, 0, mBitmap.getWidth(), mBitmap.getHeight());
+            setShaderMatrix();
+            mBitmapLoaded = true;
+        }
+        else {
+            // NEED to instantiate new Paint so that old Paint-instance gets released,
+            // otherwise BitmapShader will cause memory-leak!!!!
+            mPaint.setShader(null);
+            mPaint = new Paint();
+            mPaint.setAntiAlias(true);
+            mShader = null;
+        }
 
-            if (mBitmapLoaded) {
-                if (mFadeAnimOnLoad) {
-                    mPaint.setAlpha(0);
-                    setSleekAnimView(
-                        new SAVfade(
-                            0,
-                            255,
-                            SleekAnimation.ANIM_DURATION_SHORT,
-                            mPaint,
-                            ISleekDrawView.NO_DRAW
-                        )
-                    );
-                } else {
-                    mPaint.setAlpha(255);
-                }
+        if (mBitmapLoaded) {
+            if (mFadeAnimOnLoad) {
+                mPaint.setAlpha(0);
+                setSleekAnimView(
+                    new SAVfade(
+                        0,
+                        255,
+                        SleekAnimation.ANIM_DURATION_SHORT,
+                        mPaint,
+                        ISleekDrawView.NO_DRAW
+                    )
+                );
+            } else {
+                mPaint.setAlpha(255);
             }
         }
 
@@ -206,38 +211,36 @@ public class SleekBaseImage extends SleekBase {
     @Override
     public void drawView(Sleek view, Canvas canvas, SleekCanvasInfo info) {
 
-        synchronized (SleekBaseImage.this) {
-            if (mBitmapLoaded) {
+        if (mBitmapLoaded) {
 
-                if (mBitmap.isRecycled()) {
-                    onSleekUnload();
-                    return;
-                }
+            if (mBitmap.isRecycled()) {
+                onSleekUnload();
+                return;
+            }
 
-                if (mUseShader) {
-                    if (sleekX == 0 && sleekY == 0) {
-                        canvas.drawRoundRect(
-                            mImgSize,
-                            mRoundedRadius,
-                            mRoundedRadius,
-                            mPaint
-                        );
-                    }
-                    else {
-                        canvas.save();
-                        canvas.translate(sleekX, sleekY);
-                        canvas.drawRoundRect(
-                            mImgSize,
-                            mRoundedRadius,
-                            mRoundedRadius,
-                            mPaint
-                        );
-                        canvas.restore();
-                    }
+            if (mUseShader) {
+                if (sleekX == 0 && sleekY == 0) {
+                    canvas.drawRoundRect(
+                        mImgSize,
+                        mRoundedRadius,
+                        mRoundedRadius,
+                        mPaint
+                    );
                 }
                 else {
-                    canvas.drawBitmap(mBitmap, mSourceRect, mImgSize, mPaint);
+                    canvas.save();
+                    canvas.translate(sleekX, sleekY);
+                    canvas.drawRoundRect(
+                        mImgSize,
+                        mRoundedRadius,
+                        mRoundedRadius,
+                        mPaint
+                    );
+                    canvas.restore();
                 }
+            }
+            else {
+                canvas.drawBitmap(mBitmap, mSourceRect, mImgSize, mPaint);
             }
         }
     }
@@ -295,18 +298,16 @@ public class SleekBaseImage extends SleekBase {
     }
 
     public void setShaderMatrix() {
-        synchronized (SleekBaseImage.this) {
-            if (mUseShader && mBitmap != null && !mBitmap.isRecycled()) {
+        if (mUseShader && mBitmap != null && !mBitmap.isRecycled()) {
 
-                if (mShader == null) {
-                    mShader = new BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-                    mPaint.setShader(mShader);
-                }
-
-                Matrix shaderMatrix = new Matrix();
-                shaderMatrix.setRectToRect(new RectF(mSourceRect), mImgSize, Matrix.ScaleToFit.FILL);
-                mShader.setLocalMatrix(shaderMatrix);
+            if (mShader == null) {
+                mShader = new BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+                mPaint.setShader(mShader);
             }
+
+            Matrix shaderMatrix = new Matrix();
+            shaderMatrix.setRectToRect(new RectF(mSourceRect), mImgSize, Matrix.ScaleToFit.FILL);
+            mShader.setLocalMatrix(shaderMatrix);
         }
     }
 
