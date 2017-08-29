@@ -127,6 +127,20 @@ public class SleekBaseImage extends SleekBase {
         }
     }
 
+    public void setBitmapFetcher(
+        Executor theBitmapExecutor,
+        Runnable theBitmapFetchRunnable
+    ) {
+        if (theBitmapExecutor != null && theBitmapFetchRunnable != null) {
+            mBitmapExecutor = theBitmapExecutor;
+            mBitmapFetchRunnable = theBitmapFetchRunnable;
+        }
+        else {
+            mBitmapExecutor = null;
+            mBitmapFetchRunnable = null;
+        }
+    }
+
     /**
      * Call this to set a listener that will fire whenever the setBitmap() method is called.
      * @param theBitmapListener

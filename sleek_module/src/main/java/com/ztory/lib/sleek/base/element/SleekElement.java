@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build.VERSION;
@@ -30,7 +31,6 @@ import com.ztory.lib.sleek.base.image.SleekBaseImage;
 import com.ztory.lib.sleek.base.text.SleekViewText;
 import com.ztory.lib.sleek.contract.ISleekAnimRun;
 import com.ztory.lib.sleek.contract.ISleekCallback;
-import com.ztory.lib.sleek.contract.ISleekData;
 import com.ztory.lib.sleek.contract.ISleekDrawView;
 import com.ztory.lib.sleek.layout.IComputeInt;
 import com.ztory.lib.sleek.layout.SL;
@@ -39,6 +39,7 @@ import com.ztory.lib.sleek.util.UtilDownload;
 import com.ztory.lib.sleek.util.UtilExecutor;
 import com.ztory.lib.sleek.util.UtilPx;
 import com.ztory.lib.sleek.util.UtilResources;
+import com.ztory.lib.sleek.val.ValPair;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -55,11 +56,11 @@ import java.util.concurrent.Executor;
  */
 public class SleekElement extends SleekBaseComposite {
 
-  public static final Executor SHADOW_EXECUTOR = UtilExecutor.createExecutor(
-      SleekElement.class.getName() + "_SHADOW_EXECUTOR", 1
-  );
-
   public static final String CSS_BLOCK_ANIMATION_KEY = "SleekElement.isAnimationCSSblock";
+
+  protected Executor
+      bitmapLoadExecutor = UtilExecutor.CPU_DOUBLE,
+      bitmapDownloadExecutor = UtilExecutor.CPU_TRIPLE;
 
   protected final List<CSSblock> elementCSSlist = new ArrayList<>(4);
 
@@ -630,18 +631,21 @@ public class SleekElement extends SleekBaseComposite {
     return UtilDownload.downloadUrl(elementBackgroundImageUrl);
   }
 
-  protected ISleekData<Bitmap> bitmapFetcher = new ISleekData<Bitmap>() {
-    @Override
-    public Bitmap getData(Sleek sleek) {
+  protected volatile File bitmapFile = null;
 
-      if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
-        return null;
+  protected Runnable bitmapLoaderRun = new Runnable() {
+    @Override
+    public void run() {
+
+      final File finalBitmapFile = bitmapFile;
+      bitmapFile = null;
+
+      if (finalBitmapFile == null) {
+        return;
       }
 
-      File bmFile = getDownloadedBitmapFile();
-
       if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
-        return null;
+        return;
       }
 
       // Ensure one fullscreen ARGB_8888 bitmap can be loaded into memory
@@ -653,47 +657,70 @@ public class SleekElement extends SleekBaseComposite {
                 " | minRequiredMemory: " + minRequiredMemory
         );
 
-        synchronized (this) {
-          try {
-            System.gc();
-            wait(1000);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
+        try {
+          System.gc();
+          Thread.sleep(1000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
         }
 
         if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
-          return null;
+          return;
         }
       }
 
-      Bitmap bm = null;
-      if (bmFile != null) {
-        FileInputStream fis = null;
-        try {
-          fis = new FileInputStream(bmFile);
-          BitmapFactory.Options options = new BitmapFactory.Options();
-          options.inPreferredConfig = getDefaultBitmapConfig();
-          bm = BitmapFactory.decodeStream(fis, null, options);
-          if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
-            bm.recycle();
-            bm = null;
-          }
-          fis.close();
-        } catch (Exception e) {
-          UtilDownload.closeSafe(fis);
-          e.printStackTrace();
-        }
+      Bitmap bitmap = null;
+      FileInputStream fis = null;
+      try {
+
+        fis = new FileInputStream(finalBitmapFile);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = getDefaultBitmapConfig();
+        bitmap = BitmapFactory.decodeStream(fis, null, options);
+        fis.close();
+      } catch (Exception e) {
+        UtilDownload.closeSafe(fis);
+        e.printStackTrace();
       }
 
-//      Log.d("SleekElement memstats",
-//          "memstats | avail: " + UtilDownload.getAvailableMemory() +
-//          " | max: " + Runtime.getRuntime().maxMemory() +
-//          " | free: " + Runtime.getRuntime().freeMemory() +
-//          " | total: " + Runtime.getRuntime().totalMemory()
-//      );
+      if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
+        bitmap.recycle();
+        bitmap = null;
+      }
 
-      return bm;
+      final Bitmap finalBitmap = bitmap;
+      addPreDrawSafe(mSlkCanvas, new ISleekAnimRun() {
+        @Override
+        public void run(SleekCanvasInfo info) {
+          elementBackgroundImage.setBitmap(finalBitmap);
+        }
+      });
+    }
+  };
+
+  protected Runnable bitmapFetcherRun = new Runnable() {
+    @Override
+    public void run() {
+
+      bitmapFile = null;
+
+      if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
+        return;
+      }
+
+      final File bmFile = getDownloadedBitmapFile();
+
+      if (bmFile == null) {
+        return;
+      }
+
+      if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
+        return;
+      }
+
+      bitmapFile = bmFile;
+
+      bitmapLoadExecutor.execute(bitmapLoaderRun);
     }
   };
 
@@ -702,9 +729,8 @@ public class SleekElement extends SleekBaseComposite {
       elementBackgroundImage.setBitmapFetcher(null, null, null);//clear fetcher
     } else {
       elementBackgroundImage.setBitmapFetcher(
-          null,//mSlkCanvas != null ? mSlkCanvas.getHandler() : null,
-          UtilExecutor.CPU_DOUBLE,//UtilExecutor.NETWORK,//TODO TEST OTHER EXECUTOR !!!!
-          bitmapFetcher
+          bitmapDownloadExecutor,
+          bitmapFetcherRun
       );
     }
   }
@@ -929,20 +955,18 @@ public class SleekElement extends SleekBaseComposite {
   }
 
   protected void setElementShadowBitmap(List<Bitmap> theShadowBitmapList) {
-    synchronized (SleekElement.this) {
 
-      if (elementShadowBitmapList.size() > 0) {
-        for (Bitmap iterShadowBitmap : elementShadowBitmapList) {
-          if (iterShadowBitmap != null) {
-            iterShadowBitmap.recycle();
-          }
+    if (elementShadowBitmapList.size() > 0) {
+      for (Bitmap iterShadowBitmap : elementShadowBitmapList) {
+        if (iterShadowBitmap != null) {
+          iterShadowBitmap.recycle();
         }
-        elementShadowBitmapList.clear();
       }
+      elementShadowBitmapList.clear();
+    }
 
-      if (theShadowBitmapList != null) {
-        elementShadowBitmapList.addAll(theShadowBitmapList);
-      }
+    if (theShadowBitmapList != null) {
+      elementShadowBitmapList.addAll(theShadowBitmapList);
     }
   }
 
@@ -957,7 +981,7 @@ public class SleekElement extends SleekBaseComposite {
 
         //TODO Maybe exeute on UI-thread if view is within viewport when this method is called ?
 
-        SHADOW_EXECUTOR.execute(new Runnable() {
+        bitmapLoadExecutor.execute(new Runnable() {
           @Override
           public void run() {
 
@@ -1016,6 +1040,7 @@ public class SleekElement extends SleekBaseComposite {
     if (elementBackgroundImage != null) {
       elementBackgroundImage.onSleekUnload();
     }
+    bitmapFile = null;
   }
 
   @Override
@@ -1365,6 +1390,36 @@ public class SleekElement extends SleekBaseComposite {
   }
 
   protected List<Bitmap> generateShadowBitmap() {
+    ValPair<Point, List<Bitmap>> shadowWHandShadowBitmap = generateShadowBitmap(
+        elementShadowRadius,
+        sleekW,
+        sleekH,
+        elementBorderColor,
+        elementBorderRadius,
+        elementBackgroundColor,
+        elementShadowOffsetX,
+        elementShadowOffsetY,
+        elementShadowColor
+    );
+    if (shadowWHandShadowBitmap != null) {
+      shadowViewSizeW = shadowWHandShadowBitmap.valueOne.x;
+      shadowViewSizeH = shadowWHandShadowBitmap.valueOne.y;
+      return shadowWHandShadowBitmap.valueTwo;
+    }
+    return null;
+  }
+
+  protected static ValPair<Point, List<Bitmap>> generateShadowBitmap(
+      final float elementShadowRadius,
+      final int sleekW,
+      final int sleekH,
+      final int elementBorderColor,
+      final int elementBorderRadius,
+      final int elementBackgroundColor,
+      final float elementShadowOffsetX,
+      final float elementShadowOffsetY,
+      final int elementShadowColor
+  ) {
 
     if (elementShadowRadius <= 0) {
       return null;
@@ -1542,14 +1597,15 @@ public class SleekElement extends SleekBaseComposite {
     returnList.add(bitmap);
     //____________________ - END - Right Bitmap ____________________
 
-    shadowViewSizeW = shadowSleekW;
-    shadowViewSizeH = shadowSleekH;
+//    shadowViewSizeW = shadowSleekW;
+//    shadowViewSizeH = shadowSleekH;
 
     Log.d("SleekElement",
         "SleekElement | generateShadowBitmap() took: "
             + (System.currentTimeMillis() - timestamp) + "ms"
     );
 
-    return returnList;
+    //return returnList;
+    return new ValPair<>(new Point(shadowSleekW, shadowSleekH), returnList);
   }
 }
