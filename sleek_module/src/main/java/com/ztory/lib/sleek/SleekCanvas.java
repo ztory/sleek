@@ -4,17 +4,17 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
-
 import com.ztory.lib.sleek.base.SleekBase;
 import com.ztory.lib.sleek.contract.ISleekAnimRun;
 import com.ztory.lib.sleek.contract.ISleekAnimView;
 import com.ztory.lib.sleek.util.Calc;
+import com.ztory.lib.sleek.util.UtilExecutor;
 import com.ztory.lib.sleek.util.UtilSleekTouch;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -667,6 +667,125 @@ public class SleekCanvas extends RelativeLayout {
         loadAndUnloadSleekLists(true);
     }
 
+    public void loadAndUnloadNonFixedSleekListFast() {
+
+        final long startTs = System.currentTimeMillis();
+
+        final int canvasWidth = getScaledCanvasWidth();
+        final int canvasHeight = getScaledCanvasHeight();
+
+        final float controllerX = getScaledScrollerPosLeft();
+        final float controllerY = getScaledScrollerPosTop();
+
+        final int scaledWidthLoadPadding = getScaledWidthLoadPadding();
+        final int scaledHeightLoadPadding = getScaledHeightLoadPadding();
+
+        // -start- UI THREAD LOGIC
+//        synchronized (canvasLockObj) {
+//            for (Sleek iterDraw : drawItemList) {
+//
+//                if (!iterDraw.isSleekLoadable()) {
+//                    continue;
+//                }
+//
+//                if (
+//                    iterDraw.getSleekY() + iterDraw.getSleekH() < controllerY - scaledHeightLoadPadding ||
+//                        iterDraw.getSleekY() > controllerY + canvasHeight + scaledHeightLoadPadding ||
+//                        iterDraw.getSleekX() + iterDraw.getSleekW() < controllerX - scaledWidthLoadPadding ||
+//                        iterDraw.getSleekX() > controllerX + canvasWidth + scaledWidthLoadPadding
+//                    ) {
+//                    if (iterDraw.isSleekLoaded()) {
+//                        iterDraw.onSleekUnload();
+//                    }
+//                }
+//                else {
+//                    if (!iterDraw.isSleekLoaded()) {
+//                        iterDraw.onSleekLoad(drawInfo);
+//                    }
+//                }
+//            }
+//        }
+//        invalidate();
+//        Log.d("SleekCanvas memstats",
+//            "memstats loadAndUnloadNonFixedSleekListFast() took: "
+//                + (System.currentTimeMillis() - startTs) + " ms"
+//        );
+        // - end - UI THREAD LOGIC
+
+        // -start- BG THREAD LOGIC
+        UtilExecutor.CPU_QUAD.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                final ArrayList<Sleek> loadList = new ArrayList<>(40);
+                final ArrayList<Sleek> unloadList = new ArrayList<>(40);
+
+                synchronized (canvasLockObj) {
+                    for (Sleek iterDraw : drawItemList) {
+
+                        if (!iterDraw.isSleekLoadable()) {
+                            continue;
+                        }
+
+                        if (
+                            iterDraw.getSleekY() + iterDraw.getSleekH() < controllerY - scaledHeightLoadPadding ||
+                                iterDraw.getSleekY() > controllerY + canvasHeight + scaledHeightLoadPadding ||
+                                iterDraw.getSleekX() + iterDraw.getSleekW() < controllerX - scaledWidthLoadPadding ||
+                                iterDraw.getSleekX() > controllerX + canvasWidth + scaledWidthLoadPadding
+                            ) {
+                            if (iterDraw.isSleekLoaded()) {
+                                //iterDraw.onSleekUnload();
+                                unloadList.add(iterDraw);
+                            }
+                        }
+                        else {
+                            if (!iterDraw.isSleekLoaded()) {
+                                //iterDraw.onSleekLoad(drawInfo);
+                                loadList.add(iterDraw);
+                            }
+                        }
+                    }
+                }
+
+                addPreDrawRun(new ISleekAnimRun() {
+                    @Override
+                    public void run(SleekCanvasInfo info) {
+
+                        final long innerStartTs = System.currentTimeMillis();
+
+                        for (Sleek iterDraw : unloadList) {
+                            iterDraw.onSleekUnload();
+                        }
+
+                        for (Sleek iterDraw : loadList) {
+                            iterDraw.onSleekLoad(info);
+                        }
+
+                        Log.d("SleekCanvas memstats",
+                            "memstats INNER loadAndUnloadNonFixedSleekListFast() took: "
+                                + (System.currentTimeMillis() - innerStartTs) + " ms"
+                        );
+
+//                        addPreDrawRun(new ISleekAnimRun() {
+//                            @Override
+//                            public void run(SleekCanvasInfo info) {
+//                                for (Sleek iterDraw : loadList) {
+//                                    iterDraw.onSleekLoad(info);
+//                                }
+//                            }
+//                        });
+                    }
+                });
+
+                Log.d("SleekCanvas memstats",
+                    "memstats loadAndUnloadNonFixedSleekListFast() took: "
+                        + (System.currentTimeMillis() - startTs) + " ms"
+                );
+            }
+        });
+        // - end - BG THREAD LOGIC
+    }
+
     public void loadAndUnloadSleekLists(boolean includeFixedViews) {
 
         synchronized (canvasLockObj) {
@@ -686,10 +805,10 @@ public class SleekCanvas extends RelativeLayout {
                 }
 
                 if (
-                        iterDraw.getSleekX() + iterDraw.getSleekW() < controllerX - scaledWidthLoadPadding ||
-                        iterDraw.getSleekX() > controllerX + canvasWidth + scaledWidthLoadPadding ||
                         iterDraw.getSleekY() + iterDraw.getSleekH() < controllerY - scaledHeightLoadPadding ||
-                        iterDraw.getSleekY() > controllerY + canvasHeight + scaledHeightLoadPadding
+                        iterDraw.getSleekY() > controllerY + canvasHeight + scaledHeightLoadPadding ||
+                        iterDraw.getSleekX() + iterDraw.getSleekW() < controllerX - scaledWidthLoadPadding ||
+                        iterDraw.getSleekX() > controllerX + canvasWidth + scaledWidthLoadPadding
                         ) {
                     if (iterDraw.isSleekLoaded()) {
                         iterDraw.onSleekUnload();

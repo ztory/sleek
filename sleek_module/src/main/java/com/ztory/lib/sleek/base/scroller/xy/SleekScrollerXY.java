@@ -292,7 +292,7 @@ public class SleekScrollerXY implements SleekCanvasScroller {
 
   protected void loadNonFixedSleekInstances() {
     if (mAutoLoading) {
-      mSleekCanvas.loadAndUnloadSleekLists(false);
+      mSleekCanvas.loadAndUnloadNonFixedSleekListFast();
     }
   }
 

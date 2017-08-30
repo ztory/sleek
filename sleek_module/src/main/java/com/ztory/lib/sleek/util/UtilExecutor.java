@@ -16,7 +16,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class UtilExecutor {
 
   public static final Executor
-      NETWORK = createExecutor(UtilExecutor.class.getName() + "_NETWORK_EXECUTOR", 8),
+      NETWORK_OCTA = createExecutor(UtilExecutor.class.getName() + "_NETWORK_EXECUTOR_OCTA", 8),
+      NETWORK_QUAD = createExecutor(UtilExecutor.class.getName() + "_NETWORK_EXECUTOR_QUAD", 4),
       CPU_QUAD = createExecutor(UtilExecutor.class.getName() + "_CPU_EXECUTOR_QUAD", 4),
       CPU_TRIPLE = createExecutor(UtilExecutor.class.getName() + "_CPU_EXECUTOR_TRIPLE", 3),
       CPU_DOUBLE = createExecutor(UtilExecutor.class.getName() + "_CPU_EXECUTOR_DOUBLE", 2),
@@ -29,7 +30,7 @@ public class UtilExecutor {
     ThreadPoolExecutor returnPool = new ThreadPoolExecutor(
         poolSizeMax,
         poolSizeMax,
-        4L,
+        20L,
         TimeUnit.SECONDS,
         new LinkedBlockingQueue<Runnable>(),
         new ThreadFactory() {

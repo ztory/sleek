@@ -59,8 +59,9 @@ public class SleekElement extends SleekBaseComposite {
   public static final String CSS_BLOCK_ANIMATION_KEY = "SleekElement.isAnimationCSSblock";
 
   protected Executor
-      bitmapLoadExecutor = UtilExecutor.CPU_DOUBLE,
-      bitmapDownloadExecutor = UtilExecutor.CPU_TRIPLE;
+      bitmapLoadExecutor = UtilExecutor.CPU_DOUBLE,//CPU_DOUBLE,
+      bitmapDownloadExecutor = UtilExecutor.CPU_TRIPLE,
+      bitmapShadowExecutor = UtilExecutor.CPU_DOUBLE;//createExecutor(SleekElement.class.getName() + "_SHADOW_EXECUTOR", 1);
 
   protected final List<CSSblock> elementCSSlist = new ArrayList<>(4);
 
@@ -510,9 +511,11 @@ public class SleekElement extends SleekBaseComposite {
     final int imgContainerW = elementBackground.getSleekW();
     final int imgContainerH = elementBackground.getSleekH();
 
-    // Reset source rect
-    elementBackgroundImage.getSourceRect().set(0, 0, backgroundWidth, backgroundHeight);
-    elementBackgroundImage.setShaderMatrix();
+    if (!elementBackgroundSizeIsCover) {
+      // Reset source rect
+      elementBackgroundImage.getSourceRect().set(0, 0, backgroundWidth, backgroundHeight);
+      elementBackgroundImage.setShaderMatrix();
+    }
 
     if (elementBackgroundSize != null) {
 
@@ -627,8 +630,13 @@ public class SleekElement extends SleekBaseComposite {
     return defaultBitmapConfig;
   }
 
+  //TODO THIS IS DEBUG CODE
+  //private final double randomDbl = Math.random();
+
   protected File getDownloadedBitmapFile() {
     return UtilDownload.downloadUrl(elementBackgroundImageUrl);
+    //TODO THIS IS DEBUG CODE
+    //return UtilDownload.downloadUrl("http://lorempixel.com/400/400/people/" + "?" + randomDbl);
   }
 
   protected volatile File bitmapFile = null;
@@ -684,8 +692,15 @@ public class SleekElement extends SleekBaseComposite {
       }
 
       if ((isSleekLoadable() && !isSleekLoaded()) || !isAddedToParent()) {
-        bitmap.recycle();
+        //bitmap.recycle();
         bitmap = null;
+      }
+
+      if (bitmap != null) {
+        // Attempt to prepare bitmap for drawing in order to prevent...
+        // ...FPS-lag when drawn for first time in the Android UI.
+        // https://developer.android.com/reference/android/graphics/Bitmap.html#prepareToDraw()
+        bitmap.prepareToDraw();
       }
 
       final Bitmap finalBitmap = bitmap;
@@ -959,7 +974,7 @@ public class SleekElement extends SleekBaseComposite {
     if (elementShadowBitmapList.size() > 0) {
       for (Bitmap iterShadowBitmap : elementShadowBitmapList) {
         if (iterShadowBitmap != null) {
-          iterShadowBitmap.recycle();
+          //iterShadowBitmap.recycle();
         }
       }
       elementShadowBitmapList.clear();
@@ -981,7 +996,7 @@ public class SleekElement extends SleekBaseComposite {
 
         //TODO Maybe exeute on UI-thread if view is within viewport when this method is called ?
 
-        bitmapLoadExecutor.execute(new Runnable() {
+        bitmapShadowExecutor.execute(new Runnable() {
           @Override
           public void run() {
 
@@ -1504,6 +1519,7 @@ public class SleekElement extends SleekBaseComposite {
         elementBorderRadius,
         paint
     );
+    bitmap.prepareToDraw();
     returnList.add(bitmap);
     //____________________ - END - Top Bitmap ____________________
 
@@ -1534,6 +1550,7 @@ public class SleekElement extends SleekBaseComposite {
         elementBorderRadius,
         paint
     );
+    bitmap.prepareToDraw();
     returnList.add(bitmap);
     //____________________ - END - Bottom Bitmap ____________________
 
@@ -1564,6 +1581,7 @@ public class SleekElement extends SleekBaseComposite {
         elementBorderRadius,
         paint
     );
+    bitmap.prepareToDraw();
     returnList.add(bitmap);
     //____________________ - END - Left Bitmap ____________________
 
@@ -1594,6 +1612,7 @@ public class SleekElement extends SleekBaseComposite {
         elementBorderRadius,
         paint
     );
+    bitmap.prepareToDraw();
     returnList.add(bitmap);
     //____________________ - END - Right Bitmap ____________________
 
