@@ -631,7 +631,8 @@ public class SleekElement extends SleekBaseComposite {
   }
 
   //TODO THIS IS DEBUG CODE
-  //private final double randomDbl = Math.random();
+//  private static final AtomicInteger debugCounter = new AtomicInteger(0);
+//  private final double randomDbl = debugCounter.incrementAndGet();
 
   protected File getDownloadedBitmapFile() {
     return UtilDownload.downloadUrl(elementBackgroundImageUrl);

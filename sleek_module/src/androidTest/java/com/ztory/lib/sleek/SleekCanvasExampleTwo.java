@@ -119,9 +119,9 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
     sleekScrollerXY.setPaddingBottom(UtilPx.getPixels(40));
     setSleekScroller(sleekScrollerXY);
 
-    //setLoadPaddingEqualToSize(false);
-    //setHeightLoadPadding(UtilPx.getPixels(1000));
-    //setHeightLoadPadding(0);
+//    setLoadPaddingEqualToSize(false);
+//    setWidthLoadPadding(UtilPx.getPixels(100));
+//    setHeightLoadPadding(UtilPx.getPixels(100));
 
     addFrameRate();
 

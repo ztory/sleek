@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -47,6 +48,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by jonruna on 09/10/14.
  */
 public class SleekCanvas extends RelativeLayout {
+
+    protected static final Executor FAST_LOAD_EXECUTOR = UtilExecutor.createExecutor(
+        SleekCanvas.class.getName() + "_FAST_LOAD_EXECUTOR", 1
+    );
 
     public static final int STICKY_TOUCH_PRIO = Integer.MAX_VALUE - 10000;
 
@@ -667,9 +672,18 @@ public class SleekCanvas extends RelativeLayout {
         loadAndUnloadSleekLists(true);
     }
 
+    protected volatile boolean fastLoadAndUnloadActive = false, fastLoadAndUnloadPending = false;
+
     public void loadAndUnloadNonFixedSleekListFast() {
 
-        final long startTs = System.currentTimeMillis();
+        if (fastLoadAndUnloadActive) {
+            fastLoadAndUnloadPending = true;
+            return;
+        }
+
+        fastLoadAndUnloadActive = true;
+
+        final long thisFastLoadTs = System.currentTimeMillis();
 
         final int canvasWidth = getScaledCanvasWidth();
         final int canvasHeight = getScaledCanvasHeight();
@@ -680,40 +694,7 @@ public class SleekCanvas extends RelativeLayout {
         final int scaledWidthLoadPadding = getScaledWidthLoadPadding();
         final int scaledHeightLoadPadding = getScaledHeightLoadPadding();
 
-        // -start- UI THREAD LOGIC
-//        synchronized (canvasLockObj) {
-//            for (Sleek iterDraw : drawItemList) {
-//
-//                if (!iterDraw.isSleekLoadable()) {
-//                    continue;
-//                }
-//
-//                if (
-//                    iterDraw.getSleekY() + iterDraw.getSleekH() < controllerY - scaledHeightLoadPadding ||
-//                        iterDraw.getSleekY() > controllerY + canvasHeight + scaledHeightLoadPadding ||
-//                        iterDraw.getSleekX() + iterDraw.getSleekW() < controllerX - scaledWidthLoadPadding ||
-//                        iterDraw.getSleekX() > controllerX + canvasWidth + scaledWidthLoadPadding
-//                    ) {
-//                    if (iterDraw.isSleekLoaded()) {
-//                        iterDraw.onSleekUnload();
-//                    }
-//                }
-//                else {
-//                    if (!iterDraw.isSleekLoaded()) {
-//                        iterDraw.onSleekLoad(drawInfo);
-//                    }
-//                }
-//            }
-//        }
-//        invalidate();
-//        Log.d("SleekCanvas memstats",
-//            "memstats loadAndUnloadNonFixedSleekListFast() took: "
-//                + (System.currentTimeMillis() - startTs) + " ms"
-//        );
-        // - end - UI THREAD LOGIC
-
-        // -start- BG THREAD LOGIC
-        UtilExecutor.CPU_QUAD.execute(new Runnable() {
+        FAST_LOAD_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
 
@@ -765,25 +746,22 @@ public class SleekCanvas extends RelativeLayout {
                             "memstats INNER loadAndUnloadNonFixedSleekListFast() took: "
                                 + (System.currentTimeMillis() - innerStartTs) + " ms"
                         );
-
-//                        addPreDrawRun(new ISleekAnimRun() {
-//                            @Override
-//                            public void run(SleekCanvasInfo info) {
-//                                for (Sleek iterDraw : loadList) {
-//                                    iterDraw.onSleekLoad(info);
-//                                }
-//                            }
-//                        });
                     }
                 });
 
+                // Reset fastLoadAndUnload-state and check if we have pending load.
+                fastLoadAndUnloadActive = false;
+                if (fastLoadAndUnloadPending) {
+                    fastLoadAndUnloadPending = false;
+                    loadAndUnloadNonFixedSleekListFast();
+                }
+
                 Log.d("SleekCanvas memstats",
                     "memstats loadAndUnloadNonFixedSleekListFast() took: "
-                        + (System.currentTimeMillis() - startTs) + " ms"
+                        + (System.currentTimeMillis() - thisFastLoadTs) + " ms"
                 );
             }
         });
-        // - end - BG THREAD LOGIC
     }
 
     public void loadAndUnloadSleekLists(boolean includeFixedViews) {
