@@ -58,10 +58,18 @@ public class SleekElement extends SleekBaseComposite {
 
   public static final String CSS_BLOCK_ANIMATION_KEY = "SleekElement.isAnimationCSSblock";
 
+  protected static final Executor
+      SHADOW_EXECUTOR = UtilExecutor.createExecutor(
+          SleekElement.class.getName() + "_SHADOW_EXECUTOR", 1
+      ),
+      BITMAP_EXECUTOR = UtilExecutor.createExecutor(
+          SleekElement.class.getName() + "_BITMAP_EXECUTOR", 1
+      );
+
   protected Executor
-      bitmapLoadExecutor = UtilExecutor.CPU_DOUBLE,//CPU_DOUBLE,
-      bitmapDownloadExecutor = UtilExecutor.CPU_TRIPLE,
-      bitmapShadowExecutor = UtilExecutor.CPU_DOUBLE;//createExecutor(SleekElement.class.getName() + "_SHADOW_EXECUTOR", 1);
+      bitmapDownloadExecutor = UtilExecutor.NETWORK_QUAD,
+      bitmapShadowExecutor = SHADOW_EXECUTOR,
+      bitmapLoadExecutor = BITMAP_EXECUTOR;
 
   protected final List<CSSblock> elementCSSlist = new ArrayList<>(4);
 
@@ -702,6 +710,13 @@ public class SleekElement extends SleekBaseComposite {
         // ...FPS-lag when drawn for first time in the Android UI.
         // https://developer.android.com/reference/android/graphics/Bitmap.html#prepareToDraw()
         bitmap.prepareToDraw();
+
+//        try {
+//          System.gc();
+//          Thread.sleep(34);
+//        } catch (InterruptedException e) {
+//          e.printStackTrace();
+//        }
       }
 
       final Bitmap finalBitmap = bitmap;
