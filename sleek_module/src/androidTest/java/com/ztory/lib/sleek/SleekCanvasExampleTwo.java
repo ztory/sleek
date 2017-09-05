@@ -103,7 +103,7 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
       cellBasicPressedCSS = new CSSblockBase(CSS_CELL_BASIC_PRESSED),
       cellBasicClickedCSS = new CSSblockBase(CSS_CELL_BASIC_CLICKED);
 
-  private static final int CELL_WIDTH = UtilPx.getPixels(200);
+  private static final int CELL_WIDTH = UtilPx.getPixels(160);
 
   private final int toolbarHeight = UtilPx.getPixels(102);
 
@@ -146,7 +146,7 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
         sleekElementList,
         CELL_WIDTH,//columnWidth
         UtilPx.getPixels(40),//topSpacing
-        UtilPx.getPixels(20),//horizontalSpacing
+        UtilPx.getPixels(10),//horizontalSpacing
         true,//verticalSpacingMatchHorizontalSpacing
         0//verticalSpacing
     );
@@ -209,13 +209,17 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
         cellBasicPressedCSS,
         cellBasicClickedCSS,
         new Assumeable<SleekCSSanim>() {
+          private int realH;
           @Override
           public void assume(SleekCSSanim cssAnimation) {
             cssAnimation.setDuration(1000);
             if (sleekElement.getSleekW() != CELL_WIDTH) {
               cssAnimation.setGoalW(CELL_WIDTH);
+              cssAnimation.setGoalH(realH);
             } else {
-              cssAnimation.setGoalW(sleekElement.getSleekW() + UtilPx.getPixels(20));
+              realH = sleekElement.getSleekH();
+              cssAnimation.setGoalW(sleekElement.getSleekW() + UtilPx.getPixels(40));
+              cssAnimation.setGoalH(sleekElement.getSleekH() + UtilPx.getPixels(40));
             }
           }
         }
