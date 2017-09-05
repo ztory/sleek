@@ -1,4 +1,4 @@
-package com.ztory.lib.sleek;
+package com.ztory.lib.sleek.base.debug;
 
 import android.graphics.Canvas;
 import android.graphics.Color;

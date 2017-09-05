@@ -2,6 +2,7 @@ package com.ztory.lib.sleek;
 
 import android.content.Context;
 import com.ztory.lib.sleek.assumption.Assumeable;
+import com.ztory.lib.sleek.base.debug.SleekFrameRate;
 import com.ztory.lib.sleek.base.element.SleekCSSanim;
 import com.ztory.lib.sleek.base.element.SleekElement;
 import com.ztory.lib.sleek.base.element.css.CSSblock;
