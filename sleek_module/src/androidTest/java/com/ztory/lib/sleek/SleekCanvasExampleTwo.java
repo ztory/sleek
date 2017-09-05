@@ -2,7 +2,9 @@ package com.ztory.lib.sleek;
 
 import android.content.Context;
 import com.ztory.lib.sleek.assumption.Assumeable;
+import com.ztory.lib.sleek.base.SleekParam;
 import com.ztory.lib.sleek.base.debug.SleekFrameRate;
+import com.ztory.lib.sleek.base.debug.SleekRedrawIndicator;
 import com.ztory.lib.sleek.base.element.SleekCSSanim;
 import com.ztory.lib.sleek.base.element.SleekElement;
 import com.ztory.lib.sleek.base.element.css.CSSblock;
@@ -124,7 +126,7 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
 //    setWidthLoadPadding(UtilPx.getPixels(100));
 //    setHeightLoadPadding(UtilPx.getPixels(100));
 
-    addFrameRate();
+    //addFrameRate();
 
     addToolbar();
 
@@ -201,6 +203,16 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
         }
     );
     addSleek(toolbar);
+
+    SleekRedrawIndicator redrawIndicator = new SleekRedrawIndicator(
+        SleekParam.FIXED_DEFAULT.prio(SleekPrioCounter.next())
+    );
+    redrawIndicator.getLayout()
+        .x(SL.X.PARENT_RIGHT, UtilPx.getPixels(40), toolbar)
+        .y(SL.Y.POS_CENTER, 0, toolbar)
+        .w(W.ABSOLUTE, UtilPx.getPixels(60), null)
+        .h(H.ABSOLUTE, UtilPx.getPixels(60), null);
+    addSleek(redrawIndicator);
   }
 
   private static SleekElement getSleekElementCellBasic() {
