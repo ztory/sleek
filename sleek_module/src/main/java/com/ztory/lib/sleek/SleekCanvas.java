@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Looper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -683,7 +682,7 @@ public class SleekCanvas extends RelativeLayout {
 
         fastLoadAndUnloadActive = true;
 
-        final long thisFastLoadTs = System.currentTimeMillis();
+//        final long thisFastLoadTs = System.currentTimeMillis();
 
         final int canvasWidth = getScaledCanvasWidth();
         final int canvasHeight = getScaledCanvasHeight();
@@ -732,7 +731,7 @@ public class SleekCanvas extends RelativeLayout {
                     @Override
                     public void run(SleekCanvasInfo info) {
 
-                        final long innerStartTs = System.currentTimeMillis();
+//                        final long innerStartTs = System.currentTimeMillis();
 
                         for (Sleek iterDraw : unloadList) {
                             iterDraw.onSleekUnload();
@@ -742,10 +741,10 @@ public class SleekCanvas extends RelativeLayout {
                             iterDraw.onSleekLoad(info);
                         }
 
-                        Log.d("SleekCanvas memstats",
-                            "memstats INNER loadAndUnloadNonFixedSleekListFast() took: "
-                                + (System.currentTimeMillis() - innerStartTs) + " ms"
-                        );
+//                        Log.d("SleekCanvas memstats",
+//                            "memstats INNER loadAndUnloadNonFixedSleekListFast() took: "
+//                                + (System.currentTimeMillis() - innerStartTs) + " ms"
+//                        );
                     }
                 });
 
@@ -756,10 +755,10 @@ public class SleekCanvas extends RelativeLayout {
                     loadAndUnloadNonFixedSleekListFast();
                 }
 
-                Log.d("SleekCanvas memstats",
-                    "memstats loadAndUnloadNonFixedSleekListFast() took: "
-                        + (System.currentTimeMillis() - thisFastLoadTs) + " ms"
-                );
+//                Log.d("SleekCanvas memstats",
+//                    "memstats loadAndUnloadNonFixedSleekListFast() took: "
+//                        + (System.currentTimeMillis() - thisFastLoadTs) + " ms"
+//                );
             }
         });
     }

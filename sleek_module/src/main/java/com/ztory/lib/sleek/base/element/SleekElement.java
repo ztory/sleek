@@ -665,6 +665,9 @@ public class SleekElement extends SleekBaseComposite {
         return;
       }
 
+      // https://stackoverflow.com/questions/3117429/garbage-collector-in-android
+      System.gc();
+
       // Ensure one fullscreen ARGB_8888 bitmap can be loaded into memory
       int minRequiredMemory = getCanvasWidth() * getCanvasHeight() * 8;
       while (UtilDownload.getAvailableMemory() < minRequiredMemory) {
@@ -675,7 +678,6 @@ public class SleekElement extends SleekBaseComposite {
         );
 
         try {
-          System.gc();
           Thread.sleep(1000);
         } catch (InterruptedException e) {
           e.printStackTrace();
@@ -1478,7 +1480,7 @@ public class SleekElement extends SleekBaseComposite {
     final int shadowSleekW = sleekW;
     final int shadowSleekH = sleekH;
 
-    long timestamp = System.currentTimeMillis();
+//    long timestamp = System.currentTimeMillis();
 
     Paint paint = new Paint();
     paint.setAntiAlias(true);
@@ -1635,10 +1637,10 @@ public class SleekElement extends SleekBaseComposite {
 //    shadowViewSizeW = shadowSleekW;
 //    shadowViewSizeH = shadowSleekH;
 
-    Log.d("SleekElement",
-        "SleekElement | generateShadowBitmap() took: "
-            + (System.currentTimeMillis() - timestamp) + "ms"
-    );
+//    Log.d("SleekElement",
+//        "SleekElement | generateShadowBitmap() took: "
+//            + (System.currentTimeMillis() - timestamp) + "ms"
+//    );
 
     //return returnList;
     return new ValPair<>(new Point(shadowSleekW, shadowSleekH), returnList);
