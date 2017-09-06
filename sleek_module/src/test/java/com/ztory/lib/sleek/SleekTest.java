@@ -6,11 +6,15 @@ import com.ztory.lib.sleek.assumption.Assumeable;
 import com.ztory.lib.sleek.assumption.Assumption;
 import com.ztory.lib.sleek.assumption.AssumptionResolver;
 import com.ztory.lib.sleek.assumption.SimpleAssumption;
+import com.ztory.lib.sleek.mapd.Mapd;
+import com.ztory.lib.sleek.mapd.MapdRule;
 import com.ztory.lib.sleek.util.UtilDownload;
 import com.ztory.lib.sleek.util.UtilExecutor;
 import com.ztory.lib.sleek.val.Val;
 import com.ztory.lib.sleek.val.ValAction;
 import java.io.ByteArrayInputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import org.junit.AfterClass;
@@ -31,6 +35,33 @@ public class SleekTest {
   @AfterClass
   public static void tearDownAfterClass() throws Exception {
 
+  }
+
+  @Test
+  public void testMapdValidation() throws Exception {
+    Map<String, Object> map = new HashMap<>();
+    map.put("name", "Jonny");
+    map.put("count", 1);
+    map.put("pro", false);
+    Map<String, MapdRule> validationRules = Mapd.createValidationRules(
+        Mapd.keyValue("name", MapdRule.required(String.class)),
+        Mapd.keyValue("count", MapdRule.required(Number.class)),
+        Mapd.keyValue("pro", MapdRule.optional(Boolean.class))
+    );
+    Mapd.validateMap(validationRules, map);
+  }
+
+  @Test
+  public void testMapdGet() throws Exception {
+    Map<String, Object> map = new HashMap<>();
+    Object object = 1;
+    map.put("obj", object);
+    map.put("str", "Jonny");
+    Assert.assertNotNull(Mapd.get(map, "obj", Number.class));
+    Assert.assertNotNull(Mapd.get(map, "obj", Integer.class));
+    Assert.assertNull(Mapd.get(map, "obj", Double.class));
+    Assert.assertNotNull(Mapd.get(map, "str", String.class));
+    Assert.assertNull(Mapd.get(map, "str", Number.class));
   }
 
   @Test

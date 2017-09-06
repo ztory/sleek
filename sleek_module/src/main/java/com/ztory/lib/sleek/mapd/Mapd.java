@@ -24,14 +24,15 @@ public class Mapd {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> void validateMap(
-            Map<T, MapdRule<?>> validationRules,
+            Map<T, MapdRule> validationRules,
             Map<T, ?> dataMap
     ) throws MapdValidationException {
         Object dataItem;
         for (T iterValidationKey : validationRules.keySet()) {
 
-            MapdRule<?> validationRule = validationRules.get(iterValidationKey);
+            MapdRule validationRule = validationRules.get(iterValidationKey);
 
             dataItem = dataMap.get(iterValidationKey);
 
@@ -56,36 +57,19 @@ public class Mapd {
         }
     }
 
-    @SafeVarargs
-    public static <T> Map<T, MapdRule<?>> createValidationRules(
-            MapdKeyValue<T, MapdRule<?>>... entries
-    ) {
-        Map<T, MapdRule<?>> map = new HashMap<>(entries.length);
-        for (MapdKeyValue<T, MapdRule<?>> iterEntry : entries) {
-            map.put(iterEntry.getKey(), iterEntry.getValue());
-        }
-        return map;
-    }
-
-    @SafeVarargs
-    public static <T, D> Map<T, D> createMap(MapdKeyValue<T, D>... entries) {
-        Map<T, D> map = new HashMap<>(entries.length);
-        for (MapdKeyValue<T, D> iterEntry : entries) {
-            map.put(iterEntry.getKey(), iterEntry.getValue());
-        }
-        return map;
-    }
-
-    @SafeVarargs
-    public static <T, D> Map<T, D> appendMap(Map<T, D> map, MapdKeyValue<T, D>... entries) {
-        for (MapdKeyValue<T, D> iterEntry : entries) {
-            map.put(iterEntry.getKey(), iterEntry.getValue());
-        }
-        return map;
-    }
-
     public static <K, V> MapdKeyValue<K, V> keyValue(final K key, final V value) {
         return new MapdKeyValueImpl<>(key, value);
+    }
+
+    @SafeVarargs
+    public static <T> Map<T, MapdRule> createValidationRules(
+            MapdKeyValue<T, MapdRule>... entries
+    ) {
+        Map<T, MapdRule> map = new HashMap<>(entries.length);
+        for (MapdKeyValue<T, MapdRule> iterEntry : entries) {
+            map.put(iterEntry.getKey(), iterEntry.getValue());
+        }
+        return map;
     }
 
 }
