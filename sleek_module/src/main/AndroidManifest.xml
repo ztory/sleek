@@ -1,21 +1,3 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.ztory.lib.sleek" >
-
-    <uses-permission android:name="android.permission.INTERNET"/>
-
-    <application
-        android:allowBackup="false"
-        android:label="SleekApplication" >
-        <activity
-            android:name="com.ztory.lib.sleek.SleekActivity"
-            android:configChanges="orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:launchMode="singleTask" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-    </application>
+<manifest package="com.ztory.lib.sleek" >
 
 </manifest>
