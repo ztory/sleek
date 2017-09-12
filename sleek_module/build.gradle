@@ -1,18 +1,18 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven'
 
-version = '1.1.0'
+version = '1.1.1'
 group = 'com.ztory.lib.sleek'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 25
-        versionCode 10
-        versionName "1.1.0"
+        targetSdkVersion 26
+        versionCode 11
+        versionName "1.1.1"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
