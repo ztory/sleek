@@ -11,30 +11,54 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by jonruna on 2017-06-24.
  */
-public class SimpleAssumption<T> implements Assumption<T> {
+public class SimpleAssumption<P, R> implements Assumption<R>, Runnable {
 
-  protected final List<Assumeable<T>> correctListeners = new ArrayList<>();
+  protected final Assumption<P> paramAssumption;
+  protected final List<Assumeable<R>> correctListeners = new ArrayList<>();
   protected final List<Assumeable<Exception>> wrongListeners = new ArrayList<>();
-  protected final List<Assumeable<Assumption<T>>> doneListeners = new ArrayList<>();
-  protected final List<Assumption> chainAssumptionList = new ArrayList<>();
+  protected final List<Assumeable<Assumption<R>>> doneListeners = new ArrayList<>();
   protected final CountDownLatch countDownLatch = new CountDownLatch(1);
   protected final Executor executor;
-  protected final AssumptionResolver<T> assumptionResolver;
-  protected volatile boolean validateStarted = false, done = false, assumptionCorrect = false;
-  protected volatile T assumptionResult = null;
+  protected final Func<P, R> function;
+  protected volatile boolean done = false, assumptionCorrect = false;
+  protected volatile R assumptionResult = null;
   protected volatile Exception assumptionException = null;
 
-  public SimpleAssumption(Executor theExecutor, final AssumptionResolver<T> theAssumptionResolver) {
-
-    if (theAssumptionResolver == null) {
-      throw new IllegalArgumentException("theAssumptionResolver == null");
+  public SimpleAssumption(
+      Executor theExecutor,
+      Assumption<P> theParamAssumption,
+      Func<P, R> theFunction
+  ) {
+    if (theFunction == null) {
+      throw new IllegalArgumentException("theFunction == null");
     }
-
     executor = theExecutor;
-    assumptionResolver = theAssumptionResolver;
+    paramAssumption = theParamAssumption;
+    function = theFunction;
+    if (executor != null) {
+      executor.execute(this);
+    } else {
+      run();
+    }
   }
 
-  protected void setResult(T result, Exception e) {
+  @Override
+  public void run() {
+    R result = null;
+    Exception exception = null;
+    try {
+      if (paramAssumption != null) {
+        result = function.invoke(paramAssumption.get());
+      } else {
+        result = function.invoke(null);
+      }
+    } catch (Exception e) {
+      exception = e;
+    }
+    setResult(result, exception);
+  }
+
+  protected void setResult(R result, Exception e) {
     synchronized (this) {
       assumptionResult = result;
       assumptionException = e;
@@ -43,7 +67,7 @@ public class SimpleAssumption<T> implements Assumption<T> {
       countDownLatch.countDown();
 
       if (assumptionCorrect) {
-        for (Assumeable<T> correctAssumable : correctListeners) {
+        for (Assumeable<R> correctAssumable : correctListeners) {
           correctAssumable.assume(assumptionResult);
         }
       } else {
@@ -52,54 +76,14 @@ public class SimpleAssumption<T> implements Assumption<T> {
         }
       }
 
-      for (Assumeable<Assumption<T>> doneAssumable : doneListeners) {
+      for (Assumeable<Assumption<R>> doneAssumable : doneListeners) {
         doneAssumable.assume(this);
-      }
-
-      for (Assumption chainAssumption : chainAssumptionList) {
-        chainAssumption.validate();
       }
 
       correctListeners.clear();
       wrongListeners.clear();
       doneListeners.clear();
-      chainAssumptionList.clear();
     }
-  }
-
-  @Override
-  public Assumption<T> validate() {
-
-    if (validateStarted) {
-      return this;
-    }
-
-    synchronized (this) {
-      if (validateStarted) {
-        return this;
-      }
-      validateStarted = true;
-    }
-
-    Runnable resolveRun = new Runnable() {
-      @Override
-      public void run() {
-        T result = null;
-        Exception exception = null;
-        try {
-          result = assumptionResolver.resolve();
-        } catch (Exception e) {
-          exception = e;
-        }
-        setResult(result, exception);
-      }
-    };
-    if (executor != null) {
-      executor.execute(resolveRun);
-    } else {
-      resolveRun.run();
-    }
-    return this;
   }
 
   @Override
@@ -119,14 +103,12 @@ public class SimpleAssumption<T> implements Assumption<T> {
 
   @Override
   public Exception getException() throws InterruptedException {
-
     countDownLatch.await();
-
     return assumptionException;
   }
 
   @Override
-  public Assumption<T> correct(Assumeable<T> onCorrect) {
+  public Assumption<R> correct(Assumeable<R> onCorrect) {
 
     if (onCorrect == null) {
       return this;
@@ -144,7 +126,7 @@ public class SimpleAssumption<T> implements Assumption<T> {
   }
 
   @Override
-  public Assumption<T> wrong(Assumeable<Exception> onWrong) {
+  public Assumption<R> wrong(Assumeable<Exception> onWrong) {
 
     if (onWrong == null) {
       return this;
@@ -162,7 +144,7 @@ public class SimpleAssumption<T> implements Assumption<T> {
   }
 
   @Override
-  public Assumption<T> done(Assumeable<Assumption<T>> onDone) {
+  public Assumption<R> done(Assumeable<Assumption<R>> onDone) {
 
     if (onDone == null) {
       return this;
@@ -173,24 +155,6 @@ public class SimpleAssumption<T> implements Assumption<T> {
         doneListeners.add(onDone);
       } else {
         onDone.assume(this);
-      }
-    }
-
-    return this;
-  }
-
-  @Override
-  public Assumption<T> next(Assumption assumption) {
-
-    if (assumption == null) {
-      return this;
-    }
-
-    synchronized (this) {
-      if (!done) {
-        chainAssumptionList.add(assumption);
-      } else {
-        assumption.validate();
       }
     }
 
@@ -213,7 +177,7 @@ public class SimpleAssumption<T> implements Assumption<T> {
   }
 
   @Override
-  public T get() throws InterruptedException, ExecutionException {
+  public R get() throws InterruptedException, ExecutionException {
 
     countDownLatch.await();
 
@@ -225,7 +189,7 @@ public class SimpleAssumption<T> implements Assumption<T> {
   }
 
   @Override
-  public T get(long timeout, TimeUnit unit)
+  public R get(long timeout, TimeUnit unit)
       throws InterruptedException, ExecutionException, TimeoutException {
 
     countDownLatch.await(timeout, unit);
@@ -236,4 +200,5 @@ public class SimpleAssumption<T> implements Assumption<T> {
       return assumptionResult;
     }
   }
+
 }

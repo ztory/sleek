@@ -4,7 +4,7 @@ package com.ztory.lib.sleek;
 
 import com.ztory.lib.sleek.assumption.Assumeable;
 import com.ztory.lib.sleek.assumption.Assumption;
-import com.ztory.lib.sleek.assumption.AssumptionResolver;
+import com.ztory.lib.sleek.assumption.Func;
 import com.ztory.lib.sleek.assumption.SimpleAssumption;
 import com.ztory.lib.sleek.mapd.Mapd;
 import com.ztory.lib.sleek.mapd.MapdRule;
@@ -75,15 +75,69 @@ public class SleekTest {
   }
 
   @Test
+  public void testAssumptionParam() throws Exception {
+    final String stringAppend = "Append";
+    Func<String, String> stringAppender = new Func<String, String>() {
+      @Override
+      public String invoke(String param) throws Exception {
+        if (param != null) {
+          return param + stringAppend;
+        } else {
+          return stringAppend;
+        }
+      }
+    };
+    Assumption<String> assumptionOne = new SimpleAssumption<>(
+        UtilExecutor.CPU_QUAD,
+        null,
+        stringAppender
+    );
+    Assumption<String> assumptionTwo = new SimpleAssumption<>(
+        UtilExecutor.CPU_QUAD,
+        assumptionOne,
+        stringAppender
+    );
+    Assumption<String> assumptionThree = new SimpleAssumption<>(
+        UtilExecutor.CPU_QUAD,
+        assumptionTwo,
+        stringAppender
+    );
+    Assert.assertEquals(stringAppend, assumptionOne.get());
+    Assert.assertEquals(false, assumptionOne.isCancelled());
+    Assert.assertEquals(true, assumptionOne.isDone());
+    Assert.assertEquals(true, assumptionOne.isCorrect());
+    Assert.assertEquals(null, assumptionOne.getException());
+    Assert.assertEquals(true, assumptionOne.isSet());
+    Assert.assertEquals(false, assumptionOne.isNull());
+
+    Assert.assertEquals(stringAppend + stringAppend, assumptionTwo.get());
+    Assert.assertEquals(false, assumptionTwo.isCancelled());
+    Assert.assertEquals(true, assumptionTwo.isDone());
+    Assert.assertEquals(true, assumptionTwo.isCorrect());
+    Assert.assertEquals(null, assumptionTwo.getException());
+    Assert.assertEquals(true, assumptionTwo.isSet());
+    Assert.assertEquals(false, assumptionTwo.isNull());
+
+    Assert.assertEquals(stringAppend + stringAppend + stringAppend, assumptionThree.get());
+    Assert.assertEquals(false, assumptionThree.isCancelled());
+    Assert.assertEquals(true, assumptionThree.isDone());
+    Assert.assertEquals(true, assumptionThree.isCorrect());
+    Assert.assertEquals(null, assumptionThree.getException());
+    Assert.assertEquals(true, assumptionThree.isSet());
+    Assert.assertEquals(false, assumptionThree.isNull());
+  }
+
+  @Test
   public void testAssumption() throws Exception {
 
     final CountDownLatch countDownLatch = new CountDownLatch(3);
 
     Assumption<Integer> chainAssumption = new SimpleAssumption<>(
         UtilExecutor.CPU_QUAD,
-        new AssumptionResolver<Integer>() {
+        null,
+        new Func<Void, Integer>() {
           @Override
-          public Integer resolve() throws Exception {
+          public Integer invoke(Void param) throws Exception {
             countDownLatch.countDown();
             return 44;
           }
@@ -92,9 +146,10 @@ public class SleekTest {
 
     Assumption<String> assumption = new SimpleAssumption<>(
         UtilExecutor.CPU_QUAD,
-        new AssumptionResolver<String>() {
+        null,
+        new Func<Object, String>() {
           @Override
-          public String resolve() throws Exception {
+          public String invoke(Object param) throws Exception {
             return "dahString";
           }
         }
@@ -113,7 +168,7 @@ public class SleekTest {
       public void assume(Assumption<String> result) {
         countDownLatch.countDown();
       }
-    }).next(chainAssumption).validate();
+    });
 
     countDownLatch.await();
 
@@ -134,13 +189,14 @@ public class SleekTest {
 
     Assumption<String> wrongAssumption = new SimpleAssumption<>(
         null,
-        new AssumptionResolver<String>() {
+        null,
+        new Func<Object, String>() {
           @Override
-          public String resolve() throws Exception {
+          public String invoke(Object param) throws Exception {
             throw new RuntimeException("Test exception!");
           }
         }
-    ).validate();
+    );
 
     CountDownLatch wrongCountDownLatch = new CountDownLatch(1);
 

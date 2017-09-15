@@ -3,6 +3,6 @@ package com.ztory.lib.sleek.assumption;
 /**
  * Created by jonruna on 2017-06-24.
  */
-public interface AssumptionResolver<T> {
-  T resolve() throws Exception;
+public interface Func<P, R> {
+  R invoke(P param) throws Exception;
 }
