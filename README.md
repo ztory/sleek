@@ -101,7 +101,7 @@ allprojects {
 #### Step 2
 In your module `build.gradle` add this:
 ```
-compile 'com.ztory.lib.sleek:sleek_module:1.1.1'
+compile 'com.ztory.lib.sleek:sleek_module:1.1.2'
 ```
 
 ## Code Style
