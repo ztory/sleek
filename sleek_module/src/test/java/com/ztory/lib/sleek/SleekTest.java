@@ -108,7 +108,6 @@ public class SleekTest {
     Assert.assertEquals(true, assumptionOne.isCorrect());
     Assert.assertEquals(null, assumptionOne.getException());
     Assert.assertEquals(true, assumptionOne.isSet());
-    Assert.assertEquals(false, assumptionOne.isNull());
 
     Assert.assertEquals(stringAppend + stringAppend, assumptionTwo.get());
     Assert.assertEquals(false, assumptionTwo.isCancelled());
@@ -116,7 +115,6 @@ public class SleekTest {
     Assert.assertEquals(true, assumptionTwo.isCorrect());
     Assert.assertEquals(null, assumptionTwo.getException());
     Assert.assertEquals(true, assumptionTwo.isSet());
-    Assert.assertEquals(false, assumptionTwo.isNull());
 
     Assert.assertEquals(stringAppend + stringAppend + stringAppend, assumptionThree.get());
     Assert.assertEquals(false, assumptionThree.isCancelled());
@@ -124,7 +122,6 @@ public class SleekTest {
     Assert.assertEquals(true, assumptionThree.isCorrect());
     Assert.assertEquals(null, assumptionThree.getException());
     Assert.assertEquals(true, assumptionThree.isSet());
-    Assert.assertEquals(false, assumptionThree.isNull());
   }
 
   @Test
@@ -178,14 +175,12 @@ public class SleekTest {
     Assert.assertEquals(true, assumption.isCorrect());
     Assert.assertEquals(null, assumption.getException());
     Assert.assertEquals(true, assumption.isSet());
-    Assert.assertEquals(false, assumption.isNull());
     Assert.assertEquals(Integer.valueOf(44), chainAssumption.get());
     Assert.assertEquals(false, chainAssumption.isCancelled());
     Assert.assertEquals(true, chainAssumption.isDone());
     Assert.assertEquals(true, chainAssumption.isCorrect());
     Assert.assertEquals(null, chainAssumption.getException());
     Assert.assertEquals(true, chainAssumption.isSet());
-    Assert.assertEquals(false, chainAssumption.isNull());
 
     Assumption<String> wrongAssumption = new SimpleAssumption<>(
         null,
@@ -213,7 +208,6 @@ public class SleekTest {
     Assert.assertEquals(false, wrongAssumption.isCorrect());
     Assert.assertNotNull(wrongAssumption.getException());
     Assert.assertEquals(false, wrongAssumption.isSet());
-    Assert.assertEquals(true, wrongAssumption.isNull());
 
   }
 

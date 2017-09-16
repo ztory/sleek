@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -13,27 +14,27 @@ import java.util.concurrent.TimeoutException;
  */
 public class SimpleAssumption<P, R> implements Assumption<R>, Runnable {
 
-  protected final Assumption<P> paramAssumption;
+  protected final Future<P> paramFuture;
   protected final List<Assumeable<R>> correctListeners = new ArrayList<>();
   protected final List<Assumeable<Exception>> wrongListeners = new ArrayList<>();
   protected final List<Assumeable<Assumption<R>>> doneListeners = new ArrayList<>();
   protected final CountDownLatch countDownLatch = new CountDownLatch(1);
   protected final Executor executor;
   protected final Func<P, R> function;
-  protected volatile boolean done = false, assumptionCorrect = false;
+  protected volatile boolean runCalled = false, done = false, assumptionCorrect = false;
   protected volatile R assumptionResult = null;
   protected volatile Exception assumptionException = null;
 
   public SimpleAssumption(
       Executor theExecutor,
-      Assumption<P> theParamAssumption,
+      Future<P> theParamFuture,
       Func<P, R> theFunction
   ) {
     if (theFunction == null) {
       throw new IllegalArgumentException("theFunction == null");
     }
     executor = theExecutor;
-    paramAssumption = theParamAssumption;
+    paramFuture = theParamFuture;
     function = theFunction;
     if (executor != null) {
       executor.execute(this);
@@ -44,11 +45,15 @@ public class SimpleAssumption<P, R> implements Assumption<R>, Runnable {
 
   @Override
   public void run() {
+    if (runCalled) {
+      return;
+    }
+    runCalled = true;
     R result = null;
     Exception exception = null;
     try {
-      if (paramAssumption != null) {
-        result = function.invoke(paramAssumption.get());
+      if (paramFuture != null) {
+        result = function.invoke(paramFuture.get());
       } else {
         result = function.invoke(null);
       }
@@ -94,11 +99,6 @@ public class SimpleAssumption<P, R> implements Assumption<R>, Runnable {
   @Override
   public boolean isSet() {
     return assumptionResult != null;
-  }
-
-  @Override
-  public boolean isNull() {
-    return assumptionResult == null;
   }
 
   @Override
