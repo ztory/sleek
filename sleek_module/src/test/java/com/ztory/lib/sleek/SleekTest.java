@@ -172,6 +172,8 @@ public class SleekTest {
     countDownLatch.await();
 
     Assert.assertEquals("dahString", assumption.get());
+    Assert.assertEquals("dahString", assumption.getSafe());
+    Assert.assertEquals(assumption.get(), assumption.getSafe());
     Assert.assertEquals(false, assumption.isCancelled());
     Assert.assertEquals(true, assumption.isDone());
     Assert.assertEquals(true, assumption.isCorrect());
@@ -214,7 +216,7 @@ public class SleekTest {
     Assert.assertEquals(false, wrongAssumption.isCorrect());
     Assert.assertNotNull(wrongAssumption.getException());
     Assert.assertEquals(false, wrongAssumption.isSet());
-
+    Assert.assertNull(wrongAssumption.getSafe());
   }
 
   @Test

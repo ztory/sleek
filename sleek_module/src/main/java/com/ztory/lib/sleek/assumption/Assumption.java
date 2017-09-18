@@ -18,6 +18,14 @@ public interface Assumption<T> extends Future<T> {
   boolean isSet();
 
   /**
+   * Non-blocking call for getting the result of this Assumption, returns null if Assumption is not
+   * yet validated, not correct or if the correct value is set to null.
+   * @return the same value that get() returns, but in cases where get() would throw an
+   * Exception this method returns null instead, also returns null if Assumption is not validated.
+   */
+  T getSafe();
+
+  /**
    * Blocking call for getting the Exception of this Assumption, returns null if no exception was
    * thrown during validation of this Assumption.
    * @return an Exception if one was thrown during validation, null otherwise.

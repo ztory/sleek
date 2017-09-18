@@ -36,10 +36,10 @@ public class SimpleAssumption<P, R> implements Assumption<R>, Runnable {
     executor = theExecutor;
     paramFuture = theParamFuture;
     function = theFunction;
-    execute();
+    validate();
   }
 
-  protected void execute() {
+  protected void validate() {
     if (executor != null) {
       executor.execute(this);
     } else {
@@ -106,6 +106,11 @@ public class SimpleAssumption<P, R> implements Assumption<R>, Runnable {
   @Override
   public boolean isSet() {
     return assumptionResult != null;
+  }
+
+  @Override
+  public R getSafe() {
+    return assumptionResult;
   }
 
   @Override

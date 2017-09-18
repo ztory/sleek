@@ -26,6 +26,11 @@ public class ParamAssumption<T> implements Assumption<T> {
   }
 
   @Override
+  public T getSafe() {
+    return param;
+  }
+
+  @Override
   public Exception getException() throws InterruptedException {
     return null;
   }
