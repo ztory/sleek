@@ -3,8 +3,9 @@ package com.ztory.lib.sleek;
 //import junit.framework.TestCase;
 
 import com.ztory.lib.sleek.assumption.Assumeable;
+import com.ztory.lib.sleek.assumption.Assumed;
 import com.ztory.lib.sleek.assumption.Assumption;
-import com.ztory.lib.sleek.assumption.FailedAssumeable;
+import com.ztory.lib.sleek.assumption.AssumeableException;
 import com.ztory.lib.sleek.assumption.Func;
 import com.ztory.lib.sleek.assumption.SimpleAssumption;
 import com.ztory.lib.sleek.mapd.Mapd;
@@ -151,27 +152,22 @@ public class SleekTest {
             return "dahString";
           }
         }
-    ).validated(
-        new Assumeable<String>() {
-          @Override
-          public void assume(String value) {
-            countDownLatch.countDown();
-          }
-        },
-        new FailedAssumeable() {
-          @Override
-          public void failedAssume(Exception exception) {
+    ).correct(new Assumeable<String>() {
+      @Override
+      public void assume(String value) {
+        countDownLatch.countDown();
+      }
+    }).wrong(new AssumeableException() {
+      @Override
+      public void assumeException(Exception exception) {
 
-          }
-        }
-    ).validated(
-        new Assumeable<Assumption<String>>() {
-          @Override
-          public void assume(Assumption<String> result) {
-            countDownLatch.countDown();
-          }
-        }
-    );
+      }
+    }).done(new Assumed<String>() {
+      @Override
+      public void assumed(Assumption<String> assumption) {
+        countDownLatch.countDown();
+      }
+    });
 
     countDownLatch.await();
 
@@ -188,6 +184,7 @@ public class SleekTest {
     Assert.assertEquals(null, chainAssumption.getException());
     Assert.assertEquals(true, chainAssumption.isSet());
 
+    final CountDownLatch wrongCountDownLatch = new CountDownLatch(2);
     Assumption<String> wrongAssumption = new SimpleAssumption<>(
         null,
         null,
@@ -197,9 +194,12 @@ public class SleekTest {
             throw new RuntimeException("Test exception!");
           }
         }
-    );
-
-    CountDownLatch wrongCountDownLatch = new CountDownLatch(1);
+    ).wrong(new AssumeableException() {
+      @Override
+      public void assumeException(Exception exception) {
+        wrongCountDownLatch.countDown();
+      }
+    });
 
     try {
       wrongAssumption.get();

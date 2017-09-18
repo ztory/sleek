@@ -1,6 +1,5 @@
 package com.ztory.lib.sleek.assumption;
 
-import com.ztory.lib.sleek.val.ValPair;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -16,9 +15,9 @@ import java.util.concurrent.TimeoutException;
 public class SimpleAssumption<P, R> implements Assumption<R>, Runnable {
 
   protected final Future<P> paramFuture;
-  protected final List<ValPair<Assumeable<R>, FailedAssumeable>>
-      validatedListeners = new ArrayList<>();
-  protected final List<Assumeable<Assumption<R>>> doneListeners = new ArrayList<>();
+  protected final List<Assumeable<R>> correctListeners = new ArrayList<>();
+  protected final List<AssumeableException> wrongListeners = new ArrayList<>();
+  protected final List<Assumed<R>> doneListeners = new ArrayList<>();
   protected final CountDownLatch countDownLatch = new CountDownLatch(1);
   protected final Executor executor;
   protected final Func<P, R> function;
@@ -37,6 +36,10 @@ public class SimpleAssumption<P, R> implements Assumption<R>, Runnable {
     executor = theExecutor;
     paramFuture = theParamFuture;
     function = theFunction;
+    execute();
+  }
+
+  protected void execute() {
     if (executor != null) {
       executor.execute(this);
     } else {
@@ -64,25 +67,10 @@ public class SimpleAssumption<P, R> implements Assumption<R>, Runnable {
     setResult(result, exception);
   }
 
-  protected void invokeValidatedListeners(Assumeable<R> onCorrect, FailedAssumeable onWrong) {
-    if (assumptionCorrect) {
-      try {
-        if (onCorrect != null) {
-          onCorrect.assume(assumptionResult);
-        }
-      } catch (Exception listenerException) {
-        if (onWrong != null) {
-          onWrong.failedAssume(listenerException);
-        }
-      }
-    } else {
-      if (onWrong != null) {
-        onWrong.failedAssume(assumptionException);
-      }
-    }
-  }
-
   protected void setResult(R result, Exception e) {
+    if (done) {
+      return;
+    }
     synchronized (this) {
       assumptionResult = result;
       assumptionException = e;
@@ -90,15 +78,22 @@ public class SimpleAssumption<P, R> implements Assumption<R>, Runnable {
       done = true;
       countDownLatch.countDown();
 
-      for (ValPair<Assumeable<R>, FailedAssumeable> validateListener : validatedListeners) {
-        invokeValidatedListeners(validateListener.valueOne, validateListener.valueTwo);
+      if (assumptionCorrect) {
+        for (Assumeable<R> correctListener : correctListeners) {
+          correctListener.assume(assumptionResult);
+        }
+      } else {
+        for (AssumeableException wrongListener : wrongListeners) {
+          wrongListener.assumeException(assumptionException);
+        }
       }
 
-      for (Assumeable<Assumption<R>> doneAssumable : doneListeners) {
-        doneAssumable.assume(this);
+      for (Assumed<R> doneAssumable : doneListeners) {
+        doneAssumable.assumed(this);
       }
 
-      validatedListeners.clear();
+      correctListeners.clear();
+      wrongListeners.clear();
       doneListeners.clear();
     }
   }
@@ -120,19 +115,23 @@ public class SimpleAssumption<P, R> implements Assumption<R>, Runnable {
   }
 
   @Override
-  public Assumption<R> validated(Assumeable<R> onCorrect, FailedAssumeable onWrong) {
-    if (onCorrect == null && onWrong == null) {
+  public Assumption<R> correct(Assumeable<R> onCorrect) {
+    if (onCorrect == null) {
       return this;
     }
 
     if (done) {
-      invokeValidatedListeners(onCorrect, onWrong);
+      if (assumptionCorrect) {
+        onCorrect.assume(assumptionResult);
+      }
     } else {
       synchronized (this) {
         if (done) {
-          invokeValidatedListeners(onCorrect, onWrong);
+          if (assumptionCorrect) {
+            onCorrect.assume(assumptionResult);
+          }
         } else {
-          validatedListeners.add(new ValPair<>(onCorrect, onWrong));
+          correctListeners.add(onCorrect);
         }
       }
     }
@@ -140,17 +139,41 @@ public class SimpleAssumption<P, R> implements Assumption<R>, Runnable {
   }
 
   @Override
-  public Assumption<R> validated(Assumeable<Assumption<R>> onDone) {
+  public Assumption<R> wrong(AssumeableException onWrong) {
+    if (onWrong == null) {
+      return this;
+    }
+
+    if (done) {
+      if (!assumptionCorrect) {
+        onWrong.assumeException(assumptionException);
+      }
+    } else {
+      synchronized (this) {
+        if (done) {
+          if (!assumptionCorrect) {
+            onWrong.assumeException(assumptionException);
+          }
+        } else {
+          wrongListeners.add(onWrong);
+        }
+      }
+    }
+    return this;
+  }
+
+  @Override
+  public Assumption<R> done(Assumed<R> onDone) {
     if (onDone == null) {
       return this;
     }
 
     if (done) {
-      onDone.assume(this);
+      onDone.assumed(this);
     } else {
       synchronized (this) {
         if (done) {
-          onDone.assume(this);
+          onDone.assumed(this);
         } else {
           doneListeners.add(onDone);
         }

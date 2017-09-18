@@ -26,15 +26,18 @@ public interface Assumption<T> extends Future<T> {
   Exception getException() throws InterruptedException;
 
   /**
-   * Register a listeners that will execute onCorrect if the Assumption is correct or onWrong if
-   * the Assumption is wrong of if the onCorrect-listener registered with this method threw an
-   * Exception.
+   * Register a listener that will be executed if the Assumption is correct after validating.
    * @param onCorrect callback that will be called if the Assumption is correct after validating.
-   * @param onWrong callback that will be called if the Assumption is wrong after validating,
-   * or if the onResult-callback threw an Exception.
    * @return this Assumption instance.
    */
-  Assumption<T> validated(Assumeable<T> onCorrect, FailedAssumeable onWrong);
+  Assumption<T> correct(Assumeable<T> onCorrect);
+
+  /**
+   * Register a listener that will be executed if the Assumption is wrong after validating.
+   * @param onWrong callback that will be called if the Assumption is wrong after validating.
+   * @return this Assumption instance.
+   */
+  Assumption<T> wrong(AssumeableException onWrong);
 
   /**
    * Register a listener that will be executed when the Assumption is done validating and have
@@ -43,6 +46,6 @@ public interface Assumption<T> extends Future<T> {
    * @param onDone callback that will be called when the Assumption is done validating.
    * @return this Assumption instance.
    */
-  Assumption<T> validated(Assumeable<Assumption<T>> onDone);
+  Assumption<T> done(Assumed<T> onDone);
 
 }

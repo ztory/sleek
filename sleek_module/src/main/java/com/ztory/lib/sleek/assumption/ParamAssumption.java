@@ -31,7 +31,7 @@ public class ParamAssumption<T> implements Assumption<T> {
   }
 
   @Override
-  public Assumption<T> validated(Assumeable<T> onCorrect, FailedAssumeable onWrong) {
+  public Assumption<T> correct(Assumeable<T> onCorrect) {
     if (onCorrect != null) {
       onCorrect.assume(param);
     }
@@ -39,9 +39,14 @@ public class ParamAssumption<T> implements Assumption<T> {
   }
 
   @Override
-  public Assumption<T> validated(Assumeable<Assumption<T>> onDone) {
+  public Assumption<T> wrong(AssumeableException onWrong) {
+    return this;
+  }
+
+  @Override
+  public Assumption<T> done(Assumed<T> onDone) {
     if (onDone != null) {
-      onDone.assume(this);
+      onDone.assumed(this);
     }
     return this;
   }
