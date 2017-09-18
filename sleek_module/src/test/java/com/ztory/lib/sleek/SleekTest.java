@@ -4,6 +4,7 @@ package com.ztory.lib.sleek;
 
 import com.ztory.lib.sleek.assumption.Assumeable;
 import com.ztory.lib.sleek.assumption.Assumption;
+import com.ztory.lib.sleek.assumption.FailedAssumeable;
 import com.ztory.lib.sleek.assumption.Func;
 import com.ztory.lib.sleek.assumption.SimpleAssumption;
 import com.ztory.lib.sleek.mapd.Mapd;
@@ -150,22 +151,27 @@ public class SleekTest {
             return "dahString";
           }
         }
-    ).correct(new Assumeable<String>() {
-      @Override
-      public void assume(String result) {
-        countDownLatch.countDown();
-      }
-    }).wrong(new Assumeable<Exception>() {
-      @Override
-      public void assume(Exception result) {
+    ).validated(
+        new Assumeable<String>() {
+          @Override
+          public void assume(String value) {
+            countDownLatch.countDown();
+          }
+        },
+        new FailedAssumeable() {
+          @Override
+          public void failedAssume(Exception exception) {
 
-      }
-    }).done(new Assumeable<Assumption<String>>() {
-      @Override
-      public void assume(Assumption<String> result) {
-        countDownLatch.countDown();
-      }
-    });
+          }
+        }
+    ).validated(
+        new Assumeable<Assumption<String>>() {
+          @Override
+          public void assume(Assumption<String> result) {
+            countDownLatch.countDown();
+          }
+        }
+    );
 
     countDownLatch.await();
 
