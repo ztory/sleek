@@ -305,7 +305,7 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
     int colorGreen = Color.green(color);
     int colorBlue = Color.blue(color);
     //rgba(120, 130, 140, 0.5)
-    return "rgba(" + colorRed + "," + colorGreen + "," + colorBlue + "," + Calc.divideToInt(colorAlpha, 255) + ")";
+    return "rgba(" + colorRed + "," + colorGreen + "," + colorBlue + "," + Calc.divide(colorAlpha, 255) + ")";
   }
 
   public static int getAnimatedInt(float percent, int startInt, int goalInt) {
@@ -334,16 +334,16 @@ public class SleekCSSanim extends SleekAnimation implements PercentDrawView {
     int startGreen = Color.green(startColor);
     int startBlue = Color.blue(startColor);
 
-    int goalAlpha = Color.alpha(goalColor) - startAlpha;
-    int goalRed = Color.red(goalColor) - startRed;
-    int goalGreen = Color.green(goalColor) - startGreen;
-    int goalBlue = Color.blue(goalColor) - startBlue;
+    int deltaAlpha = Color.alpha(goalColor) - startAlpha;
+    int deltaRed = Color.red(goalColor) - startRed;
+    int deltaGreen = Color.green(goalColor) - startGreen;
+    int deltaBlue = Color.blue(goalColor) - startBlue;
 
     return Color.argb(
-        startAlpha + (int) (goalAlpha * percent),
-        startRed + (int) (goalRed * percent),
-        startGreen + (int) (goalGreen * percent),
-        startBlue + (int) (goalBlue * percent)
+        startAlpha + (int) (deltaAlpha * percent),
+        startRed + (int) (deltaRed * percent),
+        startGreen + (int) (deltaGreen * percent),
+        startBlue + (int) (deltaBlue * percent)
     );
   }
 

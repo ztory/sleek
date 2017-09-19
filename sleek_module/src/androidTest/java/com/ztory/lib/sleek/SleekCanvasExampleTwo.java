@@ -194,11 +194,12 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
         }, new Runnable() {
           @Override
           public void run() {
-            if (sleekElementList.get(0).isAddedToParent()) {
-              removeSleek(sleekElementList);
-            } else {
-              addSleek(sleekElementList);
-            }
+//            if (sleekElementList.get(0).isAddedToParent()) {
+//              removeSleek(sleekElementList);
+//            } else {
+//              addSleek(sleekElementList);
+//            }
+            new LoadOverlay().addToSleekCanvas(SleekCanvasExampleTwo.this);
           }
         }
     );
