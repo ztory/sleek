@@ -3,6 +3,7 @@
 Sleek is an Android UI framework that tries to simplify complex UI hierarchy in the Android world.
 
 ## Features
+- **Style UI in CSS** For people who like CSS more than XML.
 - **60 fps smoothness** Minimum overhead when drawing and animating the UI.
 - **Easy to use** Creating and configuring appearance, layout and touch have never been easier.
 - **Flexible** Every class and interface is built for you to extend and customize to your liking.
