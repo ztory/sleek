@@ -18,67 +18,53 @@ The SleekCanvas behaves just like any other View in Android externally, meaning 
 The real power of SleekCanvas lies in the ability to supply Sleek instances to represent the UI (a number of base classes exists for this in the `com.ztory.lib.sleek.base` package) of an app. It features minimum overhead for drawing, offers a predictable and straight forward layout and positioning logic, as well as simple (yet 100% customizable) touch functionality.
 
 ## Code example
-Setting up a basic SleekCanvas with a clickable area that has a custom (and random!) touch functionality, in your `Activity.onCreate()`:
+Setting up a basic SleekCanvas in your `Activity.onCreate()` with a [SleekElement](https://github.com/ztory/sleek/blob/master/sleek_module/src/main/java/com/ztory/lib/sleek/base/element/SleekElement.java) styled with CSS ([Supported CSS properties can be found here](https://github.com/ztory/sleek/blob/master/sleek_module/src/main/java/com/ztory/lib/sleek/base/element/css/CSSblockBase.java)) and a (random!) click-handler is as easy as this:
 ```java
 @Override
 public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    SleekCanvas sleekCanvas = new SleekCanvas(this);
-    sleekCanvas.setBackgroundColor(Color.BLUE);
-    sleekCanvas.setSleekScroller(new SleekScrollerBase(true));
-    final SleekColorArea sleekColorArea = new SleekColorArea(
-            Color.CYAN,
-            SleekColorArea.ANTI_ALIASED_TRUE,
-            SleekColorArea.FIXED_POSITION_TRUE,
-            SleekColorArea.TOUCHABLE_TRUE,
-            SleekColorArea.LOADABLE_FALSE,
-            SleekColorArea.TOUCH_PRIO_DEFAULT
-    );
-    sleekColorArea.getLayout()
-            .x(SL.X.PERCENT_CANVAS, 0, null, 0.33f)
-            .y(SL.Y.PERCENT_CANVAS, 0, null, 0.29f)
-            .w(SL.W.PERCENT_CANVAS, 0, null, 0.27f)
-            .h(SL.H.PERCENT_CANVAS, 0, null, 0.34f);
-    int pixelsFromDip = UtilPx.getPixels(this, 8);// 8 DIP converted to pixels
-    sleekColorArea.setRounded(true, pixelsFromDip);
-    sleekColorArea.getTouchHandler().setClickAction(
-            new Runnable() {
-                @Override
-                public void run() {
-                    sleekColorArea.setColor(Color.MAGENTA);
-                }
-            },
-            new Runnable() {
-                @Override
-                public void run() {
-                    sleekColorArea.setColor(Color.CYAN);
-                }
-            },
-            new Runnable() {
-                @Override
-                public void run() {
-                    float randomGoalX = sleekColorArea.getSleekX();
-                    randomGoalX = randomGoalX - 100 + (float) (200 * Math.random());
-                    float randomGoalY = sleekColorArea.getSleekY();
-                    randomGoalY = randomGoalY - 100 + (float) (200 * Math.random());
-                    sleekColorArea.setSleekAnimView(
-                            new SAVtransXY(
-                                    sleekColorArea.getSleekX(),
-                                    randomGoalX,
-                                    sleekColorArea.getSleekY(),
-                                    randomGoalY,
-                                    300,
-                                    ISleekDrawView.NO_DRAW
-                            )
-                    );
-                }
-            }
-    );
-    sleekCanvas.addSleek(sleekColorArea);
-    setContentView(sleekCanvas);
+  super.onCreate(savedInstanceState);
+  SleekCanvas sleekCanvas = new SleekCanvas(this);
+  sleekCanvas.setBackgroundColor(0xffeeeeee);
+  sleekCanvas.setSleekScroller(new SleekScrollerXY(true, true));
+  CSSblock elementCSS = new CSSblockBase("{background: #1FA350;color: #fff;font-size: 20px;}");
+  CSSblock elementCSSpressed = new CSSblockBase("{background: #1F6F8D;color: #FFC27F;}");
+  CSSblock elementCSSclicked = new CSSblockBase("{background: #E14B2B;color: #aaa;}");
+  final SleekElement element = new SleekElement();
+  element.setElementString("Element of the year");
+  element.addCSS(elementCSS);
+  element.setClickAction(
+      elementCSSpressed,
+      elementCSSclicked,
+      new Assumeable<SleekCSSanim>() { @Override public void assume(SleekCSSanim animation) {
+        animation.setGoalX(element.getSleekX() - 100 + (int) (200 * Math.random()));
+        animation.setGoalY(element.getSleekY() - 100 + (int) (200 * Math.random()));
+        animation.setDuration(SleekCSSanim.ANIM_DURATION_LONG);
+      }}
+  );
+  element.getLayout()
+      .x(SL.X.POS_CENTER, 0, null)
+      .y(SL.Y.POS_CENTER, 0, null)
+      .w(SL.W.ABSOLUTE, UtilPx.getPixels(this, 200), null)
+      .h(SL.H.ABSOLUTE, UtilPx.getPixels(this, 200), null);
+  sleekCanvas.addSleek(element);
+  setContentView(sleekCanvas);
 }
 ```
+
+### Psst
+Call this in your `Application.onCreate()` to have everything working as it should:
+```java
+public class MainApplication extends Application {
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    UtilPx.setDefaultContext(this);
+  }
+}
+```
+
+### Want more example code?
+Pull down the repo and run the `TestSleekUI` test class for a quick demo. Explore the source code of `TestSleekUI` at your own risk... =)
 
 ## Enough! I want to use it, tell me how!
 
