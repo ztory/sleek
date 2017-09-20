@@ -7,11 +7,11 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by jonruna on 2017-09-16.
  */
-public class ParamAssumption<T> implements Assumption<T> {
+public class CorrectAssumption<T> implements Assumption<T> {
 
   protected final T param;
 
-  public ParamAssumption(T theParam) {
+  public CorrectAssumption(T theParam) {
     param = theParam;
   }
 
