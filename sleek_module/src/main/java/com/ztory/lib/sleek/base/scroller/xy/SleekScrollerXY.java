@@ -140,7 +140,7 @@ public class SleekScrollerXY implements SleekCanvasScroller {
         -Math.round(velocityX),//velocityX
         -Math.round(velocityY),//velocityY
         0,//minX
-        Math.round(mRightScrollEdge - mCanvasWidth),//maxX
+        Math.round(mRightScrollEdge - mCanvasWidth + getPaddingRight() + getMarginRight()),//maxX
         0,//minY
         Math.round(mBottomScrollEdge - mCanvasHeight + getPaddingBottom() + getMarginBottom()),//maxYto
         mOverflingX,//overX
@@ -440,12 +440,14 @@ public class SleekScrollerXY implements SleekCanvasScroller {
 
           if (mShouldScrollX) {
             blockFlingX = mPosLeft >= 0
-                || mPosLeft <= -mRightScrollEdge + mCanvasWidth;
+                || mPosLeft <= -mRightScrollEdge + mCanvasWidth
+                - getPaddingRight() - getMarginRight();
           }
 
           if (mShouldScrollY) {
             blockFlingY = mPosTop >= 0
-                || mPosTop <= -mBottomScrollEdge + mCanvasHeight;
+                || mPosTop <= -mBottomScrollEdge + mCanvasHeight
+                - getPaddingBottom() - getMarginBottom();
           }
 
           boolean didFling = false;
