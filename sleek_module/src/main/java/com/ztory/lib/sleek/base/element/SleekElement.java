@@ -452,6 +452,7 @@ public class SleekElement extends SleekBaseComposite {
     createText();
     elementText.setTextString(elementString);
     reloadTextState();
+    invalidateSafe();
   }
 
   public String getElementString() {
