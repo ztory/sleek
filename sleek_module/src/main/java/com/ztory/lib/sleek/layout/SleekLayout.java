@@ -14,8 +14,6 @@ import com.ztory.lib.sleek.util.UtilSleekLayout;
  */
 public class SleekLayout {
 
-
-
     private SleekLayout() {
 
     }
@@ -65,192 +63,144 @@ public class SleekLayout {
 
     private ISleekAnimRun preApplyRun, postApplyRun;
 
-    public SleekLayout setPreApplyRun(ISleekAnimRun thePreApplyRun) {
-        preApplyRun = thePreApplyRun;
+    public SleekLayout before(ISleekAnimRun beforeRun) {
+        preApplyRun = beforeRun;
         hasPreApplyRun = preApplyRun != null;
         return this;
     }
 
-    public SleekLayout setPostApplyRun(ISleekAnimRun thePostApplyRun) {
-        postApplyRun = thePostApplyRun;
+    public SleekLayout after(ISleekAnimRun afterRun) {
+        postApplyRun = afterRun;
         hasPostApplyRun = postApplyRun != null;
         return this;
     }
 
-    public SleekLayout x(
-            SL.X theEnumX,
-            int theMargin,
-            Sleek theParent
-    ) {
-        return x(theEnumX, theMargin, theParent, 0.5f, null);
+    // X-pos methods start
+
+    public SleekLayout xAbsolute(int position) {
+        return x(new LayX(ABSOLUTE, position, null, 0.0f));// 1
     }
 
-    public SleekLayout x(
-            SL.X theEnumX,
-            int theMargin,
-            Sleek theParent,
-            float thePercent
-    ) {
-        return x(theEnumX, theMargin, theParent, thePercent, null);
+    public SleekLayout xWestOf(Sleek parent, int margin) {
+        return x(new LayX(POS_X_WEST_OF, margin, parent, 0.0f));// 2
     }
 
-    public SleekLayout x(
-            SL.X theEnumX,
-            int theMargin,
-            Sleek theParent,
-            float thePercent,
-            IComputeFloat theComputeFloat
-    ) {
-        switch (theEnumX) {
-            case ABSOLUTE:
-                return x(new LayX(LayX.ABSOLUTE, theMargin, theParent, thePercent));
-            case WEST_OF:
-                return x(new LayX(LayX.WEST_OF, theMargin, theParent, thePercent));
-            case EAST_OF:
-                return x(new LayX(LayX.EAST_OF, theMargin, theParent, thePercent));
-            case POS_CENTER:
-                return x(new LayX(LayX.POS_CENTER, theMargin, theParent, thePercent));
-            case PERCENT:
-                return x(new LayX(LayX.PERCENT, theMargin, theParent, thePercent));
-            case PERCENT_CANVAS:
-                return x(new LayX(LayX.PERCENT_CANVAS, theMargin, theParent, thePercent));
-            case COMPUTE:
-                return x(new LayX(theComputeFloat));
-            case PARENT_LEFT:
-                return x(new LayX(LayX.PARENT_LEFT, theMargin, theParent, thePercent));
-            case PARENT_RIGHT:
-                return x(new LayX(LayX.PARENT_RIGHT, theMargin, theParent, thePercent));
-            case PARENT_PERCENT:
-                return x(new LayX(LayX.PARENT_PERCENT, theMargin, theParent, thePercent));
-        }
-        return null;
+    public SleekLayout xEastOf(Sleek parent, int margin) {
+        return x(new LayX(POS_X_EAST_OF, margin, parent, 0.0f));// 3
     }
 
-    public SleekLayout y(
-            SL.Y theEnumY,
-            int theMargin,
-            Sleek theParent
-    ) {
-        return y(theEnumY, theMargin, theParent, 0.5f, null);
+    public SleekLayout xLeft(Sleek parent, int margin) {
+        return x(new LayX(POS_X_PARENT_LEFT, margin, parent, 0.0f));// 8
     }
 
-    public SleekLayout y(
-            SL.Y theEnumY,
-            int theMargin,
-            Sleek theParent,
-            float thePercent
-    ) {
-        return y(theEnumY, theMargin, theParent, thePercent, null);
+    public SleekLayout xRight(Sleek parent, int margin) {
+        return x(new LayX(POS_X_PARENT_RIGHT, margin, parent, 0.0f));// 9
     }
 
-    public SleekLayout y(
-            SL.Y theEnumY,
-            int theMargin,
-            Sleek theParent,
-            float thePercent,
-            IComputeFloat theComputeFloat
-    ) {
-        switch (theEnumY) {
-            case ABSOLUTE:
-                return y(new LayY(LayY.ABSOLUTE, theMargin, theParent, thePercent));
-            case NORTH_OF:
-                return y(new LayY(LayY.NORTH_OF, theMargin, theParent, thePercent));
-            case SOUTH_OF:
-                return y(new LayY(LayY.SOUTH_OF, theMargin, theParent, thePercent));
-            case POS_CENTER:
-                return y(new LayY(LayY.POS_CENTER, theMargin, theParent, thePercent));
-            case PERCENT:
-                return y(new LayY(LayY.PERCENT, theMargin, theParent, thePercent));
-            case PERCENT_CANVAS:
-                return y(new LayY(LayY.PERCENT_CANVAS, theMargin, theParent, thePercent));
-            case COMPUTE:
-                return y(new LayY(theComputeFloat));
-            case PARENT_TOP:
-                return y(new LayY(LayY.PARENT_TOP, theMargin, theParent, thePercent));
-            case PARENT_BOTTOM:
-                return y(new LayY(LayY.PARENT_BOTTOM, theMargin, theParent, thePercent));
-            case PARENT_PERCENT:
-                return y(new LayY(LayY.PARENT_PERCENT, theMargin, theParent, thePercent));
-        }
-        return null;
+    public SleekLayout xCenter(Sleek parent) {
+        return x(new LayX(POS_CENTER, 0, parent, 0.0f));// 4
     }
 
-    public SleekLayout w(
-            SL.W theEnumW,
-            int theMargin,
-            Sleek theParent
-    ) {
-        return w(theEnumW, theMargin, theParent, 0.5f, null);
+    public SleekLayout xPercent(float percent, Sleek parent, int margin) {
+        return x(new LayX(PERCENT, margin, parent, percent));// 5
     }
 
-    public SleekLayout w(
-            SL.W theEnumW,
-            int theMargin,
-            Sleek theParent,
-            float thePercent
-    ) {
-        return w(theEnumW, theMargin, theParent, thePercent, null);
+    public SleekLayout xPercentParent(float percent, Sleek parent, int margin) {
+        return x(new LayX(POS_PARENT_PERCENT, margin, parent, percent));// 10
     }
 
-    public SleekLayout w(
-            SL.W theEnumW,
-            int theMargin,
-            Sleek theParent,
-            float thePercent,
-            IComputeInt theComputeInt
-    ) {
-        switch (theEnumW) {
-            case ABSOLUTE:
-                return w(new LayW(LayW.ABSOLUTE, theMargin, theParent, thePercent));
-            case MATCH_PARENT:
-                return w(new LayW(LayW.MATCH_PARENT, theMargin, theParent, thePercent));
-            case PERCENT:
-                return w(new LayW(LayW.PERCENT, theMargin, theParent, thePercent));
-            case PERCENT_CANVAS:
-                return w(new LayW(LayW.PERCENT_CANVAS, theMargin, theParent, thePercent));
-            case COMPUTE:
-                return w(new LayW(theComputeInt));
-        }
-        return null;
+    public SleekLayout xPercentCanvas(float percent, int margin) {
+        return x(new LayX(PERCENT_CANVAS, margin, null, percent));// 6
     }
 
-    public SleekLayout h(
-            SL.H theEnumH,
-            int theMargin,
-            Sleek theParent
-    ) {
-        return h(theEnumH, theMargin, theParent, 0.5f, null);
+    public SleekLayout xCompute(IComputeFloat computeFloat) {
+        return x(new LayX(computeFloat));// 7
     }
 
-    public SleekLayout h(
-            SL.H theEnumH,
-            int theMargin,
-            Sleek theParent,
-            float thePercent
-    ) {
-        return h(theEnumH, theMargin, theParent, thePercent, null);
+    // Y-pos methods start
+
+    public SleekLayout yAbsolute(int position) {
+        return y(new LayY(ABSOLUTE, position, null, 0.0f));// 1
     }
-    
-    public SleekLayout h(
-            SL.H theEnumH,
-            int theMargin,
-            Sleek theParent,
-            float thePercent,
-            IComputeInt theComputeInt
-    ) {
-        switch (theEnumH) {
-            case ABSOLUTE:
-                return h(new LayH(LayH.ABSOLUTE, theMargin, theParent, thePercent));
-            case MATCH_PARENT:
-                return h(new LayH(LayH.MATCH_PARENT, theMargin, theParent, thePercent));
-            case PERCENT:
-                return h(new LayH(LayH.PERCENT, theMargin, theParent, thePercent));
-            case PERCENT_CANVAS:
-                return h(new LayH(LayH.PERCENT_CANVAS, theMargin, theParent, thePercent));
-            case COMPUTE:
-                return h(new LayH(theComputeInt));
-        }
-        return null;
+
+    public SleekLayout yNorthOf(Sleek parent, int margin) {
+        return y(new LayY(POS_Y_NORTH_OF, margin, parent, 0.0f));// 2
+    }
+
+    public SleekLayout ySouthOf(Sleek parent, int margin) {
+        return y(new LayY(POS_Y_SOUTH_OF, margin, parent, 0.0f));// 3
+    }
+
+    public SleekLayout yTop(Sleek parent, int margin) {
+        return y(new LayY(POS_Y_PARENT_TOP, margin, parent, 0.0f));// 8
+    }
+
+    public SleekLayout yBottom(Sleek parent, int margin) {
+        return y(new LayY(POS_Y_PARENT_BOTTOM, margin, parent, 0.0f));// 9
+    }
+
+    public SleekLayout yCenter(Sleek parent) {
+        return y(new LayY(POS_CENTER, 0, parent, 0.0f));// 4
+    }
+
+    public SleekLayout yPercent(float percent, Sleek parent, int margin) {
+        return y(new LayY(PERCENT, margin, parent, percent));// 5
+    }
+
+    public SleekLayout yPercentParent(float percent, Sleek parent, int margin) {
+        return y(new LayY(POS_PARENT_PERCENT, margin, parent, percent));// 10
+    }
+
+    public SleekLayout yPercentCanvas(float percent, int margin) {
+        return y(new LayY(PERCENT_CANVAS, margin, null, percent));// 6
+    }
+
+    public SleekLayout yCompute(IComputeFloat computeFloat) {
+        return y(new LayY(computeFloat));// 7
+    }
+
+    // Width methods start
+
+    public SleekLayout wAbsolute(int position) {
+        return w(new LayW(ABSOLUTE, position, null, 0.0f));
+    }
+
+    public SleekLayout wMatchParent(Sleek parent, int margin) {
+        return w(new LayW(SIZE_FIT_PARENT, margin, parent, 0.0f));
+    }
+
+    public SleekLayout wPercent(float percent, Sleek parent, int margin) {
+        return w(new LayW(PERCENT, margin, parent, percent));
+    }
+
+    public SleekLayout wPercentCanvas(float percent, int margin) {
+        return w(new LayW(PERCENT_CANVAS, margin, null, percent));
+    }
+
+    public SleekLayout wCompute(IComputeInt computeInt) {
+        return w(new LayW(computeInt));
+    }
+
+    // Height methods start
+
+    public SleekLayout hAbsolute(int position) {
+        return h(new LayH(ABSOLUTE, position, null, 0.0f));
+    }
+
+    public SleekLayout hMatchParent(Sleek parent, int margin) {
+        return h(new LayH(SIZE_FIT_PARENT, margin, parent, 0.0f));
+    }
+
+    public SleekLayout hPercent(float percent, Sleek parent, int margin) {
+        return h(new LayH(PERCENT, margin, parent, percent));
+    }
+
+    public SleekLayout hPercentCanvas(float percent, int margin) {
+        return h(new LayH(PERCENT_CANVAS, margin, null, percent));
+    }
+
+    public SleekLayout hCompute(IComputeInt computeInt) {
+        return h(new LayH(computeInt));
     }
 
     public SleekLayout x(LayX theLayX) {
@@ -274,102 +224,6 @@ public class SleekLayout {
     public SleekLayout h(LayH theLayH) {
         mLayH = theLayH;
         hasLayH = mLayH != null && mLayH.mode != UNCHANGED;
-        return this;
-    }
-
-    /** Old style method, should not be used. Will be removed in the future.
-     * @deprecated use {@link #w(LayW)} instead. */
-    @Deprecated
-    public SleekLayout setLaySizeW(IComputeInt compute) {
-        w(new LayW(compute));
-        return this;
-    }
-
-    /** Old style method, should not be used. Will be removed in the future.
-     * @deprecated use {@link #w(LayW)} instead. */
-    @Deprecated
-    public SleekLayout setLaySizeW(int mode, int margin, Sleek parent) {
-        w(new LayW(mode, margin, parent));
-        return this;
-    }
-
-    /** Old style method, should not be used. Will be removed in the future.
-     * @deprecated use {@link #w(LayW)} instead. */
-    @Deprecated
-    public SleekLayout setLaySizeW(int mode, int margin, Sleek parent, float percent) {
-        w(new LayW(mode, margin, parent, percent));
-        return this;
-    }
-
-    /** Old style method, should not be used. Will be removed in the future.
-     * @deprecated use {@link #h(LayH)} instead. */
-    @Deprecated
-    public SleekLayout setLaySizeH(IComputeInt compute) {
-        h(new LayH(compute));
-        return this;
-    }
-
-    /** Old style method, should not be used. Will be removed in the future.
-     * @deprecated use {@link #h(LayH)} instead. */
-    @Deprecated
-    public SleekLayout setLaySizeH(int mode, int margin, Sleek parent) {
-        h(new LayH(mode, margin, parent));
-        return this;
-    }
-
-    /** Old style method, should not be used. Will be removed in the future.
-     * @deprecated use {@link #h(LayH)} instead. */
-    @Deprecated
-    public SleekLayout setLaySizeH(int mode, int margin, Sleek parent, float percent) {
-        h(new LayH(mode, margin, parent, percent));
-        return this;
-    }
-
-    /** Old style method, should not be used. Will be removed in the future.
-     * @deprecated use {@link #x(LayX)} instead. */
-    @Deprecated
-    public SleekLayout setLayPosX(IComputeFloat compute) {
-        x(new LayX(compute));
-        return this;
-    }
-
-    /** Old style method, should not be used. Will be removed in the future.
-     * @deprecated use {@link #x(LayX)} instead. */
-    @Deprecated
-    public SleekLayout setLayPosX(int mode, int margin, Sleek parent) {
-        x(new LayX(mode, margin, parent));
-        return this;
-    }
-
-    /** Old style method, should not be used. Will be removed in the future.
-     * @deprecated use {@link #x(LayX)} instead. */
-    @Deprecated
-    public SleekLayout setLayPosX(int mode, int margin, Sleek parent, float percent) {
-        x(new LayX(mode, margin, parent, percent));
-        return this;
-    }
-
-    /** Old style method, should not be used. Will be removed in the future.
-     * @deprecated use {@link #y(LayY)} instead. */
-    @Deprecated
-    public SleekLayout setLayPosY(IComputeFloat compute) {
-        y(new LayY(compute));
-        return this;
-    }
-
-    /** Old style method, should not be used. Will be removed in the future.
-     * @deprecated use {@link #y(LayY)} instead. */
-    @Deprecated
-    public SleekLayout setLayPosY(int mode, int margin, Sleek parent) {
-        y(new LayY(mode, margin, parent));
-        return this;
-    }
-
-    /** Old style method, should not be used. Will be removed in the future.
-     * @deprecated use {@link #y(LayY)} instead. */
-    @Deprecated
-    public SleekLayout setLayPosY(int mode, int margin, Sleek parent, float percent) {
-        y(new LayY(mode, margin, parent, percent));
         return this;
     }
 
@@ -640,6 +494,302 @@ public class SleekLayout {
         }
 
         return calcPosY;
+    }
+
+    // ---------------- DEPRECATED AREA BELOW ----------------
+
+    @Deprecated
+    public SleekLayout setPreApplyRun(ISleekAnimRun thePreApplyRun) {
+        return before(thePreApplyRun);
+    }
+
+    @Deprecated
+    public SleekLayout setPostApplyRun(ISleekAnimRun thePostApplyRun) {
+        return after(thePostApplyRun);
+    }
+
+    @Deprecated
+    public SleekLayout x(
+        SL.X theEnumX,
+        int theMargin,
+        Sleek theParent
+    ) {
+        return x(theEnumX, theMargin, theParent, 0.5f, null);
+    }
+
+    @Deprecated
+    public SleekLayout x(
+        SL.X theEnumX,
+        int theMargin,
+        Sleek theParent,
+        float thePercent
+    ) {
+        return x(theEnumX, theMargin, theParent, thePercent, null);
+    }
+
+    @Deprecated
+    public SleekLayout x(
+        SL.X theEnumX,
+        int theMargin,
+        Sleek theParent,
+        float thePercent,
+        IComputeFloat theComputeFloat
+    ) {
+        switch (theEnumX) {
+            case ABSOLUTE:
+                return x(new LayX(LayX.ABSOLUTE, theMargin, theParent, thePercent));// 1
+            case WEST_OF:
+                return x(new LayX(LayX.WEST_OF, theMargin, theParent, thePercent));// 2
+            case EAST_OF:
+                return x(new LayX(LayX.EAST_OF, theMargin, theParent, thePercent));// 3
+            case POS_CENTER:
+                return x(new LayX(LayX.POS_CENTER, theMargin, theParent, thePercent));// 4
+            case PERCENT:
+                return x(new LayX(LayX.PERCENT, theMargin, theParent, thePercent));// 5
+            case PERCENT_CANVAS:
+                return x(new LayX(LayX.PERCENT_CANVAS, theMargin, theParent, thePercent));// 6
+            case COMPUTE:
+                return x(new LayX(theComputeFloat));// 7
+            case PARENT_LEFT:
+                return x(new LayX(LayX.PARENT_LEFT, theMargin, theParent, thePercent));// 8
+            case PARENT_RIGHT:
+                return x(new LayX(LayX.PARENT_RIGHT, theMargin, theParent, thePercent));// 9
+            case PARENT_PERCENT:
+                return x(new LayX(LayX.PARENT_PERCENT, theMargin, theParent, thePercent));// 10
+        }
+        return null;
+    }
+
+    @Deprecated
+    public SleekLayout y(
+        SL.Y theEnumY,
+        int theMargin,
+        Sleek theParent
+    ) {
+        return y(theEnumY, theMargin, theParent, 0.5f, null);
+    }
+
+    @Deprecated
+    public SleekLayout y(
+        SL.Y theEnumY,
+        int theMargin,
+        Sleek theParent,
+        float thePercent
+    ) {
+        return y(theEnumY, theMargin, theParent, thePercent, null);
+    }
+
+    @Deprecated
+    public SleekLayout y(
+        SL.Y theEnumY,
+        int theMargin,
+        Sleek theParent,
+        float thePercent,
+        IComputeFloat theComputeFloat
+    ) {
+        switch (theEnumY) {
+            case ABSOLUTE:
+                return y(new LayY(LayY.ABSOLUTE, theMargin, theParent, thePercent));
+            case NORTH_OF:
+                return y(new LayY(LayY.NORTH_OF, theMargin, theParent, thePercent));
+            case SOUTH_OF:
+                return y(new LayY(LayY.SOUTH_OF, theMargin, theParent, thePercent));
+            case POS_CENTER:
+                return y(new LayY(LayY.POS_CENTER, theMargin, theParent, thePercent));
+            case PERCENT:
+                return y(new LayY(LayY.PERCENT, theMargin, theParent, thePercent));
+            case PERCENT_CANVAS:
+                return y(new LayY(LayY.PERCENT_CANVAS, theMargin, theParent, thePercent));
+            case COMPUTE:
+                return y(new LayY(theComputeFloat));
+            case PARENT_TOP:
+                return y(new LayY(LayY.PARENT_TOP, theMargin, theParent, thePercent));
+            case PARENT_BOTTOM:
+                return y(new LayY(LayY.PARENT_BOTTOM, theMargin, theParent, thePercent));
+            case PARENT_PERCENT:
+                return y(new LayY(LayY.PARENT_PERCENT, theMargin, theParent, thePercent));
+        }
+        return null;
+    }
+
+    @Deprecated
+    public SleekLayout w(
+        SL.W theEnumW,
+        int theMargin,
+        Sleek theParent
+    ) {
+        return w(theEnumW, theMargin, theParent, 0.5f, null);
+    }
+
+    @Deprecated
+    public SleekLayout w(
+        SL.W theEnumW,
+        int theMargin,
+        Sleek theParent,
+        float thePercent
+    ) {
+        return w(theEnumW, theMargin, theParent, thePercent, null);
+    }
+
+    @Deprecated
+    public SleekLayout w(
+        SL.W theEnumW,
+        int theMargin,
+        Sleek theParent,
+        float thePercent,
+        IComputeInt theComputeInt
+    ) {
+        switch (theEnumW) {
+            case ABSOLUTE:
+                return w(new LayW(LayW.ABSOLUTE, theMargin, theParent, thePercent));
+            case MATCH_PARENT:
+                return w(new LayW(LayW.MATCH_PARENT, theMargin, theParent, thePercent));
+            case PERCENT:
+                return w(new LayW(LayW.PERCENT, theMargin, theParent, thePercent));
+            case PERCENT_CANVAS:
+                return w(new LayW(LayW.PERCENT_CANVAS, theMargin, theParent, thePercent));
+            case COMPUTE:
+                return w(new LayW(theComputeInt));
+        }
+        return null;
+    }
+
+    @Deprecated
+    public SleekLayout h(
+        SL.H theEnumH,
+        int theMargin,
+        Sleek theParent
+    ) {
+        return h(theEnumH, theMargin, theParent, 0.5f, null);
+    }
+
+    @Deprecated
+    public SleekLayout h(
+        SL.H theEnumH,
+        int theMargin,
+        Sleek theParent,
+        float thePercent
+    ) {
+        return h(theEnumH, theMargin, theParent, thePercent, null);
+    }
+
+    @Deprecated
+    public SleekLayout h(
+        SL.H theEnumH,
+        int theMargin,
+        Sleek theParent,
+        float thePercent,
+        IComputeInt theComputeInt
+    ) {
+        switch (theEnumH) {
+            case ABSOLUTE:
+                return h(new LayH(LayH.ABSOLUTE, theMargin, theParent, thePercent));
+            case MATCH_PARENT:
+                return h(new LayH(LayH.MATCH_PARENT, theMargin, theParent, thePercent));
+            case PERCENT:
+                return h(new LayH(LayH.PERCENT, theMargin, theParent, thePercent));
+            case PERCENT_CANVAS:
+                return h(new LayH(LayH.PERCENT_CANVAS, theMargin, theParent, thePercent));
+            case COMPUTE:
+                return h(new LayH(theComputeInt));
+        }
+        return null;
+    }
+
+    /** Old style method, should not be used. Will be removed in the future.
+     * @deprecated use {@link #w(LayW)} instead. */
+    @Deprecated
+    public SleekLayout setLaySizeW(IComputeInt compute) {
+        w(new LayW(compute));
+        return this;
+    }
+
+    /** Old style method, should not be used. Will be removed in the future.
+     * @deprecated use {@link #w(LayW)} instead. */
+    @Deprecated
+    public SleekLayout setLaySizeW(int mode, int margin, Sleek parent) {
+        w(new LayW(mode, margin, parent));
+        return this;
+    }
+
+    /** Old style method, should not be used. Will be removed in the future.
+     * @deprecated use {@link #w(LayW)} instead. */
+    @Deprecated
+    public SleekLayout setLaySizeW(int mode, int margin, Sleek parent, float percent) {
+        w(new LayW(mode, margin, parent, percent));
+        return this;
+    }
+
+    /** Old style method, should not be used. Will be removed in the future.
+     * @deprecated use {@link #h(LayH)} instead. */
+    @Deprecated
+    public SleekLayout setLaySizeH(IComputeInt compute) {
+        h(new LayH(compute));
+        return this;
+    }
+
+    /** Old style method, should not be used. Will be removed in the future.
+     * @deprecated use {@link #h(LayH)} instead. */
+    @Deprecated
+    public SleekLayout setLaySizeH(int mode, int margin, Sleek parent) {
+        h(new LayH(mode, margin, parent));
+        return this;
+    }
+
+    /** Old style method, should not be used. Will be removed in the future.
+     * @deprecated use {@link #h(LayH)} instead. */
+    @Deprecated
+    public SleekLayout setLaySizeH(int mode, int margin, Sleek parent, float percent) {
+        h(new LayH(mode, margin, parent, percent));
+        return this;
+    }
+
+    /** Old style method, should not be used. Will be removed in the future.
+     * @deprecated use {@link #x(LayX)} instead. */
+    @Deprecated
+    public SleekLayout setLayPosX(IComputeFloat compute) {
+        x(new LayX(compute));
+        return this;
+    }
+
+    /** Old style method, should not be used. Will be removed in the future.
+     * @deprecated use {@link #x(LayX)} instead. */
+    @Deprecated
+    public SleekLayout setLayPosX(int mode, int margin, Sleek parent) {
+        x(new LayX(mode, margin, parent));
+        return this;
+    }
+
+    /** Old style method, should not be used. Will be removed in the future.
+     * @deprecated use {@link #x(LayX)} instead. */
+    @Deprecated
+    public SleekLayout setLayPosX(int mode, int margin, Sleek parent, float percent) {
+        x(new LayX(mode, margin, parent, percent));
+        return this;
+    }
+
+    /** Old style method, should not be used. Will be removed in the future.
+     * @deprecated use {@link #y(LayY)} instead. */
+    @Deprecated
+    public SleekLayout setLayPosY(IComputeFloat compute) {
+        y(new LayY(compute));
+        return this;
+    }
+
+    /** Old style method, should not be used. Will be removed in the future.
+     * @deprecated use {@link #y(LayY)} instead. */
+    @Deprecated
+    public SleekLayout setLayPosY(int mode, int margin, Sleek parent) {
+        y(new LayY(mode, margin, parent));
+        return this;
+    }
+
+    /** Old style method, should not be used. Will be removed in the future.
+     * @deprecated use {@link #y(LayY)} instead. */
+    @Deprecated
+    public SleekLayout setLayPosY(int mode, int margin, Sleek parent, float percent) {
+        y(new LayY(mode, margin, parent, percent));
+        return this;
     }
 
 }

@@ -213,6 +213,11 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
         .y(SL.Y.POS_CENTER, 0, toolbar)
         .w(W.ABSOLUTE, UtilPx.getPixels(60), null)
         .h(H.ABSOLUTE, UtilPx.getPixels(60), null);
+    redrawIndicator.getLayout()
+        .xRight(toolbar, UtilPx.getPixels(40))
+        .yCenter(toolbar)
+        .wAbsolute(UtilPx.getPixels(60))
+        .hAbsolute(UtilPx.getPixels(60));
     addSleek(redrawIndicator);
   }
 
