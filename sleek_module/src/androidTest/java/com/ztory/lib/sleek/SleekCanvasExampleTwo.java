@@ -10,9 +10,6 @@ import com.ztory.lib.sleek.base.element.SleekElement;
 import com.ztory.lib.sleek.base.element.css.CSSblock;
 import com.ztory.lib.sleek.base.element.css.CSSblockBase;
 import com.ztory.lib.sleek.base.scroller.xy.SleekScrollerXY;
-import com.ztory.lib.sleek.layout.SL;
-import com.ztory.lib.sleek.layout.SL.H;
-import com.ztory.lib.sleek.layout.SL.W;
 import com.ztory.lib.sleek.util.Calc;
 import com.ztory.lib.sleek.util.UtilPx;
 import com.ztory.lib.sleek.util.UtilSleekLayout;
@@ -161,10 +158,14 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
   private void addFrameRate() {
     SleekFrameRate frameRate = new SleekFrameRate(0xff38B0DE);
     frameRate.getLayout()
-        .x(SL.X.POS_CENTER, 0, null)
-        .y(SL.Y.PERCENT_CANVAS, -100, null, 1.0f)
-        .w(W.ABSOLUTE, 120, null)
-        .h(H.ABSOLUTE, 60, null);
+//        .x(SL.X.POS_CENTER, 0, null)
+        .xCenter(null)
+//        .y(SL.Y.PERCENT_CANVAS, -100, null, 1.0f)
+        .yPercentCanvas(1.0f, -100)
+//        .w(W.ABSOLUTE, 120, null)
+        .wAbsolute(120)
+//        .h(H.ABSOLUTE, 60, null)
+        .hAbsolute(60);
     addSleek(frameRate);
   }
 
@@ -176,10 +177,14 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
     toolbar.setElementString("Sleek" + "\nMore power to the UI");
     toolbar.addCSS(toolbarCSS);
     toolbar.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
-        .x(SL.X.ABSOLUTE, -UtilPx.getPixels(10), null)
-        .y(SL.Y.PERCENT_CANVAS, -toolbarHeight, null, 1.0f)
-        .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
-        .h(H.ABSOLUTE, toolbarHeight, null);
+//        .x(SL.X.ABSOLUTE, -UtilPx.getPixels(10), null)
+        .xAbsolute(-UtilPx.getPixels(10))
+//        .y(SL.Y.PERCENT_CANVAS, -toolbarHeight, null, 1.0f)
+        .yPercentCanvas(1.0f, -toolbarHeight)
+//        .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
+        .wPercentCanvas(1.0f, -UtilPx.getPixels(20))
+//        .h(H.ABSOLUTE, toolbarHeight, null)
+        .hAbsolute(toolbarHeight);
     toolbar.getBackground().getTouchHandler().setClickAction(
         new Runnable() {
           @Override
@@ -209,14 +214,13 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
         SleekParam.FIXED_DEFAULT.prio(SleekPrioCounter.next())
     );
     redrawIndicator.getLayout()
-        .x(SL.X.PARENT_RIGHT, UtilPx.getPixels(40), toolbar)
-        .y(SL.Y.POS_CENTER, 0, toolbar)
-        .w(W.ABSOLUTE, UtilPx.getPixels(60), null)
-        .h(H.ABSOLUTE, UtilPx.getPixels(60), null);
-    redrawIndicator.getLayout()
+//        .x(SL.X.PARENT_RIGHT, UtilPx.getPixels(40), toolbar)
         .xRight(toolbar, UtilPx.getPixels(40))
+//        .y(SL.Y.POS_CENTER, 0, toolbar)
         .yCenter(toolbar)
+//        .w(W.ABSOLUTE, UtilPx.getPixels(60), null)
         .wAbsolute(UtilPx.getPixels(60))
+//        .h(H.ABSOLUTE, UtilPx.getPixels(60), null)
         .hAbsolute(UtilPx.getPixels(60));
     addSleek(redrawIndicator);
   }
@@ -245,9 +249,10 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
     );
     int halvCellWidth = Calc.divideToInt(CELL_WIDTH, 2);
     sleekElement.getLayout()
-        .w(W.ABSOLUTE, CELL_WIDTH, null)
-        //.h(H.ABSOLUTE, UtilPx.getPixels(300), null);
-        .h(H.ABSOLUTE, halvCellWidth + (int) ((halvCellWidth + halvCellWidth) * Math.random()), null);
+//        .w(W.ABSOLUTE, CELL_WIDTH, null)
+        .wAbsolute(CELL_WIDTH)
+//        .h(H.ABSOLUTE, halvCellWidth + (int) ((halvCellWidth + halvCellWidth) * Math.random()), null)
+        .hAbsolute(halvCellWidth + (int) ((halvCellWidth + halvCellWidth) * Math.random()));
     return sleekElement;
   }
 
