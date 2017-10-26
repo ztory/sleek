@@ -361,6 +361,18 @@ public class SleekBase implements Sleek, ISleekDrawView {
         unloadOnRemove = theUnloadOnRemove;
     }
 
+    public void parentAdd(final SleekCanvas sleekCanvas) {
+        if (sleekCanvas == null) {
+            return;
+        }
+        sleekCanvas.addPreDrawRun(new ISleekAnimRun() {
+            @Override
+            public void run(SleekCanvasInfo info) {
+                sleekCanvas.addSleek(SleekBase.this);
+            }
+        });
+    }
+
     public void parentRemove(boolean preDrawRun) {
         if (!addedToParent) {
             return;

@@ -204,6 +204,7 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
 //            } else {
 //              addSleek(sleekElementList);
 //            }
+
             new LoadOverlay().addToSleekCanvas(SleekCanvasExampleTwo.this);
           }
         }
@@ -211,7 +212,21 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
     addSleek(toolbar);
 
     SleekRedrawIndicator redrawIndicator = new SleekRedrawIndicator(
-        SleekParam.FIXED_DEFAULT.prio(SleekPrioCounter.next())
+        SleekParam.FIXED_TOUCHABLE.prio(SleekPrioCounter.next())
+    );
+    redrawIndicator.getTouchHandler().setClickAction(
+        null,
+        null,
+        new Runnable() {
+          @Override
+          public void run() {
+            if (toolbar.isAddedToParent()) {
+              toolbar.parentRemove(true);
+            } else {
+              toolbar.parentAdd(SleekCanvasExampleTwo.this);
+            }
+          }
+        }
     );
     redrawIndicator.getLayout()
 //        .x(SL.X.PARENT_RIGHT, UtilPx.getPixels(40), toolbar)

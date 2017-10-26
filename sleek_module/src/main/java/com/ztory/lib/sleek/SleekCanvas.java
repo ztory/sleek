@@ -59,14 +59,12 @@ public class SleekCanvas extends RelativeLayout {
     protected final Object canvasLockObj = new Object();
     protected final Object preRunLockObj = new Object();
 
-    protected AtomicInteger atomInt = new AtomicInteger(0);
-
     protected AtomicInteger drawPrioAtomInt = new AtomicInteger(0);
 
     protected ISleekAnimRun animRun;
     protected boolean hasAnimRun = false;
 
-    protected ArrayList<ISleekAnimRun> preDrawRunList;
+    protected final ArrayList<ISleekAnimRun> preDrawRunList = new ArrayList<>();
     protected boolean hasPreDrawItems = false;
 
     protected ArrayList<Sleek> drawItemList;
@@ -173,8 +171,6 @@ public class SleekCanvas extends RelativeLayout {
 
         resetCanvasInfoStateTimestamp();
 
-        preDrawRunList = new ArrayList<>();
-
         drawItemList = new ArrayList<>();
         touchItemList = new ArrayList<>();
 
@@ -242,7 +238,7 @@ public class SleekCanvas extends RelativeLayout {
         }
     }
 
-    public void addPreDrawRun(final Runnable preDrawRun) {
+    public void addPreDrawRunnable(final Runnable preDrawRun) {
         addPreDrawRun(new ISleekAnimRun() { @Override public void run(SleekCanvasInfo info) {
             preDrawRun.run();
         } });
@@ -250,29 +246,21 @@ public class SleekCanvas extends RelativeLayout {
 
     public void addPreDrawRun(ISleekAnimRun preDrawRun) {
         synchronized (preRunLockObj) {
-            atomInt.incrementAndGet();
             preDrawRunList.add(preDrawRun);
             hasPreDrawItems = true;
-            atomInt.decrementAndGet();
         }
         invalidateSafe();
     }
 
-    protected void runAllPreDrawRuns(SleekCanvasInfo info) {
-        if (atomInt.get() > 0) {
-            // Another thread is adding a preDrawRun,
-            // skip running of preDrawRun's until next onDraw()
-
-            info.invalidate();//ensure another draw is executed after current draw
-            return;
-        }
+    protected void runAllPreDrawRuns() {
         synchronized (preRunLockObj) {
             if (!hasPreDrawItems) {
                 return;
             }
-            while (preDrawRunList.size() > 0) {
-                preDrawRunList.remove(0).run(drawInfo);
+            for (ISleekAnimRun iterAnimRun : preDrawRunList) {
+                iterAnimRun.run(drawInfo);
             }
+            preDrawRunList.clear();
             hasPreDrawItems = false;
         }
     }
@@ -969,7 +957,7 @@ public class SleekCanvas extends RelativeLayout {
 
         loadCanvasInfoScrollerValues();
 
-        runAllPreDrawRuns(drawInfo);
+        runAllPreDrawRuns();
 
         runAnimRun();
 
