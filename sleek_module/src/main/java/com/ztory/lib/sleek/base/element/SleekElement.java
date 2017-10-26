@@ -404,8 +404,10 @@ public class SleekElement extends SleekBaseComposite {
     return this;
   }
 
-  public SleekElement addCSS(CSSblock cssBlock) {
-    elementCSSlist.add(cssBlock);
+  public SleekElement addCSS(CSSblock... cssBlocks) {
+    for (CSSblock iterBlock : cssBlocks) {
+      elementCSSlist.add(iterBlock);
+    }
     refreshCSS();
     return this;
   }
