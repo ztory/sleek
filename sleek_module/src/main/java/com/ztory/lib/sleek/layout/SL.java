@@ -3,8 +3,10 @@ package com.ztory.lib.sleek.layout;
 /**
  * Created by jonruna on 09/10/14.
  */
+@Deprecated
 public class SL {
 
+    @Deprecated
     public enum X {
         ABSOLUTE,
         WEST_OF,
@@ -18,6 +20,7 @@ public class SL {
         PARENT_PERCENT
     }
 
+    @Deprecated
     public enum Y {
         ABSOLUTE,
         NORTH_OF,
@@ -31,6 +34,7 @@ public class SL {
         PARENT_PERCENT
     }
 
+    @Deprecated
     public enum W {
         ABSOLUTE,
         MATCH_PARENT,
@@ -39,6 +43,7 @@ public class SL {
         COMPUTE
     }
 
+    @Deprecated
     public enum H {
         ABSOLUTE,
         MATCH_PARENT,
