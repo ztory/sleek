@@ -161,11 +161,11 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
 //        .x(SL.X.POS_CENTER, 0, null)
         .xCenter(null)
 //        .y(SL.Y.PERCENT_CANVAS, -100, null, 1.0f)
-        .yPercentCanvas(1.0f, -100)
+        .yPercent(1.0f, -100)
 //        .w(W.ABSOLUTE, 120, null)
-        .wAbsolute(120)
+        .w(120)
 //        .h(H.ABSOLUTE, 60, null)
-        .hAbsolute(60);
+        .h(60);
     addSleek(frameRate);
   }
 
@@ -178,13 +178,13 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
     toolbar.addCSS(toolbarCSS);
     toolbar.getLayout()// X and W are stretched outside screen to hide WEST / EAST border+shadow
 //        .x(SL.X.ABSOLUTE, -UtilPx.getPixels(10), null)
-        .xAbsolute(-UtilPx.getPixels(10))
+        .x(-UtilPx.getPixels(10))
 //        .y(SL.Y.PERCENT_CANVAS, -toolbarHeight, null, 1.0f)
-        .yPercentCanvas(1.0f, -toolbarHeight)
+        .yPercent(1.0f, -toolbarHeight)
 //        .w(W.PERCENT_CANVAS, -UtilPx.getPixels(20), null, 1.0f)
-        .wPercentCanvas(1.0f, -UtilPx.getPixels(20))
+        .wPercent(1.0f, -UtilPx.getPixels(20))
 //        .h(H.ABSOLUTE, toolbarHeight, null)
-        .hAbsolute(toolbarHeight);
+        .h(toolbarHeight);
     toolbar.getBackground().getTouchHandler().setClickAction(
         new Runnable() {
           @Override
@@ -234,9 +234,9 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
 //        .y(SL.Y.POS_CENTER, 0, toolbar)
         .yCenter(toolbar)
 //        .w(W.ABSOLUTE, UtilPx.getPixels(60), null)
-        .wAbsolute(UtilPx.getPixels(60))
+        .w(UtilPx.getPixels(60))
 //        .h(H.ABSOLUTE, UtilPx.getPixels(60), null)
-        .hAbsolute(UtilPx.getPixels(60));
+        .h(UtilPx.getPixels(60));
     addSleek(redrawIndicator);
   }
 
@@ -265,9 +265,9 @@ public class SleekCanvasExampleTwo extends SleekCanvas {
     int halvCellWidth = Calc.divideToInt(CELL_WIDTH, 2);
     sleekElement.getLayout()
 //        .w(W.ABSOLUTE, CELL_WIDTH, null)
-        .wAbsolute(CELL_WIDTH)
+        .w(CELL_WIDTH)
 //        .h(H.ABSOLUTE, halvCellWidth + (int) ((halvCellWidth + halvCellWidth) * Math.random()), null)
-        .hAbsolute(halvCellWidth + (int) ((halvCellWidth + halvCellWidth) * Math.random()));
+        .h(halvCellWidth + (int) ((halvCellWidth + halvCellWidth) * Math.random()));
     return sleekElement;
   }
 

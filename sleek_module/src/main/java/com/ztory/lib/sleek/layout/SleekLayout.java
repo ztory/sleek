@@ -77,7 +77,7 @@ public class SleekLayout {
 
     // X-pos methods start
 
-    public SleekLayout xAbsolute(int position) {
+    public SleekLayout x(int position) {
         return x(new LayX(ABSOLUTE, position, null, 0.0f));// 1
     }
 
@@ -109,7 +109,7 @@ public class SleekLayout {
         return x(new LayX(POS_PARENT_PERCENT, margin, parent, percent));// 10
     }
 
-    public SleekLayout xPercentCanvas(float percent, int margin) {
+    public SleekLayout xPercent(float percent, int margin) {
         return x(new LayX(PERCENT_CANVAS, margin, null, percent));// 6
     }
 
@@ -119,7 +119,7 @@ public class SleekLayout {
 
     // Y-pos methods start
 
-    public SleekLayout yAbsolute(int position) {
+    public SleekLayout y(int position) {
         return y(new LayY(ABSOLUTE, position, null, 0.0f));// 1
     }
 
@@ -151,7 +151,7 @@ public class SleekLayout {
         return y(new LayY(POS_PARENT_PERCENT, margin, parent, percent));// 10
     }
 
-    public SleekLayout yPercentCanvas(float percent, int margin) {
+    public SleekLayout yPercent(float percent, int margin) {
         return y(new LayY(PERCENT_CANVAS, margin, null, percent));// 6
     }
 
@@ -161,11 +161,11 @@ public class SleekLayout {
 
     // Width methods start
 
-    public SleekLayout wAbsolute(int position) {
+    public SleekLayout w(int position) {
         return w(new LayW(ABSOLUTE, position, null, 0.0f));
     }
 
-    public SleekLayout wMatchParent(Sleek parent, int margin) {
+    public SleekLayout wMatch(Sleek parent, int margin) {
         return w(new LayW(SIZE_FIT_PARENT, margin, parent, 0.0f));
     }
 
@@ -173,7 +173,7 @@ public class SleekLayout {
         return w(new LayW(PERCENT, margin, parent, percent));
     }
 
-    public SleekLayout wPercentCanvas(float percent, int margin) {
+    public SleekLayout wPercent(float percent, int margin) {
         return w(new LayW(PERCENT_CANVAS, margin, null, percent));
     }
 
@@ -183,11 +183,11 @@ public class SleekLayout {
 
     // Height methods start
 
-    public SleekLayout hAbsolute(int position) {
+    public SleekLayout h(int position) {
         return h(new LayH(ABSOLUTE, position, null, 0.0f));
     }
 
-    public SleekLayout hMatchParent(Sleek parent, int margin) {
+    public SleekLayout hMatch(Sleek parent, int margin) {
         return h(new LayH(SIZE_FIT_PARENT, margin, parent, 0.0f));
     }
 
@@ -195,7 +195,7 @@ public class SleekLayout {
         return h(new LayH(PERCENT, margin, parent, percent));
     }
 
-    public SleekLayout hPercentCanvas(float percent, int margin) {
+    public SleekLayout hPercent(float percent, int margin) {
         return h(new LayH(PERCENT_CANVAS, margin, null, percent));
     }
 
